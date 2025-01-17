@@ -95,8 +95,15 @@ app.get("/products", (req, res) =>{
     fetch("http://localhost/justweed/backend/view-product.php")
     .then(response => response.json())
     .then(data => {
-        
+      if (data.message && data.response === 200)
+        res.json(data.data[0].message);
+      else if (!data.message && data.response === 500)
+        res.status(401).json(data.data[0].message); 
     })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
   }
 
 });
