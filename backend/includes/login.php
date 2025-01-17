@@ -24,7 +24,7 @@ try{
     } else {
 
         $response = [
-        "response" => "200",
+        "response" => 200,
         "message" => true,
         "data" => $result
         ];
@@ -33,14 +33,14 @@ try{
 
 } catch (PDOException $e) {
     $response = [
-        "response" => "500",
+        "response" => 500,
         "message" => false,
         "data" => "Errore del database: " . $e->getMessage()
     ];
     echo json_encode($response);
 } catch (Exception $e) {
     $response = [
-        "response" => "200",
+        "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
         
