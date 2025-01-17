@@ -89,6 +89,18 @@ app.post("/login", (req, res) => {
   });
 });
 
+
+app.get("/products", (req, res) =>{
+  if (req.session){
+    fetch("http://localhost/justweed/backend/view-product.php")
+    .then(response => response.json())
+    .then(data => {
+      
+    })
+  }
+
+});
+
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
