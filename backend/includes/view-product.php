@@ -7,9 +7,9 @@
 
         require_once "dbh.inc.php";
 
-        $table = "product_jw";
+        $table = "products_jw";
 
-        $sql = "SELECT * FROM $table ORDER BY DESC";
+        $sql = "SELECT * FROM $table";
         $stmt = $pdo ->prepare($sql);
         $stmt -> execute();
         $result = $stmt -> fetchAll(PDO::FETCH_ASSOC);
