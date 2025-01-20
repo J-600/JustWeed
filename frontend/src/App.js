@@ -1,40 +1,39 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Usa useNavigate da react-router-dom
-import styles from './components/styles/login.module.css'; // Assicurati che il percorso sia corretto
-import './App.css';
+import { useNavigate } from 'react-router-dom';
+import styles from './components/styles/login.module.css';
 
 function App() {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [responseMessage, setResponseMessage] = useState(null);
-  const navigate = useNavigate(); // Usa useNavigate per la navigazione in React
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Previene il comportamento predefinito del form
+    e.preventDefault(); 
     try {
       const res = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mail, password }),
-        credentials: 'include', // Aggiungi i cookie nella richiesta
+        body: JSON.stringify({"username": mail, "password":password }),
+        credentials: 'include',
       });
+
+      // console.log(mail,password);
 
       const data = await res.json();
 
-      if (data.message) {
-        setResponseMessage('Login riuscito');
-
-        console.log(data);
-
-        // Assumiamo che i dati dello studente siano disponibili in data.data[0]
-        const email = data.data[0].email;
-        const username = data.data[0].username;
-
-        // Reindirizza alla pagina dello studente
-        navigate('/home', { state: { email, username } });
-      } else {
-        setResponseMessage(data.message || 'Errore nel login');
+      try{
+        if (data.email == null){
+          throw new Error("error");
+        }
+        const email = data.email;
+        const username = data.username;
+        setResponseMessage("login riuscito");
+        navigate('/products', { state: { email, username } });
+      } catch (error){
+        setResponseMessage(data);
       }
+
     } catch (error) {
       console.error('Errore durante la richiesta:', error);
       setResponseMessage('Errore durante la richiesta');

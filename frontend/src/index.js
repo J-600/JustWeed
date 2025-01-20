@@ -1,17 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Usa createRoot da react-dom/client
+import ReactDOM from 'react-dom/client'; // React 18's createRoot
 import './index.css';
-import App from './App';
+import AppRoutes from './appRoutes';  // Import AppRoutes
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
+import { BrowserRouter } from 'react-router-dom';  // Import BrowserRouter
 
-// Usa createRoot per React 18
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <App />
+  <BrowserRouter>  {/* Only one BrowserRouter should be here */}
+    <AppRoutes />   {/* Use AppRoutes to handle routing */}
   </BrowserRouter>
 );
 
-// Misura le performance (opzionale)
 reportWebVitals();

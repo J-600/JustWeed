@@ -7,8 +7,8 @@ try{
     require_once "dbh.inc.php";
 
     $table = "users_jw";
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+    $username = $_POST["username"] ?? "jhonpanora06@gmail.com";
+    $password = $_POST["password"] ?? "j.panora";
 
     $sql = "SELECT username, email FROM $table WHERE username = :username OR email = :username AND password = :password";
     $stmt = $pdo->prepare($sql);
@@ -22,7 +22,6 @@ try{
     if (empty($result)) {
         throw new Exception("Mail o password sbagliati");
     } else {
-
         $response = [
         "response" => 200,
         "message" => true,
