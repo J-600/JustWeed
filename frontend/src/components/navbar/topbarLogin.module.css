@@ -1,31 +1,32 @@
-/* Topbar (barra in cima) */
+
 *{
-       --glow-color: rgb(255, 255, 153); /* Giallo chiaro */
-       --glow-spread-color: rgba(255, 204, 0, 0.781); /* Giallo dorato */
-       --enhanced-glow-color: rgb(255, 255, 204); /* Giallo pallido */
-       --btn-color: rgb(204, 153, 0); /* Giallo senape */
-   
-   }
+    --glow-color: rgb(0, 51, 102); /* Blu acceso */
+    --glow-spread-color: rgba(0, 77, 153, 0.781); /* Blu intenso */
+    --enhanced-glow-color: rgb(102, 153, 204); /* Blu pastello */
+    --btn-color: rgb(0, 61, 122); /* Blu moderato */
+    --border-color: rgb(121, 169, 236);
+}
 .topbar {
-       position: fixed; /* Fissa la topbar in alto */
-       top: 0; /* Posiziona in cima alla pagina */
+       position: fixed; 
+       top: 0; 
        left: 0;
-       width: 100%; /* La topbar occupa tutta la larghezza */
-       background-color: transparent; /* Leggera trasparenza sullo sfondo */
+       width: 100%; 
+       background-color: transparent; 
        padding: 1em 0;
        display: flex;
-       justify-content: center; /* Centra il contenuto orizzontalmente */
-       align-items: center; /* Centra verticalmente */
-       z-index: 1000; /* Assicurati che la topbar sia sopra gli altri contenuti */
+       justify-content: center; 
+       align-items: center; 
+       z-index: 1000; 
+       
    }
    
-   /* Pulsante nella topbar */
    .button {
+        
        background-color: transparent;
-       border: .17em solid var(--glow-color);
+       border: .05em solid var(--border-color);
        padding: 0.5em 3em;
        width: 50%;
-       color: var(--glow-color);
+       color: var(--border-color);
        font-size: 25px;
        font-weight: bold;
        border-radius: 1em;
@@ -36,11 +37,11 @@
        text-shadow: 0 0 .5em var(--glow-color);
        position: relative;
        transition: all 0.3s;
-       cursor: pointer; /* Indica che è cliccabile */
+       cursor: pointer;
    }
    
    .button:hover {
-       color: var(--btn-color);
+       color: var(--enhanced-glow-color);
        background-color: var(--glow-color);
        box-shadow: 0 0 1em .25em var(--glow-color),
                    0 0 4em 2em var(--glow-spread-color),

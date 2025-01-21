@@ -48,9 +48,9 @@ function App() {
         <h1 className={styles.title}>Login</h1>
         <form onSubmit={handleSubmit}>
           <label>
-            Mail:
+            username o mail:
             <input
-              type="email"
+              type="text"
               className={styles.input}
               value={mail}
               onChange={(e) => setMail(e.target.value)}
@@ -75,6 +75,10 @@ function App() {
         </form>
 
         {responseMessage && <p className={styles.responseMessage}>{responseMessage}</p>}
+        <div className='newAcc'>
+           <a href='/signup'>sign up</a>
+        </div>
+        
       </div>
     </div>
   );
