@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import TopBar from './components/navbar/topbarLogin';
 import styles from './components/styles/login.module.css';
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
 
   return (
     <div className={styles.page}>
+      <TopBar></TopBar>
       <div className={styles.container}>
         <h1 className={styles.title}>Login</h1>
         <form onSubmit={handleSubmit}>
