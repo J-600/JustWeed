@@ -26,11 +26,12 @@ try{
         $stmt->bindParam(":password", $password);
         $stmt->bindParam(":email", $email);
     }
+
     $stmt->execute();
     $response = [
         "response" => 200,
         "message" => True,
-        "data" => "Utente registrato correttamente"
+        "data" => {"Utente registrato correttamente"}
     ];
     echo json_encode($response);
 } catch (PDOException $e) {
