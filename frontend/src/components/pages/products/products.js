@@ -1,6 +1,7 @@
 // src/components/pages/products/products.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import TopBar from '../../navbar/topbar';
 
 function Products() {
   const [mail, setMail] = useState('');
@@ -31,7 +32,9 @@ function Products() {
     
   };
 
-  return (<div className='layout'>
+  return (
+  <div className='layout'>
+    <TopBar username={"asd"} mail={"asd@sd"}/>
     <div className='main'>
       <div className='content'>
         {Array.isArray(products) && products.length > 0 ? (
