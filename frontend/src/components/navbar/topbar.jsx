@@ -6,19 +6,18 @@ import styles from './topbar.module.css';
 const TopBar = ({ mail, username, onSearch }) => {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isSearchEditable, setIsSearchEditable] = useState(false); // Stato per la modalità della barra di ricerca
-    const [searchValue, setSearchValue] = useState("JustWeed"); // Stato per il valore della barra di ricerca
-    const inputRef = useRef(null); // Riferimento all'input
+    const [isSearchEditable, setIsSearchEditable] = useState(false); 
+    const [searchValue, setSearchValue] = useState("JustWeed");
+    const inputRef = useRef(null); 
 
     const handleSearchChange = (event) => {
-        setSearchValue(event.target.value); // Aggiorna il valore dell'input
+        setSearchValue(event.target.value);
     };
 
     const handleKeyDown = (event) => {
         if (event.key === "Enter") {
-            // Quando viene premuto Invio
             if (onSearch) {
-                onSearch(searchValue); // Esegue la ricerca con il valore corrente
+                onSearch(searchValue); 
             }
             enableSearchEdit()
             console.log(`Ricerca effettuata per: ${searchValue}`);
@@ -33,9 +32,9 @@ const TopBar = ({ mail, username, onSearch }) => {
         if (isSearchEditable){
             setSearchValue("JustWeed");
         }
-        setIsSearchEditable(!isSearchEditable); // Abilita la modifica
+        setIsSearchEditable(!isSearchEditable); 
         if (inputRef.current) {
-            inputRef.current.focus(); // Porta il focus sull'input
+            inputRef.current.focus();
         }
     };
 
@@ -43,12 +42,12 @@ const TopBar = ({ mail, username, onSearch }) => {
         <div className={styles.topbar}>
             <FaBars className={styles.littlebutton} />
             <input
-                ref={inputRef} // Assegna il riferimento all'input
+                ref={inputRef} 
                 className={styles.button}
                 value={searchValue}
-                readOnly={!isSearchEditable} // Rende l'input modificabile solo se isSearchEditable è true
+                readOnly={!isSearchEditable} 
                 onChange={handleSearchChange}
-                onKeyDown={handleKeyDown} // Gestore per rilevare Invio
+                onKeyDown={handleKeyDown} 
             />
             <FaSearch onClick={enableSearchEdit} className={styles.littlebutton} />
             <FaUser onClick={toggleSidebar} className={styles.littlebutton} />
