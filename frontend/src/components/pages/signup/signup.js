@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TopBar from './components/navbar/topbarLogin';
-import styles from './components/styles/signup.module.css';
+import TopBar from '../../navbar/topbarLogin';
+import styles from '../../styles/signup.module.css';
 
 function Signup(){
     const [mail, setMail] = useState('');
@@ -13,14 +12,14 @@ function Signup(){
     const handleSubmit = async (e) =>{
         e.preventDefault();
         try{
-            const res = await fetch('http://localhost/JustWeed/backend/includes/create-user.php', {
+            const res = await fetch('http://localhost:3000/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({"email" : mail, "username" : username, "passoword" : password}),
+                body: JSON.stringify({"email" : mail, "username" : username, "password" : password}),
                 credentials: 'include',
             });
             const data = await res.json();
-
+            console.log(data)
             setResponseMessage(data);
         } catch (error){
             console.log("errore durante la richiesta:", error)
@@ -41,7 +40,9 @@ function Signup(){
                             value = {mail}
                             onChange = {(e) => setMail(e.target.value)}
                             required/>
+                        
                     </label>
+                    
                     <br/>
                     <label>
                         username:
@@ -62,6 +63,9 @@ function Signup(){
                             onChange = {(e) => setPassword(e.target.value)}/>
                     </label>
                     <br/>
+                    <div className={styles.buttonContainer}>
+                                <button type="submit" className={styles.button}>Signup</button>
+                              </div>
                 </form>
                 {responseMessage && <p className={styles.responseMessage}>{responseMessage}</p>}
             </div>

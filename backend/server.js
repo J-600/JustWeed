@@ -42,10 +42,10 @@ app.post("/signup", (req, res) => {
           console.error("Errore salvataggio sessione:", err);
           return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
         }
-        res.json(data);
+        res.json(data.data);
       });
     } else {
-      res.status(401).json({ error: data.data[0].message });
+      res.json( data.data);
     }
   })
   .catch(error => {

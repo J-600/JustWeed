@@ -13,9 +13,10 @@ try{
     $password = $_POST["password"];
     
 
-    $sql = "SELECT username FROM $table WHERE email = :email";
+    $sql = "SELECT * FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
+    $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if(!empty($result)){
         throw new Exception("Utente già registrato");
@@ -31,7 +32,7 @@ try{
     $response = [
         "response" => 200,
         "message" => True,
-        "data" => {"Utente registrato correttamente"}
+        "data" => "Utente registrato correttamente"
     ];
     echo json_encode($response);
 } catch (PDOException $e) {

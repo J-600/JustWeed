@@ -111,4 +111,9 @@ a {
   font-size: 20px; /* Dimensione del testo */
   color: var(--border-color); /* Usa un colore dalla tua palette */
   text-decoration: none; /* Rimuove la sottolineatura */
+  transition: all 0.3s;
+}
+a:hover{
+  text-shadow: 0 0 .5em var(--border-color);
+  
 }

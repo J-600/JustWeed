@@ -21,27 +21,27 @@
    }
    
    .button {
-        
-       background-color: transparent;
-       border: .05em solid var(--border-color);
-       padding: 0.5em 3em;
-       width: 50%;
-       color: var(--border-color);
-       font-size: 25px;
-       font-weight: bold;
-       border-radius: 1em;
-       outline: none;
-       box-shadow: 0 0 1em .25em var(--glow-color),
-                   0 0 4em 1em var(--glow-spread-color),
-                   inset 0 0 .75em .25em var(--glow-color);
-       text-shadow: 0 0 .5em var(--glow-color);
-       position: relative;
-       transition: all 0.3s;
-       cursor: pointer;
+        text-align: center;
+        background-color: transparent;
+        border: .05em solid var(--border-color);
+        padding: 0.5em 3em;
+        width: 50%;
+        color: var(--enhanced-glow-color);
+        font-size: 25px;
+        font-weight: bold;
+        border-radius: 1em;
+        outline: none;
+        box-shadow: 0 0 1em .25em var(--glow-color),
+                       0 0 4em 1em var(--glow-spread-color),
+                       inset 0 0 .75em .25em var(--glow-color);
+        text-shadow: 0 0 .5em var(--glow-color);
+        position: relative;
+        transition: all 0.3s;
+        cursor: pointer;
    }
    
    .button:hover {
-       color: var(--enhanced-glow-color);
+       color: var(--border-color);
        background-color: var(--glow-color);
        box-shadow: 0 0 1em .25em var(--glow-color),
                    0 0 4em 2em var(--glow-spread-color),
