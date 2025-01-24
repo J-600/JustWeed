@@ -31,6 +31,8 @@ const TopBar = ({ mail, username, onSearch }) => {
     const enableSearchEdit = () => {
         if (isSearchEditable){
             setSearchValue("JustWeed");
+        } else{
+            setSearchValue("");
         }
         setIsSearchEditable(!isSearchEditable); 
         if (inputRef.current) {
