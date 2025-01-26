@@ -54,6 +54,24 @@ app.post("/signup", (req, res) => {
   });
 });
 
+app.post("/update-products", (req,res) =>{
+  const { id, name, quantity, price, description } = req.body;
+  fetch("https://localhost/justweed/backend/update-info-product.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `id=${id}&name=${name}&quantity=${quantity}&price=${price}&description=${description}`
+  })
+  .then(response => response.json())
+  .then (data =>{
+    console.log(data);
+    if (data.response === 200){
+      req.json(data.data);
+    }else{
+      res.statusCode(401).json(data.data)
+    }
+  })
+});
+
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
