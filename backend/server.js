@@ -30,10 +30,10 @@ app.use(session({
 
 async function sendConfirmationEmail(email, token) {
   let transporter = nodemailer.createTransport({
-    service: 'gmail', // o il tuo provider SMTP
+    service: 'gmail',
     auth: {
       user: 'noReplyJustWeed@gmail.com',
-      pass: 'JustWeed2025'
+      pass: 'wstg giop vbtz uasq'
     }
   });
 
@@ -47,9 +47,31 @@ async function sendConfirmationEmail(email, token) {
   await transporter.sendMail(mailOptions);
 }
 
-app.get("confirm", (req,res) => {
-  const {token, email} = req.body;
-  fetch
+app.get("/confirm", (req,res) => {
+  const { token, email } = req.query;
+  fetch (`http://localhost/justweed/backend/includes/confirm-user.php?token=${token}&email=${email}`, {
+    method: "GET"
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.message && data.response === 200){
+      req.session.username = data.data[0].username;
+      req.session.email = email;
+      req.session.save(err => {
+        if (err) {
+          console.error("Errore salvataggio sessione:", err);
+          return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
+        }
+        res.json(data.data);
+      });
+    }else{
+      res.json(data.data);
+    }
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    res.status(500).json({ error: "An error occurred" });
+  });
 
 })
 
@@ -67,17 +89,13 @@ app.post("/signup", (req, res) => {
   .then(response => response.json())
   .then(data => {
     if (data.message && data.response === 200) {
-      req.session.username = username;
-      req.session.email = email;
-      req.session.save(err => {
-        if (err) {
-          console.error("Errore salvataggio sessione:", err);
-          return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
-        }
-        res.json(data.data);
-      });
+      // console.log(data.data[0])
+      // data = data.data[0]
+      // res.json("Utente registrato correttamente");
+      sendConfirmationEmail(email,token);
+      res.json(data.data);
     } else {
-      res.json( data.data);
+      res.json(data.data);
     }
   })
   .catch(error => {

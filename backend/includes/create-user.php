@@ -34,7 +34,7 @@ try{
     $response = [
         "response" => 200,
         "message" => True,
-        "data" => "Utente registrato correttamente"
+        "data" => "Controlla la email per conferma"
     ];
     echo json_encode($response);
 } catch (PDOException $e) {
