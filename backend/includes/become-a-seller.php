@@ -1,42 +1,36 @@
 <?php
 
-try{
+try {
     if ($_SERVER["REQUEST_METHOD"] != "POST"){
-        throw new Exception("Non e' una richiesta POST");
+        throw new Exception("Non è una richiesta POST");
     }
 
     require_once "dbh.inc.php";
-
-    $table = "users_jw";
-    $email = $_POST["email"];
-    $token = $_POST["token"];
-    $username = $_POST["username"];
     $password = $_POST["password"];
-    
+    $email = $_POST["email"];
+    $table = "users_jw";
 
-    $sql = "SELECT * FROM $table WHERE email = :email";
+    $sql = "SELECT COUNT(*) $table WHERE email = :email AND type = 'customer'";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->execute();
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if(!empty($result)){
-        throw new Exception("Utente già registrato");
-    } else {
-        $sql = "INSERT INTO $table (username, email, token, password) VALUES (:username, :email, :token, :password)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":username", $username);
-        $stmt->bindParam(":password", $password);
-        $stmt->bindParam(":token", $token);
-        $stmt->bindParam(":email", $email);
-    }
 
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($result[0] == 0){
+        throw new Exception("Account già registrato come seller");
+    }
+    $sql = "UPDATE $table SET type = 'seller'";
+    $stmt = $pdo->prepare($sql);
     $stmt->execute();
+
     $response = [
         "response" => 200,
-        "message" => True,
-        "data" => "Utente registrato correttamente"
+        "message" => true,
+        "data"=> "Account diventato Seller"
     ];
+
     echo json_encode($response);
+
 } catch (PDOException $e) {
     $response = [
         "response" => 500,
