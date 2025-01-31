@@ -28,7 +28,11 @@ app.use(session({
 }));
 
 
+
+
+
 async function sendConfirmationEmail(email, token) {
+  const expiration = Date.now() + 10 * 60 * 1000;
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -41,37 +45,56 @@ async function sendConfirmationEmail(email, token) {
     from: 'noReplyJustWeed@gmail.com',
     to: email,
     subject: 'Conferma la tua registrazione',
-    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}&email=${email}`
+    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}&email=${email}&expiration=${expiration}`
   };
 
   await transporter.sendMail(mailOptions);
+
 }
 
 app.get("/confirm", (req,res) => {
-  const { token, email } = req.query;
-  fetch (`http://localhost/justweed/backend/includes/confirm-user.php?token=${token}&email=${email}`, {
-    method: "GET"
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.message && data.response === 200){
-      req.session.username = data.data[0].username;
-      req.session.email = email;
-      req.session.save(err => {
-        if (err) {
-          console.error("Errore salvataggio sessione:", err);
-          return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
-        }
+  const { token, email, expiration } = req.query;
+  const tokenExpiration = parseInt(expiration)
+  
+  if (Date.now() > tokenExpiration) {
+    fetch("http://localhost/justweed/backend/includes/delete-user-unconfirmed.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `email=${email}`
+    })
+    .then(response => response.json())
+    .then(deleteData => {
+      res.json({ message: "Il tuo account è stato eliminato perché il token è scaduto" });
+    })
+    .catch(error => {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ error: "An error occurred while deleting the user" });
+    });
+  } else{
+    fetch (`http://localhost/justweed/backend/includes/confirm-user.php?token=${token}&email=${email}`, {
+      method: "GET"
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message && data.response === 200){
+        req.session.username = data.data[0].username;
+        req.session.email = email;
+        req.session.save(err => {
+          if (err) {
+            console.error("Errore salvataggio sessione:", err);
+            return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
+          }
+          res.json(data.data);
+        });
+      }else{
         res.json(data.data);
-      });
-    }else{
-      res.json(data.data);
-    }
-  })
-  .catch(error => {
-    console.error("Error:", error);
-    res.status(500).json({ error: "An error occurred" });
-  });
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
+  }
 
 })
 

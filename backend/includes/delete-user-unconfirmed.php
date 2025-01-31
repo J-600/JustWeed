@@ -1,36 +1,25 @@
 <?php
 
-try {
+try{
 
-    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    if ($_SERVER["REQUEST_METHOD"] != "POST"){
         throw new Exception("Non è una richiesta POST");
     }
 
     require_once "dbh.inc.php";
 
     $email = $_POST["email"];
-    $password = $_POST["password"];
     $table = "users_jw";
     $table_products = "products_jw";
 
-    $sql = "SELECT password FROM $table WHERE email = :email";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$user || !password_verify($password, $user['password'])) {
-        throw new Exception("Password errata");
-    }
 
     $sql = "DELETE FROM $table_products WHERE email = :email";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
+
 
     $sql = "DELETE FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
 
     $response = [
@@ -38,8 +27,6 @@ try {
         "message" => true,
         "data" => "Utente eliminato correttamente..."
     ];
-    echo json_encode($response);
-
 } catch (PDOException $e) {
     $response = [
         "response" => 500,
@@ -49,9 +36,10 @@ try {
     echo json_encode($response);
 } catch (Exception $e) {
     $response = [
-        "response" => 400,
+        "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
+        
     ];
     echo json_encode($response);
 }
