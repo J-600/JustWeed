@@ -7,27 +7,17 @@ try{
 
     require_once "dbh.inc.php";
 
-    $token = $_GET["token"];
     $email = $_GET["email"];
     $table = "users_jw";
 
-    $sql = "SELECT username FROM $table WHERE email = :email AND token = :token";
-
+    $sql = "UPDATE $table SET verified = 'T' WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
-    $stmt->bindParam(":token", $token);
     $stmt->execute();
 
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if (empty($result)){
-        throw new Exception("Token scaduto");
-    }
-
-    $sql = "UPDATE $table SET verified = 'T' WHERE email = :email AND token = :token";
+    $sql = "SELECT username FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
-    $stmt->bindParam(":token", $token);
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

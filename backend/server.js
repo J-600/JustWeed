@@ -27,14 +27,17 @@ app.use(session({
   }
 }));
 
+const tokenExpirationMap = new Map();
+const tokenMailMap = new Map();
 
-
-
-
-async function sendConfirmationEmail(email, token) {
-  const expiration = Date.now() + 10 * 60 * 1000;
+async function sendConfirmationEmail(token) {
+  const expiration = Date.now() + 10 * 60 * 1000; 
+  tokenExpirationMap.set(token, expiration); 
+  // console.log(`Token salvato: ${token}, exiration: ${expiration}`);
+  const email = tokenMailMap.get(token);
   let transporter = nodemailer.createTransport({
     service: 'gmail',
+    
     auth: {
       user: 'noReplyJustWeed@gmail.com',
       pass: 'wstg giop vbtz uasq'
@@ -45,18 +48,23 @@ async function sendConfirmationEmail(email, token) {
     from: 'noReplyJustWeed@gmail.com',
     to: email,
     subject: 'Conferma la tua registrazione',
-    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}&email=${email}&expiration=${expiration}`
+    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
   };
 
   await transporter.sendMail(mailOptions);
-
 }
 
-app.get("/confirm", (req,res) => {
-  const { token, email, expiration } = req.query;
-  const tokenExpiration = parseInt(expiration)
-  
-  if (Date.now() > tokenExpiration) {
+
+app.get("/confirm", (req, res) => {
+
+  const { token } = req.query;
+  const tokenExpiration = tokenExpirationMap.get(token);
+  const email = tokenMailMap.get(token);
+  console.log(token);
+  console.log(email);
+  console.log(tokenExpiration);
+
+  if (!tokenExpiration || Date.now() > tokenExpiration) {
     fetch("http://localhost/justweed/backend/includes/delete-user-unconfirmed.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -64,19 +72,20 @@ app.get("/confirm", (req,res) => {
     })
     .then(response => response.json())
     .then(deleteData => {
+
       res.json({ message: "Il tuo account è stato eliminato perché il token è scaduto" });
     })
     .catch(error => {
       console.error("Error deleting user:", error);
       res.status(500).json({ error: "An error occurred while deleting the user" });
     });
-  } else{
-    fetch (`http://localhost/justweed/backend/includes/confirm-user.php?token=${token}&email=${email}`, {
+  } else {
+    fetch(`http://localhost/justweed/backend/includes/confirm-user.php?email=${email}`, {
       method: "GET"
     })
     .then(response => response.json())
     .then(data => {
-      if (data.message && data.response === 200){
+      if (data.message && data.response === 200) {
         req.session.username = data.data[0].username;
         req.session.email = email;
         req.session.save(err => {
@@ -86,7 +95,7 @@ app.get("/confirm", (req,res) => {
           }
           res.json(data.data);
         });
-      }else{
+      } else {
         res.json(data.data);
       }
     })
@@ -95,27 +104,22 @@ app.get("/confirm", (req,res) => {
       res.status(500).json({ error: "An error occurred" });
     });
   }
-
-})
-
-
+});
 
 app.post("/signup", (req, res) => {
   const { username, email, password } = req.body;
   const token = crypto.randomBytes(16).toString('hex');
-
+  // console.log(`Token generato: ${token}, Email associata: ${email}`);
+  tokenMailMap.set(token, email)
   fetch("http://localhost/justweed/backend/includes/create-user.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `email=${email}&username=${username}&password=${password}&token=${token}`
+    body: `email=${email}&username=${username}&password=${password}`
   })
   .then(response => response.json())
   .then(data => {
     if (data.message && data.response === 200) {
-      // console.log(data.data[0])
-      // data = data.data[0]
-      // res.json("Utente registrato correttamente");
-      sendConfirmationEmail(email,token);
+      sendConfirmationEmail(token);
       res.json(data.data);
     } else {
       res.json(data.data);
@@ -127,8 +131,8 @@ app.post("/signup", (req, res) => {
   });
 });
 
-app.post("/becomeAseller", (req,res) => {
-  const {password, email} = req.body;
+app.post("/becomeAseller", (req, res) => {
+  const { password, email } = req.body;
   fetch("http://localhost/justweed/backend/become-a-seller.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -137,10 +141,10 @@ app.post("/becomeAseller", (req,res) => {
   .then(response => response.json())
   .then(data => {
     console.log(data);
-    if(data.response === 200){
+    if (data.response === 200) {
       res.json(data.data);
-    }else {
-      res.statusCode(401).json(data.data);
+    } else {
+      res.status(401).json(data.data);
     }
   })
   .catch(error => {
@@ -149,21 +153,21 @@ app.post("/becomeAseller", (req,res) => {
   });
 });
 
-app.post("/updateData", (req,res) => {
-  const {password, email, new_email, new_username, new_password} = req.body;
+app.post("/updateData", (req, res) => {
+  const { password, email, new_email, new_username, new_password } = req.body;
 
-  fetch("https://localhost/justweed/backend/update-user-info.php" ,{
+  fetch("https://localhost/justweed/backend/update-user-info.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
     body: `password=${password}&email=${email}&new_email=${new_email ?? null}&new_password=${new_password ?? null}&new_username=${new_username}`
   })
   .then(response => response.json())
-  .then(data =>{
+  .then(data => {
     console.log(data);
-    if(data.response === 200){
-       res.json(data.data)
-    }else {
-      res.statusCode(401).json(data.data)
+    if (data.response === 200) {
+      res.json(data.data);
+    } else {
+      res.status(401).json(data.data);
     }
   })
   .catch(error => {
@@ -172,7 +176,7 @@ app.post("/updateData", (req,res) => {
   });
 });
 
-app.post("/updateProducts", (req,res) =>{
+app.post("/updateProducts", (req, res) => {
   const { id, name, quantity, price, description } = req.body;
   fetch("https://localhost/justweed/backend/update-info-product.php", {
     method: "POST",
@@ -180,12 +184,12 @@ app.post("/updateProducts", (req,res) =>{
     body: `id=${id}&name=${name ?? null}&quantity=${quantity ?? null}&price=${price ?? null}&description=${description ?? null}`
   })
   .then(response => response.json())
-  .then (data =>{
+  .then(data => {
     console.log(data);
-    if (data.response === 200){
+    if (data.response === 200) {
       res.json(data.data);
-    }else{
-      res.statusCode(401).json(data.data)
+    } else {
+      res.status(401).json(data.data);
     }
   })
   .catch(error => {
@@ -204,7 +208,7 @@ app.post("/login", (req, res) => {
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data)
+    console.log(data);
     if (data.message && data.response === 200) {
       req.session.username = data.data[0].username;
       req.session.email = data.data[0].email;
@@ -213,8 +217,8 @@ app.post("/login", (req, res) => {
           console.error("Errore salvataggio sessione:", err);
           return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
         }
-        console.log(data.data[0])
-        data = data.data[0]
+        console.log(data.data[0]);
+        data = data.data[0];
         res.json(data);
       });
     } else if (!data.message) {
@@ -227,14 +231,29 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post("/delete-user", (req, res) => {
+  const { email, password } = req.body;
+  fetch("http://localhost/JustWeed/backend/delete-user.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `email=${email}&password=${password}`
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.message) {
+      res.json(data.data);
+    } else {
+      res.status(400).json(data.data);
+    }
+  });
+});
+
 app.get("/products", (req, res) => {
   if (req.session) {
     fetch("http://localhost/JustWeed/backend/includes/view-product.php")
     .then(response => response.json())
     .then(data => {
       if (data.message && data.response === 200) {
-        // console.log(data);
-        // console.log(data.data);
         res.json(data.data);
       } else if (!data.message) {
         res.json(data);
@@ -248,5 +267,15 @@ app.get("/products", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
+
+// setInterval(() => {
+//   const now = Date.now();
+//   for (const [token, expiration] of tokenExpirationMap.entries()) {
+//     if (now > expiration) {
+//       tokenExpirationMap.delete(token);
+//       tokenMailMap.delete(token)
+//     }
+//   }
+// }, 60 * 60 * 1000);

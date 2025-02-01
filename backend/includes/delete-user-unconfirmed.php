@@ -15,11 +15,13 @@ try{
 
     $sql = "DELETE FROM $table_products WHERE email = :email";
     $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
 
 
     $sql = "DELETE FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
 
     $response = [

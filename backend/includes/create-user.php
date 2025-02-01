@@ -9,7 +9,7 @@ try{
 
     $table = "users_jw";
     $email = $_POST["email"];
-    $token = $_POST["token"];
+    // $token = $_POST["token"];
     $username = $_POST["username"];
     $password = $_POST["password"];
     
@@ -22,11 +22,11 @@ try{
     if(!empty($result)){
         throw new Exception("Utente già registrato");
     } else {
-        $sql = "INSERT INTO $table (username, email, token, password) VALUES (:username, :email, :token, :password)";
+        $sql = "INSERT INTO $table (username, email, password) VALUES (:username, :email, :password)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":username", $username);
         $stmt->bindParam(":password", $password);
-        $stmt->bindParam(":token", $token);
+        // $stmt->bindParam(":token", $token);
         $stmt->bindParam(":email", $email);
     }
 

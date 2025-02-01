@@ -15,7 +15,7 @@ try {
 
     $sql = "SELECT password FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -25,12 +25,12 @@ try {
 
     $sql = "DELETE FROM $table_products WHERE email = :email";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
 
     $sql = "DELETE FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
 
     $response = [
