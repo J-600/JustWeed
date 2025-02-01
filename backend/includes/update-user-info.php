@@ -16,7 +16,17 @@ try{
     $new_username  = isset($_POST["username"]) ? $_POST["username"] : null;
     $table = "users_jw";
 
-    $sql = "SELECT * FROM $table WHERE email = :email AND password = :password";
+    $sql = "SELECT password FROM $table WHERE email = :email";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user || !password_verify($password, $user['password'])) {
+        throw new Exception("Password errata");
+    }
+
+    $sql = "SELECT * FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":password", $password);
     $stmt->bindParam(":email", $email);

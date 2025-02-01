@@ -2,13 +2,13 @@
 
 try{
 
-    if ($_SERVER["REQUEST_METHOD"] != "POST"){
-        throw new Exception("Non è una richiesta POST");
-    }
+    // if ($_SERVER["REQUEST_METHOD"] != "POST"){
+    //     throw new Exception("Non è una richiesta POST");
+    // }
 
     require_once "dbh.inc.php";
 
-    $email = $_POST["email"];
+    $email = $_POST["email"] ?? "jhonpanora06@gmail.com";
     $table = "users_jw";
     $table_products = "products_jw";
 
@@ -29,6 +29,7 @@ try{
         "message" => true,
         "data" => "Utente eliminato correttamente..."
     ];
+    echo json_encode($response);
 } catch (PDOException $e) {
     $response = [
         "response" => 500,

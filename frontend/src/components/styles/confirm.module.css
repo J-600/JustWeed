@@ -1,0 +1,47 @@
+/* Titolo principale */
+
+.container {
+  font-family: Arial, Helvetica, sans-serif;
+  max-width: 500px;
+  width: 100%;
+  padding: 20px;
+  margin-top: 5em;
+  /* border: 2px solid #79a9ec; */
+  /* border-radius: 15px; */
+  color: white;
+  /* box-shadow: 0 0 1em .25em var(--glow-color), */
+    /* 0 0 4em 1em var(--glow-spread-color), */
+    /* inset 0 0 .75em .25em var(--glow-color); */
+  /* background-color: #2169cd74; */
+}
+  
+  .page {
+    background: linear-gradient(180deg, #212A37, #182028, #0B1215);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh; /* Rende l'altezza della pagina pari alla viewport */
+    display: flex;
+    align-items: top;
+    justify-content: center;
+  }
+.titlePrimary {
+    font-size: 36px; /* Dimensione più grande per il titolo principale */
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 30px; /* Margine inferiore più grande per separare dal titolo secondario */
+    text-transform: uppercase; /* Opzionale: rende il testo in maiuscolo */
+    letter-spacing: 2px; /* Opzionale: aumenta lo spazio tra le lettere */
+  }
+  
+  /* Titolo secondario */
+  .titleSecondary {
+    font-size: 24px; /* Dimensione più piccola rispetto al titolo principale */
+    font-weight: 600; /* Peso del font leggermente inferiore rispetto al titolo principale */
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 20px; /* Margine inferiore più piccolo */
+    opacity: 0.9; /* Opzionale: riduce leggermente l'opacità per un effetto più sottile */
+    font-style: italic; /* Opzionale: aggiunge un tocco di stile */
+  }

@@ -1,19 +1,14 @@
 <?php
 
 try{
-    if ($_SERVER["REQUEST_METHOD"] != "GET"){
-        throw new Exception("Non e' una richiesta GET");
+    if ($_SERVER["REQUEST_METHOD"] != "POST"){
+        throw new Exception("Non e' una richiesta POST");
     }
 
     require_once "dbh.inc.php";
 
-    $email = $_GET["email"];
+    $email = $_POST["email"];
     $table = "users_jw";
-
-    $sql = "UPDATE $table SET verified = 'T' WHERE email = :email";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":email", $email);
-    $stmt->execute();
 
     $sql = "SELECT username FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
@@ -21,6 +16,16 @@ try{
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (empty($result)){
+        throw new Exception("Utente non registrato");
+    }
+
+    $sql = "UPDATE $table SET verified = 'T' WHERE email = :email";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(":email", $email);
+    $stmt->execute();
+
+    
     $response = [
         "response" => 200,
         "message" => true,

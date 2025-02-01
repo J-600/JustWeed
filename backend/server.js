@@ -30,6 +30,12 @@ app.use(session({
 const tokenExpirationMap = new Map();
 const tokenMailMap = new Map();
 
+
+function deleteToken(token){
+  tokenExpirationMap.delete(token);
+  tokenMailMap.delete(token)
+}
+
 async function sendConfirmationEmail(token) {
   const expiration = Date.now() + 10 * 60 * 1000; 
   tokenExpirationMap.set(token, expiration); 
@@ -72,36 +78,41 @@ app.get("/confirm", (req, res) => {
     })
     .then(response => response.json())
     .then(deleteData => {
-
-      res.json({ message: "Il tuo account è stato eliminato perché il token è scaduto" });
+      deleteToken(token);
+      res.json("Il tuo account è stato eliminato perché il token è scaduto");
     })
     .catch(error => {
       console.error("Error deleting user:", error);
-      res.status(500).json({ error: "An error occurred while deleting the user" });
+      res.status(500).json("error..." );
     });
   } else {
-    fetch(`http://localhost/justweed/backend/includes/confirm-user.php?email=${email}`, {
-      method: "GET"
+    fetch(`http://localhost/justweed/backend/includes/confirm-user.php`, {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `email=${email}`
     })
     .then(response => response.json())
     .then(data => {
+      deleteToken(token);
       if (data.message && data.response === 200) {
         req.session.username = data.data[0].username;
         req.session.email = email;
         req.session.save(err => {
           if (err) {
             console.error("Errore salvataggio sessione:", err);
-            return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
+            return res.status(500).json("Errore durante il salvataggio della sessione" );
           }
-          res.json(data.data);
+          res.json("Benvenuto in JustWeed");
         });
-      } else {
-        res.json(data.data);
+      } else if (data.response === 200 && !data.message){
+        res.json("Token Scaduto o account non registrato");
+      } else{
+        res.json("Error...")
       }
     })
     .catch(error => {
       console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
+      res.status(500).json("An error occurred" );
     });
   }
 });
