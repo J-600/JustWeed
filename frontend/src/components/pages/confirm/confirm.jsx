@@ -22,6 +22,7 @@ function Confirm() {
       try {
         const res = await fetch(`http://localhost:3000/confirm?token=${token}`, {
           method: "GET",
+          credentials: 'include'
         });
         responseData = await res.json();
         setData(responseData);
@@ -36,7 +37,7 @@ function Confirm() {
         setLoading(false);
 
         if (responseData?.message) {
-          await sleep(5000);
+          await sleep(3000);
           navigate('/products', { state: { email: responseData.email, username: responseData.username } });
         }
       }

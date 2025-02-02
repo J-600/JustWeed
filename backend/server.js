@@ -34,6 +34,29 @@ app.use(session({
 app.post("/signup", (req, res) => {
   const { username, email, password } = req.body;
   const token = crypto.randomBytes(16).toString('hex');
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
+      <h1 style="color: #6699cc;">🎉 Benvenuto!</h1>
+      <p style="font-size: 16px;">Siamo felici di averti con noi! Per completare la tua registrazione, clicca sul pulsante qui sotto:</p>
+      <a href="http://localhost:3001/confirm?token=${token}" style="display: inline-block; padding: 12px 24px; background-color: #6699cc; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 20px 0;">
+        🔑 Conferma il tuo account
+      </a>
+      <p style="font-size: 14px; color: #777;">Hai solo <strong>10 minuti</strong> per confermare la tua email, quindi affrettati! 🕒</p>
+      <p style="font-size: 14px; color: #777;">Se il pulsante non funziona, copia e incolla questo link nel tuo browser:</p>
+      <p style="font-size: 14px; color: #4CAF50; word-wrap: break-word;">http://localhost:3001/confirm?token=${token}</p>
+      <p style="font-size: 14px; color: #777;">A presto,<br>Il Team JustWeed 🌿</p>
+    </div>
+  `;
+  let mailOptions = {
+    from: 'noReplyJustWeed@gmail.com',
+    to: email,
+    subject: 'Conferma la tua registrazione',
+    html: htmlContent,
+    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
+  };
+
+
   // console.log(`Token generato: ${token}, Email associata: ${email}`);
   tokenMailMap.set(token, email)
   fetch("http://localhost/justweed/backend/includes/create-user.php", {
@@ -44,7 +67,7 @@ app.post("/signup", (req, res) => {
     .then(response => response.json())
     .then(data => {
       if (data.message && data.response === 200) {
-        sendConfirmationEmail(token);
+        sendConfirmationEmail(token, mailOptions);
         res.json(data.data);
       } else {
         res.json(data.data);
@@ -75,11 +98,11 @@ app.get("/confirm", (req, res) => {
       .then(response => response.json())
       .then(deleteData => {
         deleteToken(token);
-        res.json({data: "token scaduto...", message : false});
+        res.json({ data: "token scaduto...", message: false });
       })
       .catch(error => {
         console.error("Error deleting user:", error);
-        res.status(500).json({data: "error...", message : false});
+        res.status(500).json({ data: "error...", message: false });
       });
   } else {
     fetch(`http://localhost/justweed/backend/includes/confirm-user.php`, {
@@ -98,10 +121,10 @@ app.get("/confirm", (req, res) => {
               console.error("Errore salvataggio sessione:", err);
               return res.status(500).json("Errore durante il salvataggio della sessione");
             }
-            res.json({data: "Benvenuto in JustWeed", message : true, email : email, username : data.data[0].username});
+            res.json({ data: "Benvenuto in JustWeed", message: true, email: email, username: data.data[0].username });
           });
         } else if (data.response === 200 && !data.message) {
-          res.json({data : "Token Scaduto o account non registrato", message: false});
+          res.json({ data: "Token Scaduto o account non registrato", message: false });
         } else {
           res.json("Error...")
         }
@@ -265,51 +288,97 @@ app.post("/delete-user", (req, res) => {
       } else {
         res.status(400).json(data.data);
       }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
     });
 });
 
+app.post("/newpassword", (req, res) => {
+  const { token, password } = req.body;
+  const tokenExpiration = tokenExpirationMap.get(token);
+  const email = tokenMailMap.get(token);
+
+  if (Date.now() < tokenExpiration) {
+    fetch("http://localhost/JustWeed/backend/includes/forgot-password.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `password=${password}&email=${email}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      res.json(data.data);
+    })
+  } else {
+    res.json("token scaduto...")
+  }
+  
+
+
+});
+
+app.post("/forgotpassword", (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+  const token = crypto.randomBytes(16).toString('hex');
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
+      <h1 style="color: #6699cc;">🔒 Reimposta la tua password</h1>
+      <p style="font-size: 16px;">
+        Abbiamo ricevuto una richiesta per reimpostare la tua password.  
+        Clicca sul pulsante qui sotto per procedere:
+      </p>
+      <a href="http://localhost:3001/newpassword?token=${token}" 
+        style="display: inline-block; padding: 12px 24px; background-color: #6699cc; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 20px 0;">
+          🔑 Reimposta la password
+      </a>
+      <p style="font-size: 14px; color: #777;">
+        Se non hai richiesto il reset della password, ignora questa email.  
+        Il link scadrà tra <strong>10 minuti</strong>.
+      </p>
+      <p style="font-size: 14px; color: #777;">Se il pulsante non funziona, copia e incolla questo link nel tuo browser:</p>
+      <p style="font-size: 14px; color: #4CAF50; word-wrap: break-word;">
+        http://localhost:3001/newpassword?token=${token}
+      </p>
+      <p style="font-size: 14px; color: #777;">A presto,<br>Il Team JustWeed 🌿</p>
+    </div>
+`;
+
+  let mailOptions = {
+    from: 'noReplyJustWeed@gmail.com',
+    to: email,
+    subject: 'Reimposta la password',
+    html: htmlContent,
+    text: `Clicca sul seguente link per reimpostare la password: http://localhost:3001/newpassword?token=${token}`
+  };
+
+  tokenMailMap.set(token, email)
+  sendConfirmationEmail(token, mailOptions);
+  res.json("Mail inviata...")
+})
 
 
 function deleteToken(token) {
   tokenExpirationMap.delete(token);
+
   tokenMailMap.delete(token)
 }
 
-async function sendConfirmationEmail(token) {
+async function sendConfirmationEmail(token, mailOptions) {
   const expiration = Date.now() + 10 * 60 * 1000;
   tokenExpirationMap.set(token, expiration);
   // console.log(`Token salvato: ${token}, exiration: ${expiration}`);
-  const email = tokenMailMap.get(token);
+  // const email = tokenMailMap.get(token);
   let transporter = nodemailer.createTransport({
     service: 'gmail',
-
     auth: {
       user: 'noReplyJustWeed@gmail.com',
       pass: 'wstg giop vbtz uasq'
     }
   });
-
-  const htmlContent = `
-    <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
-      <h1 style="color: #6699cc;">🎉 Benvenuto!</h1>
-      <p style="font-size: 16px;">Siamo felici di averti con noi! Per completare la tua registrazione, clicca sul pulsante qui sotto:</p>
-      <a href="http://localhost:3001/confirm?token=${token}" style="display: inline-block; padding: 12px 24px; background-color: #6699cc; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 20px 0;">
-        🔑 Conferma il tuo account
-      </a>
-      <p style="font-size: 14px; color: #777;">Hai solo <strong>10 minuti</strong> per confermare la tua email, quindi affrettati! 🕒</p>
-      <p style="font-size: 14px; color: #777;">Se il pulsante non funziona, copia e incolla questo link nel tuo browser:</p>
-      <p style="font-size: 14px; color: #4CAF50; word-wrap: break-word;">http://localhost:3001/confirm?token=${token}</p>
-      <p style="font-size: 14px; color: #777;">A presto,<br>Il Team JustWeed 🌿</p>
-    </div>
-  `;
-
-  let mailOptions = {
-    from: 'noReplyJustWeed@gmail.com',
-    to: email,
-    subject: 'Conferma la tua registrazione',
-    html: htmlContent,
-    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
-  };
 
   await transporter.sendMail(mailOptions);
 }
@@ -321,7 +390,7 @@ setInterval(() => {
   for (const [token, expiration] of tokenExpirationMap.entries()) {
     if (now > expiration) {
       tokenExpirationMap.delete(token);
-      
+
       const email = tokenMailMap.get(token);
       if (email) {
         tokenMailMap.delete(token);

@@ -80,7 +80,7 @@ function App() {
             <a href='/forgotpassword'> forgot password?</a>
           </div>
           <div className={styles.newAcc}>
-            <a href='/signup'>sign up</a>
+            <a href='/signup'> sign up</a>
           </div>
         </div>
 

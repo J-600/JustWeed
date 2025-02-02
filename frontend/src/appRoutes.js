@@ -3,6 +3,7 @@ import Products from './components/pages/products/products';
 import Confirm from './components/pages/confirm/confirm';
 import Signup from './components/pages/signup/signup'
 import ForgotPassword from './components/pages/forgotPassword/forgotPassword';
+import NewPassword from './components/pages/newpassword/newpassword';
 import App from './App';
 
 function AppRoutes() {
@@ -13,6 +14,7 @@ function AppRoutes() {
       <Route path="/signup" element={<Signup />}/>
       <Route path='/confirm' element={<Confirm/>}/>
       <Route path='/forgotpassword' element={<ForgotPassword/>}/>
+      <Route path='/newpassword' element={<NewPassword/>}/>
     </Routes>
   );
 }
