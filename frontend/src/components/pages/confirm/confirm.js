@@ -4,53 +4,63 @@ import TopBar from '../../navbar/topbarLogin';
 import styles from '../../styles/confirm.module.css';
 import Loader from '../../loader/loader';
 
-function Confirm(req,res) {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState(null)
-    
-    useEffect (() => {
-        const fetchConfirm = async ()=>{
-            const token = params.get("token");
-            const email = params.get("email");
-          try {
-            const res = await fetch(`http://localhost:3000/confirm?token=${token}&email=${email}`, {
-              method: "GET",
-          });
-          const responseData = await res.json();
-          setData(responseData);
-          } catch (error) {
-              console.error('Errore durante la richiesta:');
-          }
-          finally{
-            setLoading(false);
-          }
-        };
-        fetchConfirm();
-      },[])
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    //   if (loading) {
-    //     return <div className='loaderContainer'><Loader /></div>;
-    // }
-      return (
-      <div className = {styles.page} >
-         <TopBar></TopBar>
-          <div className = {styles.container}>
-            {loading ? (
-              <div className='loaderContainer'><Loader /></div>) :
-              (
-                <>
-                <h1 className = {styles.titlePrimary}> {data} </h1> <br></br>
-                </>
-                
-              )}
-            
+function Confirm() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [username, setUsername] = useState(null);
+
+  useEffect(() => {
+    const fetchConfirm = async () => {
+      const token = params.get("token");
+      let responseData;
+      try {
+        const res = await fetch(`http://localhost:3000/confirm?token=${token}`, {
+          method: "GET",
+        });
+        responseData = await res.json();
+        setData(responseData);
+
+        if (responseData.message) {
+          setEmail(responseData.email);
+          setUsername(responseData.username);
+        }
+      } catch (error) {
+        console.error('Errore durante la richiesta:', error);
+      } finally {
+        setLoading(false);
+
+        if (responseData?.message) {
+          await sleep(5000);
+          navigate('/products', { state: { email: responseData.email, username: responseData.username } });
+        }
+      }
+    };
+    fetchConfirm();
+  }, []);
+
+  return (
+    <div className={styles.page}>
+      <TopBar />
+      <div className={styles.container}>
+        {loading ? (
+          <div className='loaderContainer'>
+            <Loader />
           </div>
-        </div>
-      );
-
+        ) : (
+          <>
+            <h1 className={styles.titlePrimary}>{data?.data}</h1>
+            <br />
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
-export default Confirm; 
+export default Confirm;

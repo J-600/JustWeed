@@ -2,9 +2,9 @@
 
 try{
 
-    // if ($_SERVER["REQUEST_METHOD"] != "POST"){
-    //     throw new Exception("Non è una richiesta POST");
-    // }
+    if ($_SERVER["REQUEST_METHOD"] != "POST"){
+        throw new Exception("Non è una richiesta POST");
+    }
 
     require_once "dbh.inc.php";
 
@@ -19,7 +19,7 @@ try{
     $stmt->execute();
 
 
-    $sql = "DELETE FROM $table WHERE email = :email";
+    $sql = "DELETE FROM $table WHERE email = :email AND verified = 'F'";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':email', $email);
     $stmt->execute();

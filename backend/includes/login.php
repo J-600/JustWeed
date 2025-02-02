@@ -7,20 +7,39 @@ try{
     require_once "dbh.inc.php";
 
     $table = "users_jw";
-    $username = $_POST["username"] ?? "jhonpanora06@gmail.com";
-    $password = $_POST["password"] ?? "j.panora";
+    $username = $_POST["username"];
+    $password = $_POST["password"];
 
-    $sql = "SELECT username, email FROM $table WHERE username = :username OR email = :username AND password = :password";
+    $sql = "SELECT password FROM $table WHERE email = :email OR username = :email";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':email', $username);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user || $password !== $user['password']) {
+        throw new Exception(json_encode(["message"=> "Mail o Password errata", "email" => false]));
+    }
+
+
+    $sql = "SELECT username, email, verified FROM $table WHERE username = :username OR email = :username";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":username", $username);
     $stmt->bindParam(":password", $password);
 
     $stmt->execute();
 
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if (empty($result)) {
-        throw new Exception("Mail o password sbagliati");
+        throw new Exception(json_encode(["message" => "Mail o password sbagliati", "email" => false]));
+    } else if($result[0]["verified"] == "F"){
+        throw new Exception(
+            json_encode([
+                "message" => "Account non verificato. Email per confermarla inviata",
+                "email" => $result[0]["email"]
+            ])
+        );
+        
     } else {
         $response = [
         "response" => 200,
