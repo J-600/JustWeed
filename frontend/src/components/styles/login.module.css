@@ -97,17 +97,32 @@
   color: #ffffff; /* Colore chiaro per migliorare la leggibilità */
   text-align: center;
 }
+.bottomContainer {
+  display: flex;
+  justify-content: space-between; /* Distribuisce lo spazio tra gli elementi */
+  align-items: center; /* Allinea verticalmente al centro */
+  width: 100%; /* Assicura che il contenitore occupi tutta la larghezza disponibile */
+  padding-top: 5%;
+}
+
+.forgotPassword{
+  display: flex; /* Attiva Flexbox */
+  justify-content: left; /* Centra orizzontalmente */
+  align-items: center;
+  margin-left: 0;
+}
 
 .newAcc {
   display: flex; /* Attiva Flexbox */
   justify-content: center; /* Centra orizzontalmente */
   align-items: center; /* Centra verticalmente */
-  width: 100vw; /* Larghezza piena della finestra */
-  height: 100vh; /* Altezza piena della finestra */
+  width: 50;
+  /* width: 100vw; Larghezza piena della finestra
+  height: 100vh; Altezza piena della finestra */
 }
 
 a {
-  margin-left: 86%;
+  margin-left: 0%;
   font-size: 20px; /* Dimensione del testo */
   color: var(--border-color); /* Usa un colore dalla tua palette */
   text-decoration: none; /* Rimuove la sottolineatura */

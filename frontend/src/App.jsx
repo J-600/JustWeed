@@ -10,12 +10,12 @@ function App() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     try {
       const res = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({"username": mail, "password":password }),
+        body: JSON.stringify({ "username": mail, "password": password }),
         credentials: 'include',
       });
 
@@ -23,15 +23,15 @@ function App() {
 
       const data = await res.json();
 
-      try{
-        if (data.email == null){
+      try {
+        if (data.email == null) {
           throw new Error("error");
         }
         const email = data.email;
         const username = data.username;
         setResponseMessage("login riuscito");
         navigate('/products', { state: { email, username } });
-      } catch (error){
+      } catch (error) {
         setResponseMessage(data);
       }
 
@@ -59,7 +59,7 @@ function App() {
           </label>
           <br />
           <label>
-            Password:
+            password:
             <input
               type="password"
               className={styles.input}
@@ -75,10 +75,18 @@ function App() {
         </form>
 
         {responseMessage && <p className={styles.responseMessage}>{responseMessage}</p>}
-        <div className='newAcc'>
-           <a href='/signup'>sign up</a>
+        <div className={styles.bottomContainer}>
+          <div className={styles.forgotPassword}>
+            <a href='/forgotpassword'> forgot password?</a>
+          </div>
+          <div className={styles.newAcc}>
+            <a href='/signup'>sign up</a>
+          </div>
         </div>
-        
+
+
+
+
       </div>
     </div>
   );

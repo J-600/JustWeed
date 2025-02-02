@@ -8,6 +8,9 @@ const session = require('express-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const tokenExpirationMap = new Map();
+const tokenMailMap = new Map();
+
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,53 +30,31 @@ app.use(session({
   }
 }));
 
-const tokenExpirationMap = new Map();
-const tokenMailMap = new Map();
 
-
-function deleteToken(token) {
-  tokenExpirationMap.delete(token);
-  tokenMailMap.delete(token)
-}
-
-async function sendConfirmationEmail(token) {
-  const expiration = Date.now() + 10 * 60 * 1000;
-  tokenExpirationMap.set(token, expiration);
-  // console.log(`Token salvato: ${token}, exiration: ${expiration}`);
-  const email = tokenMailMap.get(token);
-  let transporter = nodemailer.createTransport({
-    service: 'gmail',
-
-    auth: {
-      user: 'noReplyJustWeed@gmail.com',
-      pass: 'wstg giop vbtz uasq'
-    }
-  });
-
-  const htmlContent = `
-    <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
-      <h1 style="color: #6699cc;">🎉 Benvenuto!</h1>
-      <p style="font-size: 16px;">Siamo felici di averti con noi! Per completare la tua registrazione, clicca sul pulsante qui sotto:</p>
-      <a href="http://localhost:3001/confirm?token=${token}" style="display: inline-block; padding: 12px 24px; background-color: #6699cc; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 20px 0;">
-        🔑 Conferma il tuo account
-      </a>
-      <p style="font-size: 14px; color: #777;">Hai solo <strong>10 minuti</strong> per confermare la tua email, quindi affrettati! 🕒</p>
-      <p style="font-size: 14px; color: #777;">Se il pulsante non funziona, copia e incolla questo link nel tuo browser:</p>
-      <p style="font-size: 14px; color: #4CAF50; word-wrap: break-word;">http://localhost:3001/confirm?token=${token}</p>
-      <p style="font-size: 14px; color: #777;">A presto,<br>Il Team JustWeed 🌿</p>
-    </div>
-  `;
-
-  let mailOptions = {
-    from: 'noReplyJustWeed@gmail.com',
-    to: email,
-    subject: 'Conferma la tua registrazione',
-    html: htmlContent,
-    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
-  };
-
-  await transporter.sendMail(mailOptions);
-}
+app.post("/signup", (req, res) => {
+  const { username, email, password } = req.body;
+  const token = crypto.randomBytes(16).toString('hex');
+  // console.log(`Token generato: ${token}, Email associata: ${email}`);
+  tokenMailMap.set(token, email)
+  fetch("http://localhost/justweed/backend/includes/create-user.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `email=${email}&username=${username}&password=${password}`
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message && data.response === 200) {
+        sendConfirmationEmail(token);
+        res.json(data.data);
+      } else {
+        res.json(data.data);
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
+});
 
 
 app.get("/confirm", (req, res) => {
@@ -132,98 +113,6 @@ app.get("/confirm", (req, res) => {
   }
 });
 
-app.post("/signup", (req, res) => {
-  const { username, email, password } = req.body;
-  const token = crypto.randomBytes(16).toString('hex');
-  // console.log(`Token generato: ${token}, Email associata: ${email}`);
-  tokenMailMap.set(token, email)
-  fetch("http://localhost/justweed/backend/includes/create-user.php", {
-    method: "POST",
-    headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `email=${email}&username=${username}&password=${password}`
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.message && data.response === 200) {
-        sendConfirmationEmail(token);
-        res.json(data.data);
-      } else {
-        res.json(data.data);
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
-});
-
-app.post("/becomeAseller", (req, res) => {
-  const { password, email } = req.body;
-  fetch("http://localhost/justweed/backend/become-a-seller.php", {
-    method: "POST",
-    headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `password=${password}&email=${email}`
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      if (data.response === 200) {
-        res.json(data.data);
-      } else {
-        res.status(401).json(data.data);
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
-});
-
-app.post("/updateData", (req, res) => {
-  const { password, email, new_email, new_username, new_password } = req.body;
-
-  fetch("https://localhost/justweed/backend/update-user-info.php", {
-    method: "POST",
-    headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `password=${password}&email=${email}&new_email=${new_email ?? null}&new_password=${new_password ?? null}&new_username=${new_username}`
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      if (data.response === 200) {
-        res.json(data.data);
-      } else {
-        res.status(401).json(data.data);
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
-});
-
-app.post("/updateProducts", (req, res) => {
-  const { id, name, quantity, price, description } = req.body;
-  fetch("https://localhost/justweed/backend/update-info-product.php", {
-    method: "POST",
-    headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `id=${id}&name=${name ?? null}&quantity=${quantity ?? null}&price=${price ?? null}&description=${description ?? null}`
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      if (data.response === 200) {
-        res.json(data.data);
-      } else {
-        res.status(401).json(data.data);
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
-});
-
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -277,20 +166,26 @@ app.post("/login", (req, res) => {
     });
 });
 
-app.post("/delete-user", (req, res) => {
-  const { email, password } = req.body;
-  fetch("http://localhost/JustWeed/backend/delete-user.php", {
+app.post("/updateData", (req, res) => {
+  const { password, email, new_email, new_username, new_password } = req.body;
+
+  fetch("https://localhost/justweed/backend/update-user-info.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `email=${email}&password=${password}`
+    body: `password=${password}&email=${email}&new_email=${new_email ?? null}&new_password=${new_password ?? null}&new_username=${new_username}`
   })
     .then(response => response.json())
     .then(data => {
-      if (data.message) {
+      console.log(data);
+      if (data.response === 200) {
         res.json(data.data);
       } else {
-        res.status(400).json(data.data);
+        res.status(401).json(data.data);
       }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
     });
 });
 
@@ -312,9 +207,112 @@ app.get("/products", (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.post("/becomeAseller", (req, res) => {
+  const { password, email } = req.body;
+  fetch("http://localhost/justweed/backend/become-a-seller.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `password=${password}&email=${email}`
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      if (data.response === 200) {
+        res.json(data.data);
+      } else {
+        res.status(401).json(data.data);
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
 });
+
+app.post("/updateProducts", (req, res) => {
+  const { id, name, quantity, price, description } = req.body;
+  fetch("https://localhost/justweed/backend/update-info-product.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `id=${id}&name=${name ?? null}&quantity=${quantity ?? null}&price=${price ?? null}&description=${description ?? null}`
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      if (data.response === 200) {
+        res.json(data.data);
+      } else {
+        res.status(401).json(data.data);
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
+});
+
+app.post("/delete-user", (req, res) => {
+  const { email, password } = req.body;
+  fetch("http://localhost/JustWeed/backend/delete-user.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `email=${email}&password=${password}`
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message) {
+        res.json(data.data);
+      } else {
+        res.status(400).json(data.data);
+      }
+    });
+});
+
+
+
+function deleteToken(token) {
+  tokenExpirationMap.delete(token);
+  tokenMailMap.delete(token)
+}
+
+async function sendConfirmationEmail(token) {
+  const expiration = Date.now() + 10 * 60 * 1000;
+  tokenExpirationMap.set(token, expiration);
+  // console.log(`Token salvato: ${token}, exiration: ${expiration}`);
+  const email = tokenMailMap.get(token);
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+
+    auth: {
+      user: 'noReplyJustWeed@gmail.com',
+      pass: 'wstg giop vbtz uasq'
+    }
+  });
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
+      <h1 style="color: #6699cc;">🎉 Benvenuto!</h1>
+      <p style="font-size: 16px;">Siamo felici di averti con noi! Per completare la tua registrazione, clicca sul pulsante qui sotto:</p>
+      <a href="http://localhost:3001/confirm?token=${token}" style="display: inline-block; padding: 12px 24px; background-color: #6699cc; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 20px 0;">
+        🔑 Conferma il tuo account
+      </a>
+      <p style="font-size: 14px; color: #777;">Hai solo <strong>10 minuti</strong> per confermare la tua email, quindi affrettati! 🕒</p>
+      <p style="font-size: 14px; color: #777;">Se il pulsante non funziona, copia e incolla questo link nel tuo browser:</p>
+      <p style="font-size: 14px; color: #4CAF50; word-wrap: break-word;">http://localhost:3001/confirm?token=${token}</p>
+      <p style="font-size: 14px; color: #777;">A presto,<br>Il Team JustWeed 🌿</p>
+    </div>
+  `;
+
+  let mailOptions = {
+    from: 'noReplyJustWeed@gmail.com',
+    to: email,
+    subject: 'Conferma la tua registrazione',
+    html: htmlContent,
+    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
+  };
+
+  await transporter.sendMail(mailOptions);
+}
 
 setInterval(() => {
   const now = Date.now();
@@ -333,3 +331,7 @@ setInterval(() => {
     }
   }
 }, 60 * 60 * 1000);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
