@@ -9,20 +9,19 @@ function App() {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [responseMessage, setResponseMessage] = useState(null);
-  const [hash, setHash] = useState('');
 
   const navigate = useNavigate();
 
   
   const handleSubmit = async (e) => {
-    setHash(CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex))
-    console.log(hash)
     e.preventDefault();
+    const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+    // console.log("Hashed Password:", hashedPassword)
     try {
         const res = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ "username": mail, "password": hash }),
+        body: JSON.stringify({ "username": mail, "password": hashedPassword }),
         credentials: 'include',
       });
 

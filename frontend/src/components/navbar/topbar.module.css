@@ -1,124 +1,175 @@
+/* Variabili di colore */
 * {
-    --glow-color: rgb(0, 51, 102);
-    --glow-spread-color: rgba(0, 77, 153, 0.781);
-    --enhanced-glow-color: rgb(102, 153, 204);
-    --btn-color: rgb(0, 61, 122);
-    --border-color: rgb(121, 169, 236);
-  }
-  
-  .topbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: transparent;
-    padding: 1em 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .littlebutton {
-    text-align: center;
-    background-color: transparent;
-    border: 0.05em solid var(--border-color);
-    padding: 0.5em;
-    width: 3%;
-    color: var(--enhanced-glow-color);
-    font-size: 25px;
-    font-weight: bold;
-    border-radius: 1em;
-    outline: none;
-    box-shadow: 0 0 1em 0.25em var(--glow-color),
-                0 0 4em 1em var(--glow-spread-color),
-                inset 0 0 0.75em 0.25em var(--glow-color);
-    text-shadow: 0 0 0.5em var(--glow-color);
-    position: relative;
-    transition: all 0.3s;
-    cursor: pointer;
-  }
-  
-  .littlebutton:hover {
-    color: var(--border-color);
-    background-color: var(--glow-color);
-    box-shadow: 0 0 1em 0.25em var(--glow-color),
-                0 0 4em 2em var(--glow-spread-color),
-                inset 0 0 0.75em 0.25em var(--glow-color);
-  }
-  
-  .littlebutton:active {
-    box-shadow: 0 0 0.6em 0.25em var(--glow-color),
-                0 0 2.5em 2em var(--glow-spread-color),
-                inset 0 0 0.5em 0.25em var(--glow-color);
-  }
-  
-  .centerButton {
-    text-align: center;
-    background-color: transparent;
-    border: 0.05em solid var(--border-color);
-    padding: 0.5em 3em;
-    width: 50%;
-    color: var(--enhanced-glow-color);
-    font-size: 25px;
-    font-weight: bold;
-    border-radius: 1em;
-    outline: none;
-    box-shadow: 0 0 1em 0.25em var(--glow-color),
-                0 0 4em 1em var(--glow-spread-color),
-                inset 0 0 0.75em 0.25em var(--glow-color);
-    text-shadow: 0 0 0.5em var(--glow-color);
-    position: relative;
-    transition: all 0.3s;
-    cursor: pointer;
-  }
-  
-  .centerButton:hover {
-    color: var(--border-color);
-    background-color: var(--glow-color);
-    box-shadow: 0 0 1em 0.25em var(--glow-color),
-                0 0 4em 2em var(--glow-spread-color),
-                inset 0 0 0.75em 0.25em var(--glow-color);
-  }
-  
-  .centerButton:active {
-    box-shadow: 0 0 0.6em 0.25em var(--glow-color),
-                0 0 2.5em 2em var(--glow-spread-color),
-                inset 0 0 0.5em 0.25em var(--glow-color);
-  }
-  
-  .sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 250px;
-    height: 100%;
-    background-color: #f8f9fa;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    z-index: 1000;
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .sidebarOptions {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebarOptions li {
-    margin: 15px 0;
-    cursor: pointer;
-  }
-  
-  .weederButton {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .weederButton:hover {
-    background-color: #218838;
-  }
+  --glow-color: rgb(0, 51, 102); /* Blu acceso */
+  --glow-spread-color: rgba(0, 77, 153, 0.781); /* Blu intenso */
+  --enhanced-glow-color: rgb(102, 153, 204); /* Blu pastello */
+  --btn-color: rgb(0, 61, 122); /* Blu moderato */
+  --border-color: rgb(121, 169, 236); /* Blu chiaro per i bordi */
+}
+
+/* Topbar */
+.topbar {
+  position: fixed; 
+  top: 0; 
+  left: 0;
+  width: 97%; 
+  background-color: transparent; 
+  padding: 1em 0;
+  display: flex;
+  left: 1.5%;
+  justify-content: space-between;  /* Distribuisce i pulsanti a sinistra e a destra */
+  align-items: center; 
+  z-index: 1000; 
+}
+
+/* Pulsante (FaBars, FaUser) */
+.littlebutton {
+  text-align: center;
+  background-color: transparent;
+  border: 0.05em solid var(--border-color);
+  padding: 0.5em;
+  color: var(--enhanced-glow-color);
+  font-size: 20px;  /* Ridotto il font per farli più piccoli */
+  font-weight: bold;
+  border-radius: 2em; /* Border radius aumentato a 2em */
+  outline: none;
+  transition: all 0.3s;
+  cursor: pointer;
+  box-shadow: 0 0 1em .25em var(--glow-color),
+              0 0 4em 1em var(--glow-spread-color),
+              inset 0 0 .75em .25em var(--glow-color);
+  text-shadow: 0 0 .5em var(--glow-color);
+  height: 40px; /* Altezza più piccola per i pulsanti */
+  width: 40px;  /* Larghezza più piccola per i pulsanti */
+}
+
+/* Hover e active sui pulsanti */
+.littlebutton:hover {
+  color: var(--border-color);
+  background-color: var(--glow-color);
+  box-shadow: 0 0 1em .25em var(--glow-color),
+              0 0 4em 2em var(--glow-spread-color),
+              inset 0 0 .75em .25em var(--glow-color);
+}
+
+.littlebutton:active {
+  box-shadow: 0 0 0.6em .25em var(--glow-color),
+              0 0 2.5em 2em var(--glow-spread-color),
+              inset 0 0 .5em .25em var(--glow-color);
+}
+
+/* Pulsante centrale "JustWeed" */
+.centerButton {
+  text-align: center;
+  background-color: transparent;
+  border: 0.05em solid var(--border-color);
+  padding: 0.5em 3em;
+  width: 50%;
+  color: var(--enhanced-glow-color);
+  font-size: 25px;
+  font-weight: bold;
+  border-radius: 1em;
+  outline: none;
+  transition: all 0.3s;
+  cursor: pointer;
+  box-shadow: 0 0 1em .25em var(--glow-color),
+              0 0 4em 1em var(--glow-spread-color),
+              inset 0 0 .75em .25em var(--glow-color);
+  text-shadow: 0 0 .5em var(--glow-color);
+}
+
+/* Hover e active sul pulsante centrale */
+.centerButton:hover {
+  color: var(--border-color);
+  background-color: var(--glow-color);
+  box-shadow: 0 0 1em .25em var(--glow-color),
+              0 0 4em 2em var(--glow-spread-color),
+              inset 0 0 .75em .25em var(--glow-color);
+}
+
+.centerButton:active {
+  box-shadow: 0 0 0.6em .25em var(--glow-color),
+              0 0 2.5em 2em var(--glow-spread-color),
+              inset 0 0 .5em .25em var(--glow-color);
+}
+
+/* Sidebar */
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  right: 10px;
+  width: 17em;
+  background-color: #fff;
+  box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: 
+    transform 0.3s ease-in-out, 
+    opacity 0.3s ease-in-out,
+    height 0.3s ease-in-out;
+  padding: 0; /* Rimuovi padding esterno */
+  z-index: 1000;
+  border-radius: 15px;
+  transform: translateX(110%);
+  opacity: 0;
+  overflow: hidden; /* Cambiato da overflow-y a overflow */
+  margin-top: 7em;
+}
+
+.sidebarContent {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto; /* Scrolling interno */
+}
+
+.sidebar.open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Resto del CSS invariato */
+
+/* Opzioni della Sidebar */
+.sidebarOptions {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarOptions li {
+  margin: 15px 0;
+  cursor: pointer;
+  color: #6699cc;
+  transition: color 0.3s;
+}
+
+.sidebarOptions li:hover {
+  color: #003366; /* Colore al passaggio del mouse */
+}
+
+/* Pulsante Diventa Weeder */
+.weederButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+  box-shadow: 0 0 1em .25em #003366, 0 0 4em 1em var(--glow-spread-color); /* Ombra */
+}
+
+.weederButton:hover {
+  background-color: #218838;
+  box-shadow: 0 0 1em .25em #003366, 0 0 4em 2em var(--glow-spread-color); /* Ombra al passaggio del mouse */
+}
+
+.weederButton:active {
+  box-shadow: 0 0 0.6em .25em #003366, 0 0 2.5em 2em var(--glow-spread-color); /* Ombra attiva */
+}
+
+/* Pulsante attivo */
+.activeButton {
+  background-color: #003366;
+  color: #79a9ec;
+}
