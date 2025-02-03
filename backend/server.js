@@ -162,23 +162,53 @@ app.post("/login", (req, res) => {
       } else if (!data.message && data.response === 200) {
         try {
           parsedData = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-          // console.log(parsedData)
+          console.log(parsedData)
         } catch (error) {
           console.error("Errore di parsing JSON:", error);
           return res.status(500).json({ error: "Errore durante la gestione dei dati" });
         }
         if (parsedData.email) {
-          // console.log(parsedData)
-          if (tokenMailMap.has(parsedData.email)) {
-            sendConfirmationEmail(tokenMailMap.get(parsedData.email));
+          let emailExists = false;
+          tokenMailMap.forEach((value, key) => {
+            if (value === parsedData.email) {
+              emailExists = true;
+            }
+          });
+          if (emailExists) {
+            // sendConfirmationEmail(tokenMailMap.get(parsedData.email));
+            console.log("token già creato")
+            res.json("mail già inviata...")
           } else {
+            console.log("inviando la mail");
             const token = crypto.randomBytes(16).toString('hex');
+            const htmlContent = `
+              <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
+                <h1 style="color: #6699cc;">🎉 Benvenuto!</h1>
+                <p style="font-size: 16px;">Siamo felici di averti con noi! Per completare la tua registrazione, clicca sul pulsante qui sotto:</p>
+                <a href="http://localhost:3001/confirm?token=${token}" style="display: inline-block; padding: 12px 24px; background-color: #6699cc; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 20px 0;">
+                  🔑 Conferma il tuo account
+                </a>
+                <p style="font-size: 14px; color: #777;">Hai solo <strong>10 minuti</strong> per confermare la tua email, quindi affrettati! 🕒</p>
+                <p style="font-size: 14px; color: #777;">Se il pulsante non funziona, copia e incolla questo link nel tuo browser:</p>
+                <p style="font-size: 14px; color: #4CAF50; word-wrap: break-word;">http://localhost:3001/confirm?token=${token}</p>
+                <p style="font-size: 14px; color: #777;">A presto,<br>Il Team JustWeed 🌿</p>
+              </div>
+            `;
+            let mailOptions = {
+              from: 'noReplyJustWeed@gmail.com',
+              to: parsedData.email,
+              subject: 'Conferma la tua registrazione',
+              html: htmlContent,
+              text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
+            };
             tokenMailMap.set(token, parsedData.email)
-            sendConfirmationEmail(token);
+            sendConfirmationEmail(token, mailOptions);
+            res.json(parsedData.message)
           }
 
+        } else {
+          res.json(parsedData.message);
         }
-        res.json(parsedData.message)
       } else {
         res.json(data.data);
       }
@@ -303,18 +333,18 @@ app.post("/newpassword", (req, res) => {
   if (!tokenExpiration || Date.now() > tokenExpiration) {
     res.json("token scaduto...")
   } else {
-    
+
     fetch("http://localhost/JustWeed/backend/includes/forgot-password.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
       body: `password=${password}&email=${email}`
     })
-    .then(response => response.json())
-    .then(data => {
-      res.json(data.data);
-    })
+      .then(response => response.json())
+      .then(data => {
+        res.json(data.data);
+      })
   }
-  
+
 
 
 });
