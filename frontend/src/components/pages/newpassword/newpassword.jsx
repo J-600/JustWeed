@@ -11,10 +11,13 @@ function NewPassword() {
     const location = useLocation();
     const [password, setPassword] = useState('');
     const [rPassword, setRpassword] = useState('');
+    const [hash, setHash] = useState('');
+    const crypto = require('crypto');
     const params = new URLSearchParams(location.search);
     const [responseMessage, setResponseMessage] = useState(null);
 
     const handleSubmit = async (e) => {
+        setHash(crypto.createHash('sha1').update(password).digest('hex'))
         e.preventDefault();
         if (rPassword === password) {
             const token = params.get("token");
@@ -22,7 +25,7 @@ function NewPassword() {
                 const res = await fetch(`http://localhost:3000/newpassword`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ "token": token, "password": password }),
+                    body: JSON.stringify({ "token": token, "password": hash }),
                     credentials: 'include'
                 });
                 const responseData = await res.json();

@@ -7,15 +7,18 @@ function Signup(){
     const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
+    const [hash, setHash] = useState('');
+    const crypto = require('crypto');
     const [responseMessage, setResponseMessage] = useState(null);
 
     const handleSubmit = async (e) =>{
+        setHash(crypto.createHash('sha1').update(password).digest('hex'))
         e.preventDefault();
         try{
             const res = await fetch('http://localhost:3000/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({"email" : mail, "username" : username, "password" : password}),
+                body: JSON.stringify({"email" : mail, "username" : username, "password" : hash}),
                 credentials: 'include',
             });
             const data = await res.json();
