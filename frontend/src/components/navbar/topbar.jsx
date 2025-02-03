@@ -1,76 +1,49 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import { FaBars, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { FaBars, FaUser, FaSearch } from "react-icons/fa";
 import styles from './topbar.module.css';
 
-const TopBar = ({ mail, username, onSearch }) => {
-    const navigate = useNavigate();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isSearchEditable, setIsSearchEditable] = useState(false); 
-    const [searchValue, setSearchValue] = useState("JustWeed");
-    const inputRef = useRef(null); 
+export default function Topbar() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSearchChange = (event) => {
-        setSearchValue(event.target.value);
-    };
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            if (onSearch) {
-                onSearch(searchValue); 
-            }
-            enableSearchEdit()
-            console.log(`Ricerca effettuata per: ${searchValue}`);
-        }
-    };
+  return (
+    <div className={styles.topbar}>
+      <FaBars 
+        className={`${styles.littlebutton} ${styles.leftIcon}`}
+        onClick={() => {/* Add any left menu functionality */}}
+      />
+      <div className={styles.centerButton}>JustWeed</div>
+      <FaUser
+        className={`${styles.littlebutton} ${styles.rightIcon}`}
+        onClick={toggleSidebar}
+      />
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    };
-
-    const enableSearchEdit = () => {
-        if (isSearchEditable){
-            setSearchValue("JustWeed");
-        } else{
-            setSearchValue("");
-        }
-        setIsSearchEditable(!isSearchEditable); 
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    };
-
-    return (
-        <div className={styles.topbar}>
-            <FaBars className={styles.littlebutton} />
-            <input
-                ref={inputRef} 
-                className={styles.button}
-                value={searchValue}
-                readOnly={!isSearchEditable} 
-                onChange={handleSearchChange}
-                onKeyDown={handleKeyDown} 
-            />
-            <FaSearch onClick={enableSearchEdit} className={styles.littlebutton} />
-            <FaUser onClick={toggleSidebar} className={styles.littlebutton} />
-
-            {isSidebarOpen && (
-                <div className={styles.sidebar}>
-                    <ul className={styles.sidebarOptions}>
-                        <li onClick={() => navigate('/account-info')}>Informazioni Account</li>
-                        <li onClick={() => navigate('/recent-purchases')}>Acquisti Recenti</li>
-                        <li onClick={() => navigate('/payment-methods')}>Modalità di Pagamento</li>
-                    </ul>
-                    <button
-                        className={styles.weederButton}
-                        onClick={() => navigate('/become-weeder')}
-                    >
-                        Diventa uno Weeder
-                    </button>
-                </div>
-            )}
+      {isSidebarOpen && (
+        <div className={styles.sidebar}>
+          <ul className={styles.sidebarOptions}>
+            <li onClick={() => navigate('/account-info')}>
+              Informazioni Account
+            </li>
+            <li onClick={() => navigate('/recent-purchases')}>
+              Acquisti Recenti
+            </li>
+            <li onClick={() => navigate('/payment-methods')}>
+              Modalità di Pagamento
+            </li>
+          </ul>
+          <button
+            className={styles.weederButton}
+            onClick={() => navigate('/become-weeder')}
+          >
+            Diventa uno Weeder
+          </button>
         </div>
-    );
-};
-
-export default TopBar;
+      )}
+    </div>
+  );
+}

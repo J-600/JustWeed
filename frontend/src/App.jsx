@@ -15,10 +15,10 @@ function App() {
 
   
   const handleSubmit = async (e) => {
+    setHash(CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex))
+    console.log(hash)
     e.preventDefault();
     try {
-        setHash(CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex))
-        console.log(hash)
         const res = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
