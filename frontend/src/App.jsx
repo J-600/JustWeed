@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from './components/navbar/topbarLogin';
 import styles from './components/styles/login.module.css';
+import CryptoJS from 'crypto-js';
 
 
 function App() {
@@ -9,14 +10,15 @@ function App() {
   const [password, setPassword] = useState('');
   const [responseMessage, setResponseMessage] = useState(null);
   const [hash, setHash] = useState('');
-  const crypto = require('crypto');
+
   const navigate = useNavigate();
 
+  
   const handleSubmit = async (e) => {
-    setHash(crypto.createHash('sha1').update(password).digest('hex'))
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:3000/login', {
+        setHash(CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex))
+        const res = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ "username": mail, "password": hash }),

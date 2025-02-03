@@ -162,7 +162,7 @@ app.post("/login", (req, res) => {
       } else if (!data.message && data.response === 200) {
         try {
           parsedData = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-          console.log(parsedData)
+          // console.log(parsedData)
         } catch (error) {
           console.error("Errore di parsing JSON:", error);
           return res.status(500).json({ error: "Errore durante la gestione dei dati" });
@@ -300,7 +300,10 @@ app.post("/newpassword", (req, res) => {
   const tokenExpiration = tokenExpirationMap.get(token);
   const email = tokenMailMap.get(token);
 
-  if (Date.now() < tokenExpiration) {
+  if (!tokenExpiration || Date.now() > tokenExpiration) {
+    res.json("token scaduto...")
+  } else {
+    
     fetch("http://localhost/JustWeed/backend/includes/forgot-password.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -310,8 +313,6 @@ app.post("/newpassword", (req, res) => {
     .then(data => {
       res.json(data.data);
     })
-  } else {
-    res.json("token scaduto...")
   }
   
 

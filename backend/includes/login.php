@@ -15,8 +15,8 @@ try{
     $stmt->bindParam(':email', $username);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$user || $password !== $user['password']) {
+    
+    if (!$user || $password != $user["password"]) {
         throw new Exception(json_encode(["message"=> "Mail o Password errata", "email" => false]));
     }
 

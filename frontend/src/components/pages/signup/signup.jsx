@@ -2,19 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from '../../navbar/topbarLogin';
 import styles from '../../styles/signup.module.css';
+import CryptoJS from 'crypto-js';
+
 
 function Signup(){
     const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [hash, setHash] = useState('');
-    const crypto = require('crypto');
+    // const crypto = require('crypto-js');
     const [responseMessage, setResponseMessage] = useState(null);
-
     const handleSubmit = async (e) =>{
-        setHash(crypto.createHash('sha1').update(password).digest('hex'))
         e.preventDefault();
         try{
+            setHash(CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex))
+            console.log(hash);
             const res = await fetch('http://localhost:3000/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -22,7 +24,7 @@ function Signup(){
                 credentials: 'include',
             });
             const data = await res.json();
-            console.log(data)
+            // console.log(data)
             setResponseMessage(data);
         } catch (error){
             console.log("errore durante la richiesta:", error)

@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import TopBar from '../../navbar/topbarLogin';
 import styles from '../../styles/login.module.css';
 import Loader from '../../loader/loader';
+// import crypto from 'crypto-js';
+import CryptoJS from 'crypto-js';
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -12,16 +14,16 @@ function NewPassword() {
     const [password, setPassword] = useState('');
     const [rPassword, setRpassword] = useState('');
     const [hash, setHash] = useState('');
-    const crypto = require('crypto');
+    // const crypto = require('crypto-js');
     const params = new URLSearchParams(location.search);
     const [responseMessage, setResponseMessage] = useState(null);
 
     const handleSubmit = async (e) => {
-        setHash(crypto.createHash('sha1').update(password).digest('hex'))
         e.preventDefault();
         if (rPassword === password) {
             const token = params.get("token");
             try {
+                setHash(CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex))
                 const res = await fetch(`http://localhost:3000/newpassword`, {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
