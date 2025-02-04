@@ -1,0 +1,18 @@
+* {
+    --glow-color: rgb(0, 51, 102); /* Blu acceso */
+    --glow-spread-color: rgba(0, 77, 153, 0.781); /* Blu intenso */
+    --enhanced-glow-color: rgb(102, 153, 204); /* Blu pastello */
+    --btn-color: rgb(0, 61, 122); /* Blu moderato */
+    --border-color: rgb(121, 169, 236);
+}
+
+.page {
+    background: linear-gradient(180deg, #212A37, #182028, #0B1215);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh; /* Rende l'altezza della pagina pari alla viewport */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

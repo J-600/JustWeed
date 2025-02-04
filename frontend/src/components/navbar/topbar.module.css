@@ -99,26 +99,60 @@
   position: fixed;
   right: 10px;
   width: 17em;
-  background-color: #fff;
+  border: 0.05em solid var(--border-color);
+  background-color: transparent;
   box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.2);
   transition: 
     transform 0.3s ease-in-out, 
     opacity 0.3s ease-in-out,
     height 0.3s ease-in-out;
-  padding: 0; /* Rimuovi padding esterno */
   z-index: 1000;
   border-radius: 15px;
   transform: translateX(110%);
+  box-shadow: 0 0 1em .25em var(--glow-color),
+              0 0 4em 1em var(--glow-spread-color),
+              inset 0 0 .75em .25em var(--glow-color);
   opacity: 0;
-  overflow: hidden; /* Cambiato da overflow-y a overflow */
-  margin-top: 7em;
+  overflow: hidden;
+  margin-top: -23em;
+
+  display: flex; /* Aggiunto */
+  flex-direction: column; /* Aggiunto */
 }
 
 .sidebarContent {
+  position: relative;
+  flex-grow: 1; /* Aggiunto */
   padding: 20px;
+  display: flex; /* Aggiunto */
+  flex-direction: column; /* Aggiunto */
   height: 100%;
-  overflow-y: auto; /* Scrolling interno */
 }
+
+.sidebarOptions {
+  
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Aggiunto */
+  overflow-y: auto; /* Scrolling solo per la lista */
+}
+
+.weederButton {
+  margin-top: auto; /* Spinge il pulsante in fondo */
+  background-color: #79a9ec;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+  box-shadow: 0 0 1em .25em #003366, 0 0 4em 1em var(--glow-spread-color);
+  position: sticky; /* Mantiene il pulsante visibile */
+  bottom: 0;
+}
+
 
 .sidebar.open {
   transform: translateX(0);
@@ -128,12 +162,7 @@
 /* Resto del CSS invariato */
 
 /* Opzioni della Sidebar */
-.sidebarOptions {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
+
 
 .sidebarOptions li {
   margin: 15px 0;
@@ -143,30 +172,16 @@
 }
 
 .sidebarOptions li:hover {
-  color: #003366; /* Colore al passaggio del mouse */
+  text-shadow: 0 0 .5em var(--glow-color);
+  color: var(--border-color); /* Colore al passaggio del mouse */
 }
 
 /* Pulsante Diventa Weeder */
-.weederButton {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  cursor: pointer;
-  padding: 10px;
-  width: 100%;
-  border-radius: 8px;
-  transition: background-color 0.3s;
-  box-shadow: 0 0 1em .25em #003366, 0 0 4em 1em var(--glow-spread-color); /* Ombra */
-}
 
 .weederButton:hover {
-  background-color: #218838;
-  box-shadow: 0 0 1em .25em #003366, 0 0 4em 2em var(--glow-spread-color); /* Ombra al passaggio del mouse */
+  background-color: #5c81b6; /* Ombra al passaggio del mouse */
 }
 
-.weederButton:active {
-  box-shadow: 0 0 0.6em .25em #003366, 0 0 2.5em 2em var(--glow-spread-color); /* Ombra attiva */
-}
 
 /* Pulsante attivo */
 .activeButton {

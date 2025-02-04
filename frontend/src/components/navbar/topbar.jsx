@@ -3,43 +3,12 @@ import { FaBars, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import styles from './topbar.module.css';
 
-export default function Topbar() {
+export default function Topbar({ username, mail}) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [menuHeight, setMenuHeight] = useState('auto');
+  const [menuHeight] = useState('80vh'); // Altezza fissa impostata qui
   const sidebarRef = useRef(null);
   const userButtonRef = useRef(null);
   const navigate = useNavigate();
-
-  // Calcola dinamicamente l'altezza della sidebar
-  useEffect(() => {
-    const calculateSidebarHeight = () => {
-      if (isSidebarOpen && userButtonRef.current && sidebarRef.current) {
-        const buttonRect = userButtonRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        const topbarHeight = buttonRect.bottom + 20; // Altezza del topbar + margine
-        
-        // Calcola l'altezza disponibile sottraendo l'altezza del topbar
-        const availableHeight = windowHeight - topbarHeight;
-        
-        // Usa il contenuto interno per determinare l'altezza effettiva
-        const contentHeight = sidebarRef.current.scrollHeight;
-        
-        // Scegli tra altezza del contenuto e altezza disponibile
-        const dynamicHeight = Math.min(contentHeight, availableHeight);
-        
-        setMenuHeight(`${Math.max(dynamicHeight, 200)}px`);
-      } else {
-        setMenuHeight('auto');
-      }
-    };
-
-    calculateSidebarHeight();
-    window.addEventListener('resize', calculateSidebarHeight);
-    
-    return () => {
-      window.removeEventListener('resize', calculateSidebarHeight);
-    };
-  }, [isSidebarOpen]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -62,18 +31,19 @@ export default function Topbar() {
       <div 
         ref={sidebarRef}
         className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ''}`} 
-        style={{ 
-          height: menuHeight,
-          maxHeight: 'calc(100vh - 150px)' // Altezza massima dinamica
-        }}
+        style={{ height: isSidebarOpen ? menuHeight : '0' }}
       >
         <div className={styles.sidebarContent}>
           <ul className={styles.sidebarOptions}>
             <li onClick={() => navigate('/account-info')}>Informazioni Account</li>
             <li onClick={() => navigate('/recent-purchases')}>Acquisti Recenti</li>
             <li onClick={() => navigate('/payment-methods')}>Modalità di Pagamento</li>
+            {/* Aggiungi altri elementi qui se necessario */}
           </ul>
-          <button className={styles.weederButton} onClick={() => navigate('/become-weeder')}>
+          <button 
+            className={styles.weederButton} 
+            onClick={() => navigate('/become-weeder')}
+          >
             Diventa uno Weeder
           </button>
         </div>

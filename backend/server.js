@@ -159,6 +159,7 @@ app.post("/login", (req, res) => {
           data = data.data[0];
           res.json(data);
         });
+        // console.log(req.session);
       } else if (!data.message && data.response === 200) {
         try {
           parsedData = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
@@ -220,6 +221,9 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/updateData", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  }
   const { password, email, new_email, new_username, new_password } = req.body;
 
   fetch("https://localhost/justweed/backend/update-user-info.php", {
@@ -243,7 +247,10 @@ app.post("/updateData", (req, res) => {
 });
 
 app.get("/products", (req, res) => {
-  if (req.session) {
+  // console.log(req?.session)
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
     fetch("http://localhost/JustWeed/backend/includes/view-product.php")
       .then(response => response.json())
       .then(data => {
@@ -261,28 +268,36 @@ app.get("/products", (req, res) => {
 });
 
 app.post("/becomeAseller", (req, res) => {
-  const { password, email } = req.body;
-  fetch("http://localhost/justweed/backend/become-a-seller.php", {
-    method: "POST",
-    headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `password=${password}&email=${email}`
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-      if (data.response === 200) {
-        res.json(data.data);
-      } else {
-        res.status(401).json(data.data);
-      }
+  if (!req.session.user) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const { password, email } = req.body;
+    fetch("http://localhost/justweed/backend/become-a-seller.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `password=${password}&email=${email}`
     })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.response === 200) {
+          res.json(data.data);
+        } else {
+          res.status(401).json(data.data);
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+      });
+  }
+  
 });
 
 app.post("/updateProducts", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  }
   const { id, name, quantity, price, description } = req.body;
   fetch("https://localhost/justweed/backend/update-info-product.php", {
     method: "POST",
@@ -305,6 +320,9 @@ app.post("/updateProducts", (req, res) => {
 });
 
 app.post("/delete-user", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  }
   const { email, password } = req.body;
   fetch("http://localhost/JustWeed/backend/delete-user.php", {
     method: "POST",
@@ -431,6 +449,14 @@ setInterval(() => {
     }
   }
 }, 60 * 60 * 1000);
+
+app.use((req, res, next) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  }
+  next();
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
