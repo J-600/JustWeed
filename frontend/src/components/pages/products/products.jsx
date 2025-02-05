@@ -50,7 +50,8 @@ function Products() {
                 )
                 )
               }
-            </div>) : <h2> {products.data} </h2>}
+            </div>) : <h2> {products.data} </h2>
+            }
         </div>
       </div>
     </div>

@@ -29,9 +29,7 @@ function ForgotPassword() {
             setResponseMessage('Errore durante la richiesta');
         }
     }
-
     return (
-
         <div className={styles.page}>
             <TopBar></TopBar>
             {loading ? (

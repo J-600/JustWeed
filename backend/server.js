@@ -247,7 +247,6 @@ app.post("/updateData", (req, res) => {
 });
 
 app.get("/products", (req, res) => {
-  // console.log(req?.session)
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
@@ -265,6 +264,17 @@ app.get("/products", (req, res) => {
         res.status(500).json({ error: "An error occurred" });
       });
   }
+});
+
+app.get("/session", (req, res) => {
+  if (!req.session.username || !req.session.email) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  }
+  
+  res.json({
+    username: req.session.username,
+    email: req.session.email
+  });
 });
 
 app.post("/becomeAseller", (req, res) => {
@@ -432,6 +442,8 @@ async function sendConfirmationEmail(token, mailOptions) {
   await transporter.sendMail(mailOptions);
 }
 
+
+
 setInterval(() => {
   const now = Date.now();
   let deletedCount = 0;
@@ -452,9 +464,10 @@ setInterval(() => {
 
 app.use((req, res, next) => {
   if (!req.session || !req.session.user) {
-    return res.status(401).json({ error: "Utente non autenticato" });
+    return res.status(401).json({ error: false });
   }
   next();
+  
 });
 
 

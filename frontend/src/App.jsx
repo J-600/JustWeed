@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from './components/navbar/topbarLogin';
 import styles from './components/styles/login.module.css';
+import Loader from './components/loader/loader';
 import CryptoJS from 'crypto-js';
 
 
@@ -11,6 +12,37 @@ function App() {
   const [responseMessage, setResponseMessage] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('http://localhost:3000/products', {
+          credentials: 'include',
+        });
+        
+        if (res.ok) {
+          const sessionRes = await fetch('http://localhost:3000/session', {
+            credentials: 'include',
+          });
+          
+          if (sessionRes.ok) {
+            const sessionData = await sessionRes.json();
+            navigate('/products', { 
+              state: { 
+                email: sessionData.email, 
+                username: sessionData.username 
+              } 
+            });
+          }
+        }
+      } catch (error) {
+        console.log('Not authenticated');
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
@@ -26,8 +58,7 @@ function App() {
 
       // console.log(mail,password);
 
-      const data = await res.json();
-
+      const data = await res.json()
       try {
         if (data.email == null) {
           throw new Error("error");
@@ -45,6 +76,7 @@ function App() {
       setResponseMessage('Errore durante la richiesta');
     }
   };
+  
 
   return (
     <div className={styles.page}>
