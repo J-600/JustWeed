@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopBar from './components/navbar/topbarLogin';
 import styles from './components/styles/login.module.css';
@@ -11,12 +11,11 @@ function App() {
   const [responseMessage, setResponseMessage] = useState(null);
 
   const navigate = useNavigate();
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
     // console.log("Hashed Password:", hashedPassword)
+    
     try {
       const res = await fetch('http://localhost:3000/login', {
         method: 'POST',
@@ -58,7 +57,6 @@ function App() {
 
         <form onSubmit={handleSubmit}>
           <label className="input input-bordered input-info bg-blue-200 flex items-center gap-2 text-black transition-colors duration-300 hover:bg-blue-300 hover:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 focus:outline-none">
-
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
@@ -69,7 +67,6 @@ function App() {
               <path
                 d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
             </svg>
-
             <input type="text" className="grow" placeholder="Username o mail"
               value={mail}
               onChange={(e) => setMail(e.target.value)}
@@ -78,7 +75,6 @@ function App() {
           </label>
           <br />
           <label className="input input-bordered input-info bg-blue-200 flex items-center gap-2 text-black transition-colors duration-300 hover:bg-blue-300 hover:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 focus:outline-none">
-
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
@@ -89,7 +85,10 @@ function App() {
                 d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
                 clipRule="evenodd" />
             </svg>
-            <input type="password" className="grow focus:outline-none" placeholder="Password" />
+            <input type="password" className="grow focus:outline-none" placeholder="Password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required/>
           </label>
           <br />
           <div className={styles.buttonContainer}>
