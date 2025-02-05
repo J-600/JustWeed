@@ -1,4 +1,3 @@
-// src/components/pages/products/products.js
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import TopBar from '../../navbar/topbar';

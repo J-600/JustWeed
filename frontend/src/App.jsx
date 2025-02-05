@@ -92,7 +92,9 @@ function App() {
           </label>
           <br />
           <div className={styles.buttonContainer}>
-            <button type="submit" className={styles.button}>Login</button>
+          <button type="submit" className="btn btn-wide bg-[#79a9ec] border-[#79a9ec] text-white hover:bg-[#5c81b6] hover:border-[#5c81b6]">
+      Login
+    </button>
           </div>
         </form>
 
