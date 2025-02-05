@@ -36,9 +36,20 @@ function Signup() {
         <div className={styles.page} >
             <TopBar></TopBar>
             <div className={styles.container}>
-                <h1 className="text-4xl font-bold text-center pb-10" style={{ textShadow: '0 0 10px rgb(121, 169, 236), 0 0 20px rgb(121, 169, 236)' }}>
-                    Sign up
-                </h1>
+                <div className="relative w-full pb-10">
+                    <button
+                        className="btn btn-sm bg-[#79a9ec] border-[#79a9ec] text-white hover:bg-[#5c81b6] hover:border-[#5c81b6] px-2 absolute left-0"
+                        onClick={() => window.history.back()}
+                    >
+                        ⬅
+                    </button>
+                    <h1 className="text-4xl font-bold text-center" style={{ textShadow: '0 0 10px rgb(121, 169, 236), 0 0 20px rgb(121, 169, 236)' }}>
+                        Sign up
+                    </h1>
+                </div>
+
+
+
                 <form onSubmit={handleSubmit} >
                     <label className="input input-bordered input-info bg-blue-200 flex items-center gap-2 text-black transition-colors duration-300 hover:bg-blue-300 hover:border-blue-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 focus:outline-none">
                         <svg
@@ -91,9 +102,9 @@ function Signup() {
                     </label>
                     <br />
                     <div className={styles.buttonContainer}>
-                    <button type="submit" className="btn btn-wide bg-[#79a9ec] border-[#79a9ec] text-white hover:bg-[#5c81b6] hover:border-[#5c81b6]">
-      Signup
-    </button>
+                        <button type="submit" className="btn btn-wide bg-[#79a9ec] border-[#79a9ec] text-white hover:bg-[#5c81b6] hover:border-[#5c81b6]">
+                            Signup
+                        </button>
                     </div>
                 </form>
                 {responseMessage && <p className={styles.responseMessage}>{responseMessage}</p>}
