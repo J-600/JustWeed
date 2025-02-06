@@ -8,7 +8,7 @@ try{
 
     require_once "dbh.inc.php";
 
-    $email = $_POST["email"] ?? "jhonpanora06@gmail.com";
+    $email = $_POST["email"];
     $table = "users_jw";
     $table_products = "products_jw";
 

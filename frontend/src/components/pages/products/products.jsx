@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../../navbar/topbar";
 import styles from "../../styles/products.module.css";
+import Loader from '../../loader/loader';
 
 function Products() {
   const location = useLocation();
   const { email, username } = location.state || {};
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,29 +23,13 @@ function Products() {
           navigate("/");
         }
         setProducts(data);
+        setLoading(false);
       } catch (error) {
         console.error("Errore durante la richiesta:", error);
       }
     };
     fetchProduct();
   }, []);
-
-  const convertBlobToImageUrl = (blobData) => {
-    if (!blobData) return "https://via.placeholder.com/150";
-
-    try {
-      const byteCharacters = atob(blobData);
-      const byteNumbers = new Uint8Array(byteCharacters.length).map((_, i) =>
-        byteCharacters.charCodeAt(i)
-      );
-      const blob = new Blob([byteNumbers], { type: "image/png" });
-
-      return URL.createObjectURL(blob);
-    } catch (error) {
-      console.error("Errore nella conversione del Blob:", error);
-      return "https://via.placeholder.com/150";
-    }
-  };
 
   return (
     <div className={styles.page}>
@@ -72,29 +58,36 @@ function Products() {
         </div>
 
         <div className="px-6 pb-[5em] flex-1 overflow-y-auto">
-          {Array.isArray(products) && products.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 pr-[4.2em]">
-              {products.map((product, index) => (
-                <div key={index} className="card card-compact bg-base-100 shadow-xl h-full flex flex-col">
-                  <figure>
-                    <img
-                      src={product.img || "https://via.placeholder.com/150"}
-                      alt={product.name}
-                      className="w-full h-48 object-cover"
-                    />
-                  </figure>
-                  <div className="card-body flex flex-col flex-1">
-                    <h2 className="card-title">{product.name}</h2>
-                    <p>{product.description}</p>
-                    <div className="card-actions justify-end">
-                      <button className="btn btn-primary">Buy Now</button>
+          { loading ? (
+            <div className="flex justify-center">
+            <Loader />
+          </div>
+          
+          ): ( 
+            Array.isArray(products) && products.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 pr-[4.2em]">
+                {products.map((product, index) => (
+                  <div key={index} className="card card-compact bg-base-100 shadow-xl h-full flex flex-col">
+                    <figure>
+                      <img
+                        src={product.img || "https://via.placeholder.com/150"}
+                        alt={product.name}
+                        className="w-full h-48 object-cover"
+                      />
+                    </figure>
+                    <div className="card-body flex flex-col flex-1">
+                      <h2 className="card-title">{product.name}</h2>
+                      <p>{product.description}</p>
+                      <div className="card-actions justify-end">
+                        <button className="btn btn-primary">Buy Now</button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <h2>{products?.data}</h2>
+                ))}
+              </div>
+            ) : (
+              <h2>{products?.data}</h2>
+            )
           )}
         </div>
       </div>

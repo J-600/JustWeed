@@ -90,20 +90,22 @@ app.get("/confirm", (req, res) => {
   // console.log(tokenExpiration);
 
   if (!tokenExpiration || Date.now() > tokenExpiration) {
-    fetch("http://localhost/justweed/backend/includes/delete-user-unconfirmed.php", {
-      method: "POST",
-      headers: { "Content-type": "application/x-www-form-urlencoded" },
-      body: `email=${email}`
-    })
-      .then(response => response.json())
-      .then(deleteData => {
-        deleteToken(token);
-        res.json({ data: "token scaduto...", message: false });
-      })
-      .catch(error => {
-        console.error("Error deleting user:", error);
-        res.status(500).json({ data: "error...", message: false });
-      });
+    res.json({ data: "token scaduto...", message: false });
+
+    // fetch("http://localhost/justweed/backend/includes/delete-user-unconfirmed.php", {
+    //   method: "POST",
+    //   headers: { "Content-type": "application/x-www-form-urlencoded" },
+    //   body: `email=${email}`
+    // })
+    //   .then(response => response.json())
+    //   .then(deleteData => {
+    //     deleteToken(token);
+    //     res.json({ data: "token scaduto...", message: false });
+    //   })
+    //   .catch(error => {
+    //     console.error("Error deleting user:", error);
+    //     res.status(500).json({ data: "error...", message: false });
+    //   });
   } else {
     fetch(`http://localhost/justweed/backend/includes/confirm-user.php`, {
       method: "POST",
@@ -266,19 +268,35 @@ app.get("/products", (req, res) => {
   }
 });
 
-app.get("/session", (req, res) => {
-  if (!req.session.username || !req.session.email) {
+app.get("/account-info", (req,res) => {
+  console.log(req.session)
+  if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
+  } else { 
+    fetch("http://localhost/justweed/backend/includes/view-user-info.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `email=${req.session.email}`
+    })
+    .then(response => response.json())
+    .then(data =>{
+      if (data.message && data.response === 200){
+        res.json(data.data[0]);
+      } else if (data.response === 500) {
+        res.status(500).json("errore nel db");
+      } else {
+        res.status(400).json(data)
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
   }
-  
-  res.json({
-    username: req.session.username,
-    email: req.session.email
-  });
-});
+})
 
 app.post("/becomeAseller", (req, res) => {
-  if (!req.session.user) {
+  if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
     const { password, email } = req.body;
@@ -305,7 +323,7 @@ app.post("/becomeAseller", (req, res) => {
 });
 
 app.post("/updateProducts", (req, res) => {
-  if (!req.session.user) {
+  if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   }
   const { id, name, quantity, price, description } = req.body;
@@ -330,7 +348,7 @@ app.post("/updateProducts", (req, res) => {
 });
 
 app.post("/delete-user", (req, res) => {
-  if (!req.session.user) {
+  if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   }
   const { email, password } = req.body;
@@ -468,6 +486,17 @@ app.use((req, res, next) => {
   }
   next();
   
+});
+
+app.get("/session", (req, res) => {
+  if (!req.session.username || !req.session.email) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  }
+  
+  res.json({
+    username: req.session.username,
+    email: req.session.email
+  });
 });
 
 

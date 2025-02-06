@@ -4,6 +4,7 @@ import Confirm from './components/pages/confirm/confirm';
 import Signup from './components/pages/signup/signup'
 import ForgotPassword from './components/pages/forgotPassword/forgotPassword';
 import NewPassword from './components/pages/newpassword/newpassword';
+import AccountInfo from './components/pages/account-info/account-info';
 import App from './App';
 
 function AppRoutes() {
@@ -15,6 +16,7 @@ function AppRoutes() {
       <Route path='/confirm' element={<Confirm/>}/>
       <Route path='/forgotpassword' element={<ForgotPassword/>}/>
       <Route path='/newpassword' element={<NewPassword/>}/>
+      <Route path='/account-info' element={<AccountInfo/>}/>
     </Routes>
   );
 }

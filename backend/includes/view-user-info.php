@@ -1,38 +1,37 @@
 <?php
 
 try{
-    if ($_SERVER["REQUEST_METHOD"] != "POST"){
-        throw new Exception("Non e' una richiesta POST");
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+        throw new Exception("Non è una richiesta POST");
     }
 
     require_once "dbh.inc.php";
 
-    $email = $_POST["email"];
     $table = "users_jw";
 
-    $sql = "SELECT username FROM $table WHERE email = :email";
+    $email = $_POST["email"];
+    // $username = $_POST["username"];
+
+    $sql = "SELECT email,username,type,registered_at FROM $table WHERE email = :email AND verified = 'T'";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     if (empty($result)){
-        throw new Exception("Utente non registrato");
+        throw new Exception("utente non registrato");
     }
 
-    $sql = "UPDATE $table SET (verified,registered_at) VALUES ('T', NOW()) WHERE email = :email";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":email", $email);
-    $stmt->execute();
-
-    
     $response = [
         "response" => 200,
-        "message" => true,
+        "message" => True,
         "data" => $result
     ];
+
     echo json_encode($response);
-} catch (PDOException $e) {
+
+}catch (PDOException $e) {
     $response = [
         "response" => 500,
         "message" => false,
