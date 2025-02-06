@@ -91,9 +91,9 @@ function App() {
       <div className="flex-grow flex items-center justify-center w-full">
         <div className="card w-full max-w-md bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
           <div className="card-body space-y-6 p-8">
-            <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
-              JustWeed
-            </h1>
+          <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
+    Log In
+</h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="form-control">
