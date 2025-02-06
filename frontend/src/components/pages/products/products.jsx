@@ -11,7 +11,7 @@ function Products() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      console.log(email, username)
+      // console.log(email, username)
       try {
         const res = await fetch("http://localhost:3000/products", {
           method: "GET",
@@ -33,7 +33,7 @@ function Products() {
     <div className={styles.page}>
       <TopBar username={username} email={email} />
       <div className={styles.main}>
-        <div className="flex flex-col gap-8 w-full h-full">
+        <div className="flex flex-col gap-8 w-full h-full fixed">
           <div className="px-6 pt-6">
             <label className="input input-bordered input-info flex items-center gap-2 w-[37.5%] rounded-[1em] border-[rgb(121,169,236)] border-[0.05em]">
               <input
@@ -58,7 +58,7 @@ function Products() {
 
           <div className="px-6 pb-6 flex-1 overflow-y-auto">
             {Array.isArray(products) && products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 pr-[3em]">
                 {products.map((product, index) => (
                   <div
                     key={index}
