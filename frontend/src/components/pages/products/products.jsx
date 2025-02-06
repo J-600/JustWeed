@@ -32,12 +32,8 @@ function Products() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
-      {/* TopBar */}
       <TopBar username={username} email={email} />
-
-      {/* Main Content */}
       <div className="flex-grow flex flex-col items-center p-6 pt-[6em]">
-        {/* Search Bar */}
         <div className="w-full max-w-2xl mb-8">
           <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50] border border-blue-900/30 rounded-lg">
             <input

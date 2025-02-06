@@ -61,21 +61,21 @@ function App() {
 
       const data = await res.json();
       if (data.email) {
-        setResponseMessage("Login successful");
-        setResponseType('success'); // Imposta il tipo di messaggio su 'success'
+        setResponseMessage("Benvenuto");
+        setResponseType('success');
         const email = data.email;
         const username = data.username;
         setTimeout(() => {
           navigate('/products', { state: { email, username } });
-        }, 1500); // Naviga dopo 1.5 secondi
+        }, 1500);
       } else {
-        setResponseMessage(data.error || "Invalid credentials");
-        setResponseType('error'); // Imposta il tipo di messaggio su 'error'
+        setResponseMessage(data.error || "Mail o password sbagliate");
+        setResponseType('error'); 
       }
     } catch (error) {
       console.error('Request error:', error);
       setResponseMessage('Network error. Please try again.');
-      setResponseType('error'); // Imposta il tipo di messaggio su 'error'
+      setResponseType('error'); 
     }
   };
 
