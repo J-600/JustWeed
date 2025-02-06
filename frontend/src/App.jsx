@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import {ArrowRight, AlertCircle } from 'lucide-react';
 import TopBar from './components/navbar/topbarLogin';
 import Loader from './components/loader/loader';
 import CryptoJS from 'crypto-js';
@@ -34,7 +34,9 @@ function App() {
                 username: sessionData.username
               }
             });
+            
           }
+          
         }
         setIsLoading(false);
       } catch (error) {
@@ -87,22 +89,22 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col items-center justify-center p-4">
-
+      {/* <TopBar></TopBar> */}
       <div className="flex-grow flex items-center justify-center w-full">
         <div className="card w-full max-w-md bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
           <div className="card-body space-y-6 p-8">
-          <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
-    Log In
-</h1>
+            <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
+              JustWeed
+            </h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="form-control">
-                <label class="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns="http://  www.w3.org/2000/svg"
                     viewBox="0 0 16 16"
                     fill="currentColor"
-                    class="h-4 w-4 opacity-70">
+                    className="h-4 w-4 opacity-70">
                     <path
                       d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
                     <path
@@ -120,12 +122,12 @@ function App() {
               </div>
 
               <div className="form-control">
-                <label class="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50] ">
+                <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50] ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 16 16"
                     fill="currentColor"
-                    class="h-4 w-4 opacity-70">
+                    className="h-4 w-4 opacity-70">
                     <path
                       d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
                   </svg>

@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { FaBars, FaUser } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import styles from './topbar.module.css';
+import React, { useState, useRef, useEffect } from "react";
+import { FaBars, FaUser, FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-export default function Topbar({ username, mail}) {
+export default function Topbar({ username, mail }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [menuHeight] = useState('80vh'); // Altezza fissa impostata qui
   const sidebarRef = useRef(null);
   const userButtonRef = useRef(null);
   const navigate = useNavigate();
@@ -14,35 +12,80 @@ export default function Topbar({ username, mail}) {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Chiudi il menu quando si clicca fuori
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        userButtonRef.current &&
+        !userButtonRef.current.contains(event.target)
+      ) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div>
-      {/* Topbar */}
-      <div className={styles.topbar}>
-        <FaBars className={styles.littlebutton} />
-        <div className={styles.centerButton}>JustWeed</div>
+      <div className="w-full bg-[#1E2633] shadow-lg border-b border-blue-900/30 p-4 flex items-center justify-between rounded-b-3xl">
+        <FaBars
+          className="text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300"
+          onClick={() => navigate("/")}
+        />
+        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
+          JustWeed
+        </h1>
         <FaUser
           ref={userButtonRef}
-          className={`${styles.littlebutton} ${isSidebarOpen ? styles.activeButton : ''}`}
+          className={`text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300 ${
+            isSidebarOpen ? "text-purple-500" : ""
+          }`}
           onClick={toggleSidebar}
         />
       </div>
-
-      {/* Sidebar */}
-      <div 
+      <div
         ref={sidebarRef}
-        className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ''}`} 
-        style={{ height: isSidebarOpen ? menuHeight : '0' }}
+        className={`fixed top-0 right-0 h-screen bg-[#1E2633] shadow-2xl border-l border-blue-900/30 transform transition-all duration-500 ease-in-out ${
+          isSidebarOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+        style={{ width: "250px", zIndex: 1000 }}
       >
-        <div className={styles.sidebarContent}>
-          <ul className={styles.sidebarOptions}>
-            <li onClick={() => navigate('/account-info')}>Informazioni Account</li>
-            <li onClick={() => navigate('/recent-purchases')}>Acquisti Recenti</li>
-            <li onClick={() => navigate('/payment-methods')}>Modalità di Pagamento</li>
-            {/* Aggiungi altri elementi qui se necessario */}
+        <div className="flex justify-end p-4">
+          <FaTimes
+            className="text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300"
+            onClick={toggleSidebar}
+          />
+        </div>
+        <div className="p-6 space-y-6">
+          <ul className="space-y-4">
+            <li
+              className="text-white hover:text-blue-400 cursor-pointer transition-colors duration-300"
+              onClick={() => navigate("/account-info")}
+            >
+              Informazioni Account
+            </li>
+            <li
+              className="text-white hover:text-blue-400 cursor-pointer transition-colors duration-300"
+              onClick={() => navigate("/recent-purchases")}
+            >
+              Acquisti Recenti
+            </li>
+            <li
+              className="text-white hover:text-blue-400 cursor-pointer transition-colors duration-300"
+              onClick={() => navigate("/payment-methods")}
+            >
+              Modalità di Pagamento
+            </li>
           </ul>
-          <button 
-            className={styles.weederButton} 
-            onClick={() => navigate('/become-weeder')}
+          <button
+            className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+            onClick={() => navigate("/become-weeder")}
           >
             Diventa uno Weeder
           </button>

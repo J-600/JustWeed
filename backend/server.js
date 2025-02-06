@@ -252,6 +252,7 @@ app.get("/products", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
+    console.log("t")
     fetch("http://localhost/JustWeed/backend/includes/view-product.php")
       .then(response => response.json())
       .then(data => {
@@ -481,7 +482,8 @@ setInterval(() => {
 }, 60 * 60 * 1000);
 
 app.use((req, res, next) => {
-  if (!req.session || !req.session.user) {
+  // console.log("fermo all0use")
+  if (!req.session || !req.session.email) {
     return res.status(401).json({ error: false });
   }
   next();
@@ -489,6 +491,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/session", (req, res) => {
+  // console.log("fermo al session")
   if (!req.session.username || !req.session.email) {
     return res.status(401).json({ error: "Utente non autenticato" });
   }
