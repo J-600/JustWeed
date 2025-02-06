@@ -16,6 +16,7 @@
     align-items: center;
     justify-content: center;
     padding-top: 7em;
+    overflow-y: hidden;
 }
 
 .main { 
@@ -24,6 +25,7 @@
     height: 80vh;
     padding-left: 2em;
     padding-right: 2em;
+    /* overflow: auto; */
 }
 
 /* .centerButton {
