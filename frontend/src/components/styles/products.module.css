@@ -11,8 +11,83 @@
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100vh; /* Rende l'altezza della pagina pari alla viewport */
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-top: 7em;
 }
+
+.main { 
+    width: 100%;
+    /* border: solid red 2px;  */
+    height: 80vh;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+/* .centerButton {
+    text-align: center;
+    background-color: transparent;
+    border: 0.05em solid var(--border-color);
+    padding: 0.5em 3em;
+    width: 50%;
+    color: var(--enhanced-glow-color);
+    font-size: 25px;
+    font-weight: bold;
+    border-radius: 1em;
+    outline: none;
+    transition: all 0.3s;
+    cursor: pointer;
+    box-shadow: 0 0 1em .25em var(--glow-color),
+                0 0 4em 1em var(--glow-spread-color),
+                inset 0 0 .75em .25em var(--glow-color);
+    text-shadow: 0 0 .5em var(--glow-color);
+  }
+  
+  .centerButton:hover {
+    color: var(--border-color);
+    background-color: var(--glow-color);
+    box-shadow: 0 0 1em .25em var(--glow-color),
+                0 0 4em 2em var(--glow-spread-color),
+                inset 0 0 .75em .25em var(--glow-color);
+  }
+  
+  .centerButton:active {
+    box-shadow: 0 0 0.6em .25em var(--glow-color),
+                0 0 2.5em 2em var(--glow-spread-color),
+                inset 0 0 .5em .25em var(--glow-color);
+  } */
+
+  .centerButton {
+    text-align: center;
+    background-color: transparent;
+    border: 0.05em solid var(--border-color);
+    padding: 0.5em 3em;
+    width: 50%;
+    color: var(--enhanced-glow-color);
+    font-size: 25px;
+    font-weight: bold;
+    border-radius: 1em;
+    outline: none;
+    transition: all 0.3s;
+    cursor: pointer;
+    box-shadow: 0 0 1em .25em var(--glow-color),
+                0 0 4em 1em var(--glow-spread-color),
+                inset 0 0 .75em .25em var(--glow-color);
+    text-shadow: 0 0 .5em var(--glow-color);
+  }
+  
+  .centerButton:hover {
+    color: var(--border-color);
+    background-color: var(--glow-color);
+    box-shadow: 0 0 1em .25em var(--glow-color),
+                0 0 4em 2em var(--glow-spread-color),
+                inset 0 0 .75em .25em var(--glow-color);
+  }
+  
+  .centerButton:active {
+    box-shadow: 0 0 0.6em .25em var(--glow-color),
+                0 0 2.5em 2em var(--glow-spread-color),
+                inset 0 0 .5em .25em var(--glow-color);
+  }
