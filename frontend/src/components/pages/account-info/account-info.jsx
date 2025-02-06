@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, CreditCard, MapPin, Trash2 } from "lucide-react";
+import { User, CreditCard, MapPin, Trash2, ArrowLeft } from "lucide-react";
 import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 
 const AccountInfoContent = ({ email, username, type, registeredAt }) => (
-  <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
+  <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
     <div className="card-body space-y-4">
       <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
         Account Information
@@ -33,7 +33,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => (
 );
 
 const PaymentMethods = () => (
-  <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
+  <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
     <div className="card-body space-y-4">
       <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
         Payment Methods
@@ -53,7 +53,7 @@ const PaymentMethods = () => (
 );
 
 const BillingAddresses = () => (
-  <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
+  <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
     <div className="card-body space-y-4">
       <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
         Billing Addresses
@@ -146,56 +146,72 @@ function AccountInfo() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-[#1E2633] p-4 border-r border-blue-900/30 flex flex-col justify-between">
-        <div>
-          <ul className="menu">
-            <li
-              className={`mb-2 ${activeTab === "account" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-              onClick={() => setActiveTab("account")}
+    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+      {/* TopBar */}
+      <TopBar />
+
+      {/* Main Content */}
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <div className="w-64 bg-[#1E2633] p-4 border-t-0 border-r border-blue-900/30 flex flex-col justify-between">
+          <div>
+            {/* Back Button */}
+            <button
+              className="btn btn-ghost w-full flex items-center gap-2 text-white hover:bg-[#2C3E50] mb-4"
+              onClick={() => navigate("/")}
             >
-              <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
-                <User className="w-5 h-5" />
-                Account Info
-              </a>
-            </li>
-            <li
-              className={`mb-2 ${activeTab === "payments" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-              onClick={() => setActiveTab("payments")}
+              <ArrowLeft className="w-5 h-5" />
+              Back
+            </button>
+
+            {/* Menu */}
+            <ul className="menu">
+              <li
+                className={`mb-2 ${activeTab === "account" ? "bg-[#2C3E50] rounded-lg" : ""}`}
+                onClick={() => setActiveTab("account")}
+              >
+                <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
+                  <User className="w-5 h-5" />
+                  Account Info
+                </a>
+              </li>
+              <li
+                className={`mb-2 ${activeTab === "payments" ? "bg-[#2C3E50] rounded-lg" : ""}`}
+                onClick={() => setActiveTab("payments")}
+              >
+                <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
+                  <CreditCard className="w-5 h-5" />
+                  Payment Methods
+                </a>
+              </li>
+              <li
+                className={`mb-2 ${activeTab === "addresses" ? "bg-[#2C3E50] rounded-lg" : ""}`}
+                onClick={() => setActiveTab("addresses")}
+              >
+                <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
+                  <MapPin className="w-5 h-5" />
+                  Billing Addresses
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Delete Account Button */}
+          <div>
+            <button
+              className="btn btn-error w-full bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700 transform transition-all duration-300 hover:scale-105"
+              onClick={() => setShowDeleteConfirm(true)}
             >
-              <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
-                <CreditCard className="w-5 h-5" />
-                Payment Methods
-              </a>
-            </li>
-            <li
-              className={`mb-2 ${activeTab === "addresses" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-              onClick={() => setActiveTab("addresses")}
-            >
-              <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
-                <MapPin className="w-5 h-5" />
-                Billing Addresses
-              </a>
-            </li>
-          </ul>
+              <Trash2 className="w-5 h-5 mr-2" />
+              Delete Account
+            </button>
+          </div>
         </div>
 
-        {/* Delete Account Button */}
-        <div>
-          <button
-            className="btn btn-error w-full bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700 transform transition-all duration-300 hover:scale-105"
-            onClick={() => setShowDeleteConfirm(true)}
-          >
-            <Trash2 className="w-5 h-5 mr-2" />
-            Delete Account
-          </button>
+        {/* Main Content Area */}
+        <div className="flex-1 p-8 overflow-y-auto">
+          {renderContent()}
         </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex-1 p-8 overflow-y-auto">
-        {renderContent()}
       </div>
 
       {/* Delete Account Confirmation Modal */}

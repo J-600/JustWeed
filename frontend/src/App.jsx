@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {ArrowRight, AlertCircle } from 'lucide-react';
+import { ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import TopBar from './components/navbar/topbarLogin';
 import Loader from './components/loader/loader';
 import CryptoJS from 'crypto-js';
@@ -9,6 +9,7 @@ function App() {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [responseMessage, setResponseMessage] = useState(null);
+  const [responseType, setResponseType] = useState(null); // 'success' o 'error'
   const [isLoading, setIsLoading] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -34,9 +35,7 @@ function App() {
                 username: sessionData.username
               }
             });
-            
           }
-          
         }
         setIsLoading(false);
       } catch (error) {
@@ -61,21 +60,22 @@ function App() {
       });
 
       const data = await res.json();
-      try {
-        if (data.email == null) {
-          throw new Error("error");
-        }
+      if (data.email) {
+        setResponseMessage("Login successful");
+        setResponseType('success'); // Imposta il tipo di messaggio su 'success'
         const email = data.email;
         const username = data.username;
-        setResponseMessage("Login successful");
-        navigate('/products', { state: { email, username } });
-      } catch (error) {
-        setResponseMessage(data);
+        setTimeout(() => {
+          navigate('/products', { state: { email, username } });
+        }, 1500); // Naviga dopo 1.5 secondi
+      } else {
+        setResponseMessage(data.error || "Invalid credentials");
+        setResponseType('error'); // Imposta il tipo di messaggio su 'error'
       }
-
     } catch (error) {
       console.error('Request error:', error);
       setResponseMessage('Network error. Please try again.');
+      setResponseType('error'); // Imposta il tipo di messaggio su 'error'
     }
   };
 
@@ -89,7 +89,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col items-center justify-center p-4">
-      {/* <TopBar></TopBar> */}
       <div className="flex-grow flex items-center justify-center w-full">
         <div className="card w-full max-w-md bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
           <div className="card-body space-y-6 p-8">
@@ -101,7 +100,7 @@ function App() {
               <div className="form-control">
                 <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
                   <svg
-                    xmlns="http://  www.w3.org/2000/svg"
+                    xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 16 16"
                     fill="currentColor"
                     className="h-4 w-4 opacity-70">
@@ -178,8 +177,16 @@ function App() {
               </div>
 
               {responseMessage && (
-                <div className="alert alert-error shadow-lg animate-fade-in">
-                  <AlertCircle className="w-6 h-6" />
+                <div
+                  className={`alert shadow-lg animate-fade-in ${
+                    responseType === 'success' ? 'alert-success' : 'alert-error'
+                  }`}
+                >
+                  {responseType === 'success' ? (
+                    <CheckCircle className="w-6 h-6" />
+                  ) : (
+                    <AlertCircle className="w-6 h-6" />
+                  )}
                   <span>{responseMessage}</span>
                 </div>
               )}
