@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../loader/loader";
+import { AlertCircle, CheckCircle } from 'lucide-react';
 
 function ForgotPassword() {
   const navigate = useNavigate();
   const [mail, setMail] = useState("");
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
+  const [responseType, setResponseType] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,9 +22,11 @@ function ForgotPassword() {
       });
       const data = await res.json();
       setResponseMessage(data.message || data);
+      setResponseType('success');
     } catch (error) {
       console.error("Errore durante la richiesta:", error);
       setResponseMessage("Errore durante la richiesta");
+      setResponseType('error');
     } finally {
       setLoading(false);
     }
@@ -34,9 +38,9 @@ function ForgotPassword() {
         <div className="card w-full max-w-md bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
           <div className="card-body space-y-6 p-8">
             <div className="relative w-full pb-6">
-            <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
-    Forgot Password
-</h1>
+              <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
+                Forgot Password
+              </h1>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -63,21 +67,14 @@ function ForgotPassword() {
               </div>
 
               {responseMessage && (
-                <div className="alert alert-error shadow-lg animate-fade-in">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                <div className={`alert shadow-lg animate-fade-in ${
+                  responseType === 'success' ? 'alert-success' : 'alert-error'
+                }`}>
+                  {responseType === 'success' ? (
+                    <CheckCircle className="w-6 h-6" />
+                  ) : (
+                    <AlertCircle className="w-6 h-6" />
+                  )}
                   <span>{responseMessage}</span>
                 </div>
               )}
