@@ -10,7 +10,6 @@ try{
     $table = "users_jw";
 
     $email = $_POST["email"];
-    // $username = $_POST["username"];
 
     $sql = "SELECT email,username,type,registered_at FROM $table WHERE email = :email AND verified = 'T'";
     $stmt = $pdo->prepare($sql);

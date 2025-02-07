@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { User, CreditCard, MapPin, Trash2, ArrowLeft, Pencil, Lock } from "lucide-react";
 import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
+import CryptoJS from 'crypto-js';
 
 const AccountInfoContent = ({ email, username, type, registeredAt }) => {
   const [isEditingUsername, setIsEditingUsername] = useState(false);
@@ -11,45 +12,48 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
   const [editedEmail, setEditedEmail] = useState(email);
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
-  const handleSave = async (field) => {
+  const handleSave = async () => {
     if (!password) {
       setErrorMessage("Password is required to make changes.");
       return;
     }
 
-    // Simula una chiamata API per verificare la password
     try {
-      const res = await fetch("http://localhost:3000/verify-password", {
+      const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+      const res = await fetch("http://localhost:3000/updateData", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-        credentials: "include",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: hashedPassword, new_email: editedEmail, new_username:editedUsername }),
+        credentials: 'include'
       });
-      const data = await res.json();
+      const responseData = await res.json();
 
       if (res.status !== 200) {
-        setErrorMessage(data.message || "Invalid password.");
+        setErrorMessage(responseData.message || "Failed to update data.");
+        setEditedUsername(username);
+        setEditedEmail(email);
+        username = editedUsername
+        email = editedEmail
         return;
       }
 
-      // Se la password è corretta, salva le modifiche
-      console.log(`Salvataggio di ${field}:`, {
-        username: editedUsername,
-        email: editedEmail,
-      });
-
-      // Disabilita la modalità di modifica
-      if (field === "username") setIsEditingUsername(false);
-      if (field === "email") setIsEditingEmail(false);
-      setErrorMessage("");
+      setSuccessMessage("Data updated successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000); // Nasconde il messaggio dopo 3 secondi
+      setIsEditingUsername(false);
+      setIsEditingEmail(false);
+      setPassword("");
     } catch (error) {
       console.error("Errore durante la richiesta:", error);
       setErrorMessage("An error occurred. Please try again.");
+      // Ripristina i valori originali in caso di errore
+      setEditedUsername(username);
+      setEditedEmail(email);
     }
   };
 
@@ -59,7 +63,6 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
       return;
     }
 
-    // Simula una chiamata API per cambiare la password
     try {
       const res = await fetch("http://localhost:3000/change-password", {
         method: "POST",
@@ -74,7 +77,8 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
         return;
       }
 
-      alert("Password changed successfully!");
+      setSuccessMessage("Password changed successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000); 
       setShowPasswordModal(false);
       setErrorMessage("");
     } catch (error) {
@@ -90,6 +94,43 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
           Account Information
         </h2>
         <div className="space-y-6">
+          {successMessage && (
+            <div className="alert alert-success shadow-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{successMessage}</span>
+            </div>
+          )}
+          {errorMessage && (
+            <div className="alert alert-error shadow-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           {/* Username */}
           <div>
             <label className="font-bold text-lg text-blue-400">Username</label>
@@ -102,11 +143,13 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
                   className="text-white bg-transparent border-b border-blue-500 focus:outline-none flex-1"
                 />
               ) : (
-                <p className="text-white flex-1">{editedUsername}</p>
+                <p className="text-white flex-1">{username}</p>
               )}
               <button
                 onClick={() => {
-                  if (isEditingUsername) handleSave("username");
+                  if (!isEditingUsername) {
+                    setEditedUsername(username);
+                  }
                   setIsEditingUsername(!isEditingUsername);
                 }}
                 className="text-gray-400 hover:text-blue-500 transition-colors duration-300"
@@ -116,7 +159,6 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
             </div>
           </div>
 
-          {/* Email */}
           <div>
             <label className="font-bold text-lg text-blue-400">Email</label>
             <div className="flex items-center gap-2 mt-1">
@@ -128,11 +170,13 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
                   className="text-white bg-transparent border-b border-blue-500 focus:outline-none flex-1"
                 />
               ) : (
-                <p className="text-white flex-1">{editedEmail}</p>
+                <p className="text-white flex-1">{email}</p>
               )}
               <button
                 onClick={() => {
-                  if (isEditingEmail) handleSave("email");
+                  if (!isEditingEmail) {
+                    setEditedEmail(email);
+                  }
                   setIsEditingEmail(!isEditingEmail);
                 }}
                 className="text-gray-400 hover:text-blue-500 transition-colors duration-300"
@@ -142,21 +186,6 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
             </div>
           </div>
 
-          {/* Password */}
-          <div>
-            <label className="font-bold text-lg text-blue-400">Password</label>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-white flex-1">••••••••</p>
-              <button
-                onClick={() => setShowPasswordModal(true)}
-                className="text-gray-400 hover:text-blue-500 transition-colors duration-300"
-              >
-                <Lock className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Password Input for Verification */}
           {(isEditingUsername || isEditingEmail) && (
             <div>
               <label className="font-bold text-lg text-blue-400">Confirm Password</label>
@@ -167,21 +196,34 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
                 className="text-white bg-transparent border-b border-blue-500 focus:outline-none w-full mt-1"
                 placeholder="Enter your password to confirm changes"
               />
-              {errorMessage && (
-                <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
-              )}
             </div>
           )}
 
-          {/* Registered At (non modificabile) */}
+          {(isEditingUsername || isEditingEmail) && (
+            <button
+              onClick={handleSave}
+              className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+            >
+              Save Changes
+            </button>
+          )}
+
           <div>
             <label className="font-bold text-lg text-blue-400">Registered At</label>
             <p className="text-white">{new Date(registeredAt).toLocaleDateString()}</p>
           </div>
+
+          <div>
+            <button
+              onClick={() => setShowPasswordModal(true)}
+              className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+            >
+              Modifica Password
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Password Change Modal */}
       {showPasswordModal && (
         <div className="modal modal-open">
           <div className="modal-box bg-[#1E2633] border border-blue-900/30">
@@ -218,7 +260,22 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
                 />
               </div>
               {errorMessage && (
-                <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+                <div className="alert alert-error shadow-lg mt-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>{errorMessage}</span>
+                </div>
               )}
             </div>
             <div className="modal-action">

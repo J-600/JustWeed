@@ -223,21 +223,39 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/updateData", (req, res) => {
-  if (!req.session.user) {
+  if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   }
-  const { password, email, new_email, new_username, new_password } = req.body;
+  const { password, email, new_email, new_username } = req.body;
+  var nE = new_email
 
-  fetch("https://localhost/justweed/backend/update-user-info.php", {
+  if (email == new_email){
+    nE = null
+  }
+
+  console.log(password, email, new_email ?? null, new_username )
+  fetch("http://localhost/justweed/backend/includes/update-user-info.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `password=${password}&email=${email}&new_email=${new_email ?? null}&new_password=${new_password ?? null}&new_username=${new_username}`
+    body: `password=${password}&email=${email}&new_email=${nE ?? null}&new_username=${new_username}`
   })
     .then(response => response.json())
     .then(data => {
       console.log(data);
       if (data.response === 200) {
-        res.json(data.data);
+        if (new_email){
+          req.session.email = new_email;
+        }
+        if (new_username){
+          req.session.username = new_username; 
+        }
+        req.session.save(err => {
+          if (err) {
+            console.error("Errore salvataggio sessione:", err);
+            return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
+          }
+          res.json(data.data);
+        });
       } else {
         res.status(401).json(data.data);
       }
@@ -270,7 +288,6 @@ app.get("/products", (req, res) => {
 });
 
 app.get("/account-info", (req,res) => {
-  // console.log(req.session) 
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else { 
@@ -482,8 +499,8 @@ setInterval(() => {
 }, 60 * 60 * 1000);
 
 app.use((req, res, next) => {
-  // console.log("fermo all0use")
-  if (!req.session || !req.session.email) {
+  console.log("fermo all0use")
+  if (!req.session || !req.session.username) {
     return res.status(401).json({ error: false });
   }
   next();
@@ -491,7 +508,6 @@ app.use((req, res, next) => {
 });
 
 app.get("/session", (req, res) => {
-  // console.log("fermo al session")
   if (!req.session.username || !req.session.email) {
     return res.status(401).json({ error: "Utente non autenticato" });
   }
