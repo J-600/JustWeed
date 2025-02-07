@@ -1,15 +1,19 @@
-
 <?php
-try {
-    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+
+
+try{
+
+    if ($_SERVER["REQUEST_METHOD"] != "POST"){
         throw new Exception("Non è una richiesta POST");
     }
+
     require_once "dbh.inc.php";
 
     $password = $_POST["password"];
+    $new_password = isset($_POST["new_password"]) ? $_POST["new_password"] : null;
     $email = $_POST["email"];
-    $new_email = $_POST["new_email"] ?? null;
-    $new_username = $_POST["new_username"] ?? null;
+    $new_email = isset($_POST["new_email"]) ? $_POST["new_email"] : null;
+    $new_username  = isset($_POST["username"]) ? $_POST["username"] : null;
     $table = "users_jw";
 
     $sql = "SELECT password FROM $table WHERE email = :email";
@@ -22,37 +26,35 @@ try {
         throw new Exception("Password errata");
     }
 
-    if ($new_email != null && $new_email !== $email) {
-        $sql_check_email = "SELECT COUNT(*) FROM $table WHERE email = :new_email";
-        $stmt_check_email = $pdo->prepare($sql_check_email);
-        $stmt_check_email->bindParam(':new_email', $new_email);
-        $stmt_check_email->execute();
-        if ($stmt_check_email->fetchColumn() > 0) {
-            throw new Exception("Email già esistente");
+    if ( $new_email != null && !empty($new_email) && $new_email != $email) {
+        $sql = "SELECT COUNT(*) FROM $table WHERE email = :new_email";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":new_email", $new_email);
+        $stmt->execute();
+        $emailCount = $stmt->fetchColumn();
+
+        if ($emailCount > 0) {
+            throw new Exception("L'email è già in uso.");
         }
     }
 
-    if ($new_username !== null) {
-        $sql_check_username = "SELECT COUNT(*) FROM $table WHERE username = :new_username";
-        $stmt_check_username = $pdo->prepare($sql_check_username);
-        $stmt_check_username->bindParam(':new_username', $new_username);
-        $stmt_check_username->execute();
-        if ($stmt_check_username->fetchColumn() > 0) {
-            throw new Exception("Username già esistente");
-        }
-    }
 
     $sql = "UPDATE $table SET ";
+
     $columns = [];
     $params = [];
 
-    if ($new_email != null && $new_email !== $email) {
+    if ($new_email !=null && !empty($new_email)){
         $columns[] = "email = :new_email";
         $params[":new_email"] = $new_email;
     }
 
+    if(!empty($new_password)){
+        $columns[] = "password = :new_password";
+        $params[":new_password"] = $new_password;
+        }
 
-    if ($new_username !== null) {
+    if ($new_username !=null && !empty($new_username)){
         $columns[] = "username = :new_username";
         $params[":new_username"] = $new_username;
     }
@@ -62,36 +64,44 @@ try {
     }
 
     $sql .= implode(", ", $columns);
-    $sql .= " WHERE email = :email"; 
-    $params[':email'] = $email;
-
+    $sql .= " WHERE email = :email";
+    $params[':password'] = $password;
     $stmt = $pdo->prepare($sql);
-    foreach ($params as $key => &$value) {
-        $stmt->bindParam($key, $value);
-    }
+
+    if (isset($params[':new_email'])) $stmt->bindParam(":new_email", $params[":new_email"]);
+    if (isset($params[":new_password"])) $stmt->bindParam(":new_password", $params[":new_password"]);
+    if (isset($params[':new_username'])) $stmt->bindParam(":new_username", $params[":new_username"]);
+
+    // $stmt->bindParam(":password", $params[":password"]);
+    $stmt->bindParam(':email', $email);
 
     $stmt->execute();
 
-    echo json_encode([
+    $response = [
         "response" => 200,
         "message" => true,
-        "data" => "Dati aggiornati correttamente"
-    ]);
-
+        "data" => "dati aggiornati correttamente"
+    ];
+    echo json_encode($response);
+    
 } catch (PDOException $e) {
-    echo json_encode([
+    $response = [
         "response" => 500,
         "message" => false,
         "data" => "Errore del database: " . $e->getMessage()
-    ]);
+    ];
+    echo json_encode($response);
 } catch (Exception $e) {
-    echo json_encode([
+    $response = [
         "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
-    ]);
+        
+    ];
+    echo json_encode($response);
 }
 
 $pdo = null;
 $stmt = null;
+
 exit();

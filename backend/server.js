@@ -233,11 +233,11 @@ app.post("/updateData", (req, res) => {
     nE = null
   }
 
-  console.log(password, email, new_email ?? null, new_username )
+  console.log(password, email, nE, new_username )
   fetch("http://localhost/justweed/backend/includes/update-user-info.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `password=${password}&email=${email}&new_email=${nE ?? null}&new_username=${new_username}`
+    body: `password=${password}&email=${email}&new_email=${nE ?? ""}&username=${new_username ?? ""}`
   })
     .then(response => response.json())
     .then(data => {

@@ -12,7 +12,6 @@ export default function Topbar({ username, mail }) {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Chiudi il menu quando si clicca fuori
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (

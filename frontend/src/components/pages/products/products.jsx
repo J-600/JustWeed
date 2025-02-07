@@ -55,8 +55,6 @@ function Products() {
             </svg>
           </label>
         </div>
-
-        {/* Products Grid */}
         <div className="w-full max-w-7xl px-4">
           {loading ? (
             <div className="flex justify-center">

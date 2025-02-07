@@ -38,15 +38,15 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
         setErrorMessage(responseData.message || "Failed to update data.");
         setEditedUsername(username);
         setEditedEmail(email);
-        username = editedUsername
-        email = editedEmail
         return;
       }
 
       setSuccessMessage("Data updated successfully!");
-      setTimeout(() => setSuccessMessage(""), 3000); // Nasconde il messaggio dopo 3 secondi
+      setTimeout(() => setSuccessMessage(""), 3000);
       setIsEditingUsername(false);
       setIsEditingEmail(false);
+      setEditedUsername(username);
+      setEditedEmail(email);
       setPassword("");
     } catch (error) {
       console.error("Errore durante la richiesta:", error);
@@ -130,8 +130,6 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
               <span>{errorMessage}</span>
             </div>
           )}
-
-          {/* Username */}
           <div>
             <label className="font-bold text-lg text-blue-400">Username</label>
             <div className="flex items-center gap-2 mt-1">
