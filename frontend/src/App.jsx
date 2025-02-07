@@ -9,7 +9,7 @@ function App() {
   const [mail, setMail] = useState('');
   const [password, setPassword] = useState('');
   const [responseMessage, setResponseMessage] = useState(null);
-  const [responseType, setResponseType] = useState(null); // 'success' o 'error'
+  const [responseType, setResponseType] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
