@@ -5,7 +5,7 @@ import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 import CryptoJS from 'crypto-js';
 
-const AccountInfoContent = ({ email, username, type, registeredAt }) => {
+const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail, onUpdateUsername}) => {
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [editedUsername, setEditedUsername] = useState(username);
@@ -20,7 +20,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
 
   const handleSave = async () => {
     if (!password) {
-      setErrorMessage("Password is required to make changes.");
+      setErrorMessage("Password richiesta");
       return;
     }
 
@@ -29,29 +29,29 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
       const res = await fetch("http://localhost:3000/updateData", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: hashedPassword, new_email: editedEmail, new_username:editedUsername }),
+        body: JSON.stringify({ email: email, password: hashedPassword, new_email: editedEmail, new_username:editedUsername, new_password: null }),
         credentials: 'include'
       });
       const responseData = await res.json();
 
       if (res.status !== 200) {
-        setErrorMessage(responseData.message || "Failed to update data.");
+        setErrorMessage(responseData.message || "Errore nell'upload dei dati.");
         setEditedUsername(username);
         setEditedEmail(email);
         return;
       }
-
-      setSuccessMessage("Data updated successfully!");
+      onUpdateEmail(editedEmail);
+      onUpdateUsername(editedUsername);
+      setSuccessMessage(responseData);
+      setErrorMessage("");
       setTimeout(() => setSuccessMessage(""), 3000);
       setIsEditingUsername(false);
       setIsEditingEmail(false);
-      setEditedUsername(username);
-      setEditedEmail(email);
       setPassword("");
+      
     } catch (error) {
       console.error("Errore durante la richiesta:", error);
       setErrorMessage("An error occurred. Please try again.");
-      // Ripristina i valori originali in caso di errore
       setEditedUsername(username);
       setEditedEmail(email);
     }
@@ -59,21 +59,23 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
 
   const handleChangePassword = async () => {
     if (newPassword !== confirmNewPassword) {
-      setErrorMessage("New passwords do not match.");
+      setErrorMessage("Le password non coincidono.");
       return;
     }
+    const hashedPassword = CryptoJS.SHA256(oldPassword).toString(CryptoJS.enc.Hex);
+    const newhashedPassword = CryptoJS.SHA256(newPassword).toString(CryptoJS.enc.Hex);
 
     try {
-      const res = await fetch("http://localhost:3000/change-password", {
+      const res = await fetch("http://localhost:3000/updateData", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ oldPassword, newPassword }),
+        body: JSON.stringify({ email: email, password: hashedPassword ,new_password: newhashedPassword }),
         credentials: "include",
       });
       const data = await res.json();
 
       if (res.status !== 200) {
-        setErrorMessage(data.message || "Failed to change password.");
+        setErrorMessage(data || "Errore");
         return;
       }
 
@@ -91,7 +93,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
     <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
       <div className="card-body space-y-4">
         <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6">
-          Account Information
+          Infomazione dell'account
         </h2>
         <div className="space-y-6">
           {successMessage && (
@@ -186,7 +188,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
 
           {(isEditingUsername || isEditingEmail) && (
             <div>
-              <label className="font-bold text-lg text-blue-400">Confirm Password</label>
+              <label className="font-bold text-lg text-blue-400">Conferma Password</label>
               <input
                 type="password"
                 value={password}
@@ -202,7 +204,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
               onClick={handleSave}
               className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
             >
-              Save Changes
+            Conferma
             </button>
           )}
 
@@ -225,10 +227,10 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
       {showPasswordModal && (
         <div className="modal modal-open">
           <div className="modal-box bg-[#1E2633] border border-blue-900/30">
-            <h3 className="font-bold text-lg text-white">Change Password</h3>
+            <h3 className="font-bold text-lg text-white">Cambia Password</h3>
             <div className="space-y-4 mt-4">
               <div>
-                <label className="font-bold text-lg text-blue-400">Old Password</label>
+                <label className="font-bold text-lg text-blue-400">Vecchia password</label>
                 <input
                   type="password"
                   value={oldPassword}
@@ -238,7 +240,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
                 />
               </div>
               <div>
-                <label className="font-bold text-lg text-blue-400">New Password</label>
+                <label className="font-bold text-lg text-blue-400">Nuova Password</label>
                 <input
                   type="password"
                   value={newPassword}
@@ -248,7 +250,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt }) => {
                 />
               </div>
               <div>
-                <label className="font-bold text-lg text-blue-400">Confirm New Password</label>
+                <label className="font-bold text-lg text-blue-400">Conferma password</label>
                 <input
                   type="password"
                   value={confirmNewPassword}
@@ -301,15 +303,15 @@ const PaymentMethods = () => (
   <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
     <div className="card-body space-y-4">
       <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
-        Payment Methods
+        Metodi di pagamento
       </h2>
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
           <div>
-            <p className="font-semibold text-gray-400">No payment methods added</p>
+            <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
           </div>
           <button className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105">
-            Add Payment
+            Aggiungi metodo di pagamento
           </button>
         </div>
       </div>
@@ -321,15 +323,15 @@ const BillingAddresses = () => (
   <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
     <div className="card-body space-y-4">
       <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
-        Billing Addresses
+        Indirizzo di fatturazione
       </h2>
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
           <div>
-            <p className="font-semibold text-gray-400">No billing addresses added</p>
+            <p className="font-semibold text-gray-400">Nessun indirizzo di fatturazione</p>
           </div>
           <button className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105">
-            Add Address
+            Aggiungi indirizzo
           </button>
         </div>
       </div>
@@ -372,6 +374,15 @@ function AccountInfo() {
     fetchData();
   }, [navigate]);
 
+  const handleUpdateEmail = (newEmail) => {
+    setEmail(newEmail);
+  };
+
+  const handleUpdateUsername = (newUsername) => {
+    setUsername(newUsername);
+  };
+
+
   const renderContent = () => {
     switch (activeTab) {
       case "account":
@@ -381,6 +392,8 @@ function AccountInfo() {
             username={username}
             type={type}
             registeredAt={registeredAt}
+            onUpdateEmail={handleUpdateEmail}
+            onUpdateUsername={handleUpdateUsername}
           />
         );
       case "payments":

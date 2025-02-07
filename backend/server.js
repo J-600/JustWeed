@@ -226,23 +226,21 @@ app.post("/updateData", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   }
-  const { password, email, new_email, new_username } = req.body;
+  const { password, email, new_email, new_username, new_password } = req.body;
   var nE = new_email
 
   if (email == new_email){
     nE = null
   }
-
-  console.log(password, email, nE, new_username )
   fetch("http://localhost/justweed/backend/includes/update-user-info.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `password=${password}&email=${email}&new_email=${nE ?? ""}&username=${new_username ?? ""}`
+    body: `password=${password}&email=${email}&new_password=${new_password ?? ""}&new_email=${nE ?? ""}&username=${new_username ?? ""}`
   })
     .then(response => response.json())
     .then(data => {
       console.log(data);
-      if (data.response === 200) {
+      if (data.response === 200 && data.message) {
         if (new_email){
           req.session.email = new_email;
         }
