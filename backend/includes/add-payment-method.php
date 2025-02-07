@@ -1,46 +1,34 @@
 <?php
+try {
 
-try{
     if ($_SERVER["REQUEST_METHOD"] != "POST") {
         throw new Exception("Non è una richiesta POST");
     }
 
     require_once "dbh.inc.php";
-
-    $table = "users_jw";
     $table_cards = "cards_jw"; 
 
-    $email = $_POST["email"];
+    $number = $_POST["number"];
+    $scadenza = $_POST["scandenza"];
+    $nome_titolare = $_POST["nome_titolare"];
 
-    $sql = "SELECT email, username, type, registered_at, NULL AS extra_column 
-    FROM $table 
-    WHERE email = :email AND verified = 'T'
-    
-    UNION 
-    
-    SELECT numero, scadenza, circuito, nome_titolare, created_at 
-    FROM $table_cards 
-    WHERE email = :email";
+    $sql = "INSERT INTO $table (number,scandeza, nome_titolare) VALUES (:number, :scandenza, :nome_titolare)";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":email", $email);
+    $stmt->bindParam(":number", $number);
+    $stmt->bindParam(":scadenza", $scadenza);
+    $stmt->bindParam(":nome_titolare", $nome_titolare);
+
     $stmt->execute();
-
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if (empty($result)){
-        throw new Exception("utente non registrato");
-    }
 
     $response = [
         "response" => 200,
         "message" => True,
-        "data" => $result
+        "data" => "dati aggiunti correttamente"
     ];
-
     echo json_encode($response);
 
-}catch (PDOException $e) {
+} catch (PDOException $e) {
     $response = [
         "response" => 500,
         "message" => false,

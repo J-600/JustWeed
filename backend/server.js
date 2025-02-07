@@ -296,8 +296,9 @@ app.get("/account-info", (req,res) => {
     })
     .then(response => response.json())
     .then(data =>{
+      console.log(data)
       if (data.message && data.response === 200){
-        res.json(data.data[0]);
+        res.json(data.data);
       } else if (data.response === 500) {
         res.status(500).json("errore nel db");
       } else {

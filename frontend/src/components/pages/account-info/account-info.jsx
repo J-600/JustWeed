@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, CreditCard, MapPin, Trash2, ArrowLeft, Pencil, Lock } from "lucide-react";
+import { User, CreditCard, MapPin, Trash2, ArrowLeft, Pencil, Lock, ChevronDown, Plus } from "lucide-react";
 import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 import CryptoJS from 'crypto-js';
+
 
 const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail, onUpdateUsername }) => {
   const [isEditingUsername, setIsEditingUsername] = useState(false);
@@ -299,34 +300,218 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
   );
 };
 
-const PaymentMethods = () => (
-  <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
-    <div className="card-body space-y-4">
-      <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
-        Metodi di pagamento
-      </h2>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
-          <div>
+const PaymentMethods = ({ cards }) => {
+  const [showAddCardModal, setShowAddCardModal] = useState(false);
+  const [expandedCard, setExpandedCard] = useState(null);
+  const [formData, setFormData] = useState({
+    cardNumber: '',
+    expiryDate: '',
+    cvc: '',
+    cardholderName: ''
+  });
+
+  const toggleCardExpansion = (index) => {
+    setExpandedCard(prev => prev === index ? null : index);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleAddCard = (e) => {
+    e.preventDefault();
+    console.log("Nuova carta aggiunta:", formData);
+    setShowAddCardModal(false);
+  };
+
+  return (
+    <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+      <div className="card-body space-y-4">
+        <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
+          Metodi di pagamento
+        </h2>
+
+        {cards.length === 0 ? (
+          <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
             <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
+            <button 
+              onClick={() => setShowAddCardModal(true)}
+              className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+            >
+              Aggiungi metodo di pagamento
+            </button>
           </div>
-          <button className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105">
-            Aggiungi metodo di pagamento
-          </button>
-        </div>
+        ) : (
+          <div className="space-y-4">
+            {cards.map((card, index) => (
+              <div 
+                key={index}
+                className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${
+                  expandedCard === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'
+                }`}
+              >
+                <div 
+                  className="flex items-center justify-between cursor-pointer"
+                  onClick={() => toggleCardExpansion(index)}
+                >
+                  <div className="flex items-center gap-4">
+                    <CreditCard className="w-6 h-6 text-blue-400" />
+                    <div>
+                      <h3 className="font-bold text-white">
+                        {card.type}
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        Intestatario: {card.registered_at}
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                    expandedCard === index ? 'rotate-180' : ''
+                  }`}/>
+                </div>
+
+                <div className={`overflow-hidden transition-all duration-300 ${
+                  expandedCard === index ? 'max-h-96 mt-4' : 'max-h-0'
+                }`}>
+                  <div className="pt-4 border-t border-blue-900/30 space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm text-blue-400">number</label>
+                        <p className="text-white">••••••••••••{card.email.slice(11,16)}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm text-blue-400">Scadenza</label>
+                        <p className="text-white">{card.username}</p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => console.log("Elimina carta", index)}
+                      className="btn btn-error btn-sm w-full bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Rimuovi Carta
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <button 
+              onClick={() => setShowAddCardModal(true)}
+              className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105 mt-6"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Aggiungi Nuova Carta
+            </button>
+          </div>
+        )}
+
+        {showAddCardModal && (
+          <div className="modal modal-open">
+            <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
+              <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
+                Aggiungi Nuova Carta
+              </h3>
+              <form onSubmit={handleAddCard} className="space-y-6">
+                <div className="form-control">
+                  <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                    <CreditCard className="w-4 h-4 opacity-70" />
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      className="grow text-white placeholder-gray-400"
+                      placeholder="Numero Carta"
+                      value={formData.cardNumber}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="form-control">
+                    <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                      <Lock className="w-4 h-4 opacity-70" />
+                      <input
+                        type="text"
+                        name="expiryDate"
+                        className="grow text-white placeholder-gray-400"
+                        placeholder="MM/AA"
+                        value={formData.expiryDate}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </label>
+                  </div>
+
+                  <div className="form-control">
+                    <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                      <Lock className="w-4 h-4 opacity-70" />
+                      <input
+                        type="text"
+                        name="cvc"
+                        className="grow text-white placeholder-gray-400"
+                        placeholder="CVC"
+                        value={formData.cvc}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="form-control">
+                  <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                    <User className="w-4 h-4 opacity-70" />
+                    <input
+                      type="text"
+                      name="cardholderName"
+                      className="grow text-white placeholder-gray-400"
+                      placeholder="Intestatario Carta"
+                      value={formData.cardholderName}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </label>
+                </div>
+
+                <div className="modal-action">
+                  <button
+                    type="button"
+                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                    onClick={() => setShowAddCardModal(false)}
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+                  >
+                    Aggiungi Carta
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const BillingAddresses = () => (
   <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
     <div className="card-body space-y-4">
-      <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
+    <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6">
         Indirizzo di fatturazione
       </h2>
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
+        
           <div>
             <p className="font-semibold text-gray-400">Nessun indirizzo di fatturazione</p>
           </div>
@@ -342,6 +527,7 @@ const BillingAddresses = () => (
 function AccountInfo() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+  const [accountData, setAccountData] = useState([]);
   const [type, setType] = useState("");
   const [registeredAt, setRegisteredAt] = useState("");
   const [loading, setLoading] = useState(true);
@@ -361,10 +547,11 @@ function AccountInfo() {
         if (res.status !== 200) {
           navigate("/");
         }
-        setEmail(data.email);
-        setUsername(data.username);
-        setType(data.type);
-        setRegisteredAt(data.registered_at);
+        setEmail(data[0].email);
+        setUsername(data[0].username);
+        setType(data[0].type);
+        setRegisteredAt(data[0].registered_at);
+        setAccountData(data.slice(1));
         setLoading(false);
       } catch (error) {
         console.error("Errore durante la richiesta:", error);
@@ -373,6 +560,8 @@ function AccountInfo() {
     };
     fetchData();
   }, [navigate]);
+
+  const paymentMethods = accountData.filter(item => item.type === 'Mastercard');
 
   const handleUpdateEmail = (newEmail) => {
     setEmail(newEmail);
@@ -397,7 +586,7 @@ function AccountInfo() {
           />
         );
       case "payments":
-        return <PaymentMethods />;
+        return <PaymentMethods cards = {accountData}/>;
       case "addresses":
         return <BillingAddresses />;
       default:
