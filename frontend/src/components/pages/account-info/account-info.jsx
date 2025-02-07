@@ -5,7 +5,7 @@ import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 import CryptoJS from 'crypto-js';
 
-const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail, onUpdateUsername}) => {
+const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail, onUpdateUsername }) => {
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [editedUsername, setEditedUsername] = useState(username);
@@ -29,7 +29,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
       const res = await fetch("http://localhost:3000/updateData", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: hashedPassword, new_email: editedEmail, new_username:editedUsername, new_password: null }),
+        body: JSON.stringify({ email: email, password: hashedPassword, new_email: editedEmail, new_username: editedUsername, new_password: null }),
         credentials: 'include'
       });
       const responseData = await res.json();
@@ -48,7 +48,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
       setIsEditingUsername(false);
       setIsEditingEmail(false);
       setPassword("");
-      
+
     } catch (error) {
       console.error("Errore durante la richiesta:", error);
       setErrorMessage("An error occurred. Please try again.");
@@ -69,7 +69,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
       const res = await fetch("http://localhost:3000/updateData", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, password: hashedPassword ,new_password: newhashedPassword }),
+        body: JSON.stringify({ email: email, password: hashedPassword, new_password: newhashedPassword }),
         credentials: "include",
       });
       const data = await res.json();
@@ -80,7 +80,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
       }
 
       setSuccessMessage("Password changed successfully!");
-      setTimeout(() => setSuccessMessage(""), 3000); 
+      setTimeout(() => setSuccessMessage(""), 3000);
       setShowPasswordModal(false);
       setErrorMessage("");
     } catch (error) {
@@ -204,7 +204,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
               onClick={handleSave}
               className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
             >
-            Conferma
+              Conferma
             </button>
           )}
 

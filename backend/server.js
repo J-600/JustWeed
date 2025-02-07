@@ -388,12 +388,16 @@ app.post("/delete-user", (req, res) => {
 });
 
 app.post("/newpassword", (req, res) => {
+
+  if(req.session.email){
+    res.status(401).json("Non autorizzato")
+  }
   const { token, password } = req.body;
   const tokenExpiration = tokenExpirationMap.get(token);
   const email = tokenMailMap.get(token);
 
   if (!tokenExpiration || Date.now() > tokenExpiration) {
-    res.json("token scaduto...")
+    res.status(401).json("token scaduto...")
   } else {
 
     fetch("http://localhost/JustWeed/backend/includes/forgot-password.php", {
@@ -416,6 +420,7 @@ app.post("/forgotpassword", (req, res) => {
   if (!email) {
     return res.status(400).json({ error: "Email is required" });
   }
+  
   const token = crypto.randomBytes(16).toString('hex');
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
@@ -496,8 +501,7 @@ setInterval(() => {
   }
 }, 60 * 60 * 1000);
 
-app.use((req, res, next) => {
-  console.log("fermo all0use")
+app.use((req, res, next) => { 
   if (!req.session || !req.session.username) {
     return res.status(401).json({ error: false });
   }
