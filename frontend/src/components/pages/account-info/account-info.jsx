@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, CreditCard, MapPin, Trash2, ArrowLeft, Pencil, Lock, ChevronDown, Plus } from "lucide-react";
+import { Edit, User, CreditCard, MapPin, Trash2, ArrowLeft, Pencil, Lock, ChevronDown, Plus, Calendar } from "lucide-react";
 import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 import CryptoJS from 'crypto-js';
@@ -300,17 +300,53 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
   );
 };
 
-const PaymentMethods = ({ cards }) => {
+const PaymentMethods = () => {
+  const [cards, setCards] = useState(false);
   const [showAddCardModal, setShowAddCardModal] = useState(false);
+  const [showEditCardModal, setShowEditCardModal] = useState(false);
   const [expandedCard, setExpandedCard] = useState(null);
   const [showRemoveCardModal, setShowRemoveCardModal] = useState(false);
   const [removingCardIndex, setRemovingCardIndex] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     cardNumber: '',
     expiryDate: '',
     cvc: '',
     cardholderName: ''
   });
+
+  const [cardToEdit, setCardToEdit] = useState(null);
+
+  const navigate = useNavigate();
+
+  const fetchCardsData = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:3000/cardsdata", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP Error! Status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setCards(data);
+    } catch (error) {
+      console.error("Errore nel caricamento dei dati:", error);
+      navigate("/");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCardsData();
+  }, [navigate]);
 
   const toggleCardExpansion = (index) => {
     setExpandedCard(prev => prev === index ? null : index);
@@ -323,20 +359,58 @@ const PaymentMethods = ({ cards }) => {
     });
   };
 
-  const handleAddCard = (e) => {
-    //da gestire con binlookup
+  const handleAddCard = async (e) => {
     e.preventDefault();
-    console.log("Nuova carta aggiunta:", formData);
-    setShowAddCardModal(false);
-  };
-  const handleConfirmRemove = () => {
+    // console.log("Nuova carta aggiunta:", formData);
+    try {
+      const res = await fetch("http://localhost:3000/add-card", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ number: formData.cardNumber, scadenza: formData.expiryDate, propietario: formData.cardholderName })
+      })
+      const data = await res.json()
+      if (res.status !== 200) {
+        // setShowAddCardModal(false);
+        setErrorMessage(data.message || "Errore nell'upload dei dati.");
+      }
+      setShowAddCardModal(false);
+      setSuccessMessage(data);
+      setErrorMessage("");
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setShowAddCardModal(false);
+      fetchCardsData();
+    } catch (error) {
+      console.error("Errore durante la richiesta:", error);
+      setErrorMessage("An error occurred. Please try again.");
+    }
 
-    //creare a mettere la fetch
+
+    // setShowAddCardModal(false);
+  };
+
+  const handleEditCard = (e) => {
+    e.preventDefault();
+    console.log("Carta modificata:", formData);
+    setShowEditCardModal(false);
+    setCardToEdit(null);
+  };
+
+  const handleConfirmRemove = () => {
     console.log("Rimozione carta:", removingCardIndex);
     setShowRemoveCardModal(false);
     setRemovingCardIndex(null);
   };
 
+  const handleEditCardDetails = (card) => {
+    setFormData({
+      cardNumber: card.numero,
+      expiryDate: card.scadenza,
+      cvc: '',
+      cardholderName: card.nome_titolare
+    });
+    setCardToEdit(card);
+    setShowEditCardModal(true);
+  };
 
   return (
     <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
@@ -345,8 +419,13 @@ const PaymentMethods = ({ cards }) => {
           Metodi di pagamento
         </h2>
 
-        {cards.length === 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center border-b border-blue-900/30 pb-2">
+            <Loader></Loader>
+          </div>
+        ) : cards.length === 0 ? (
           <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
+
             <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
             <button
               onClick={() => setShowAddCardModal(true)}
@@ -357,6 +436,42 @@ const PaymentMethods = ({ cards }) => {
           </div>
         ) : (
           <div className="space-y-4">
+            {successMessage && (
+              <div className="alert alert-success shadow-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>{successMessage}</span>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="alert alert-error shadow-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>{errorMessage}</span>
+              </div>
+            )}
             {cards.map((card, index) => (
               <div
                 key={index}
@@ -371,7 +486,6 @@ const PaymentMethods = ({ cards }) => {
                     <CreditCard className="w-6 h-6 text-blue-400" />
                     <div className="flex flex-col w-full">
                       <h3 className="font-bold text-white">{card.circuito} di {card.nome_titolare}</h3>
-
                       <div className="flex justify-between w-full">
                         <p className="text-sm text-gray-400 pt-1">
                           Aggiunta il: {card.created_at}
@@ -388,7 +502,7 @@ const PaymentMethods = ({ cards }) => {
                   <div className="pt-4 border-t border-blue-900/30 space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm text-blue-400">number</label>
+                        <label className="text-sm text-blue-400">Numero</label>
                         <p className="text-white">••••••••••••{card.numero.slice(11, 16)}</p>
                       </div>
                       <div>
@@ -396,6 +510,14 @@ const PaymentMethods = ({ cards }) => {
                         <p className="text-white">{card.scadenza}</p>
                       </div>
                     </div>
+
+                    <button
+                      onClick={() => handleEditCardDetails(card)} // Modifica i dettagli della carta
+                      className="btn btn-info btn-sm w-full bg-gradient-to-r from-green-500 to-teal-600 text-white border-none hover:from-green-600 hover:to-teal-700"
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Modifica Carta
+                    </button>
 
                     <button
                       onClick={() => {
@@ -411,7 +533,6 @@ const PaymentMethods = ({ cards }) => {
                 </div>
               </div>
             ))}
-
             {showRemoveCardModal && (
               <div className="modal modal-open">
                 <div className="modal-box bg-[#1E2633] border border-blue-900/30">
@@ -436,7 +557,6 @@ const PaymentMethods = ({ cards }) => {
                 </div>
               </div>
             )}
-
             <button
               onClick={() => setShowAddCardModal(true)}
               className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02] mt-6"
@@ -520,7 +640,14 @@ const PaymentMethods = ({ cards }) => {
                   <button
                     type="button"
                     className="btn btn-ghost text-white hover:bg-[#2C3E50]"
-                    onClick={() => setShowAddCardModal(false)}
+                    onClick={() => {
+                      setShowAddCardModal(false); setFormData({
+                        cardNumber: '',
+                        expiryDate: '',
+                        cvc: '',
+                        cardholderName: ''
+                      });
+                    }}
                   >
                     Annulla
                   </button>
@@ -535,10 +662,87 @@ const PaymentMethods = ({ cards }) => {
             </div>
           </div>
         )}
+
+        {showEditCardModal && (
+          <div className="modal modal-open">
+            <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
+              <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
+                Modifica Carta
+              </h3>
+              <form onSubmit={handleEditCard} className="space-y-6">
+
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="form-control">
+                    <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                      <Calendar className="w-4 h-4 opacity-70" />
+                      <input
+                        type="text"
+                        name="expiryDate"
+                        className="grow text-white placeholder-gray-400"
+                        placeholder="MM/AA"
+                        value={formData.expiryDate}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </label>
+                  </div>
+                  <div className="form-control">
+                    <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
+                        fill="currentColor"
+                        className="h-4 w-4 opacity-70">
+                        <path
+                          d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                      </svg>
+                      <input
+                        type="text"
+                        name="cardholderName"
+                        className="grow text-white placeholder-gray-400"
+                        placeholder="Intestatario Carta"
+                        value={formData.cardholderName}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </label>
+                  </div>
+                </div>
+
+
+
+                <div className="modal-action">
+                  <button
+                    type="button"
+                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                    onClick={() => {
+                      setShowEditCardModal(false); setFormData({
+                        cardNumber: '',
+                        expiryDate: '',
+                        cvc: '',
+                        cardholderName: ''
+                      })
+                    }}
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+                  >
+                    Salva Modifiche
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+
 
 const BillingAddresses = () => (
   <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
@@ -564,7 +768,7 @@ const BillingAddresses = () => (
 function AccountInfo() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  const [accountData, setAccountData] = useState([]);
+  // const [accountData, setAccountData] = useState([]);
   const [type, setType] = useState("");
   const [registeredAt, setRegisteredAt] = useState("");
   const [loading, setLoading] = useState(true);
@@ -584,11 +788,11 @@ function AccountInfo() {
         if (res.status !== 200) {
           navigate("/");
         }
-        setEmail(data[0].email);
-        setUsername(data[0].username);
-        setType(data[0].type);
-        setRegisteredAt(data[0].registered_at);
-        setAccountData(data);
+        setEmail(data.email);
+        setUsername(data.username);
+        setType(data.type);
+        setRegisteredAt(data.registered_at);
+        // setAccountData(data);
         setLoading(false);
       } catch (error) {
         console.error("Errore durante la richiesta:", error);
@@ -598,7 +802,7 @@ function AccountInfo() {
     fetchData();
   }, [navigate]);
 
-  const paymentMethods = accountData.filter(item => item.circuito === 'Mastercard');
+  // const paymentMethods = accountData.filter(item => item.circuito === 'Mastercard');
 
   const handleUpdateEmail = (newEmail) => {
     setEmail(newEmail);
@@ -623,7 +827,7 @@ function AccountInfo() {
           />
         );
       case "payments":
-        return <PaymentMethods cards={accountData} />;
+        return <PaymentMethods />;
       case "addresses":
         return <BillingAddresses />;
       default:

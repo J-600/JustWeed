@@ -252,7 +252,7 @@ app.post("/updateData", (req, res) => {
             console.error("Errore salvataggio sessione:", err);
             return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
           }
-          res.json(data.data);
+          res.json(data.data[0]);
         });
       } else {
         res.status(401).json(data.data);
@@ -285,6 +285,60 @@ app.get("/products", (req, res) => {
   }
 });
 
+app.get("/cardsdata", (req,res) => {
+  if (!req.session.username){
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    console.log(req.session.email)
+    fetch("http://localhost/justweed/backend/includes/view-payments-method.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `email=${req.session.email}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      if (data.message && data.response === 200){
+        res.json(data.data)
+      } else if (data.response === 500) {
+        res.status(500).json("errore nel db");
+      } else {
+        res.status(400).json(data)
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
+  }
+})
+
+app.post("add-card", (req,res) => {
+  if (!req.session.username){
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const {number, scadenza, propietario} = req.body; 
+    fetch ("http://localhost/justweed/backend/includes/add-payment-method.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `number=${number}&scandenza=${scadenza}&nome_titolare=${propietario}`
+    })
+    .then(response => response,json())
+    .then (data =>{
+      if (data.message && data.response === 200){
+        res.json(data.data[0]);
+      } else if (data.response === 500) {
+        res.status(500).json("errore nel db");
+      } else {
+        res.status(400).json(data)
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
+  }
+})
 app.get("/account-info", (req,res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
@@ -296,9 +350,9 @@ app.get("/account-info", (req,res) => {
     })
     .then(response => response.json())
     .then(data =>{
-      console.log(data)
+      // console.log(data) 
       if (data.message && data.response === 200){
-        res.json(data.data);
+        res.json(data.data[0]);
       } else if (data.response === 500) {
         res.status(500).json("errore nel db");
       } else {

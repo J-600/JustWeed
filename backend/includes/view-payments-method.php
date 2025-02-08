@@ -1,19 +1,19 @@
 <?php
 
-try{
+try {
     if ($_SERVER["REQUEST_METHOD"] != "POST") {
         throw new Exception("Non è una richiesta POST");
     }
 
     require_once "dbh.inc.php";
+    $table = "cards_jw";
+    $email = $_POST["email"] ?? "jhonpanora06@gmail.com"; 
+    $table_users = "users_jw";
 
-    $table = "users_jw";
-    $email = $_POST["email"];
-
-    $sql = "SELECT u.email, u.username, u.type, u.registered_at
-            FROM $table u
-            WHERE u.email = :email AND u.verified = 'T'";
-
+    $sql = "SELECT c.numero, c.scadenza, c.circuito, c.nome_titolare, c.created_at, c.updated_at 
+            FROM $table c
+            JOIN $table_users u ON u.email = c.email AND u.verified = 'T'
+            WHERE c.email = :email";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
@@ -22,7 +22,7 @@ try{
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($result)){
-        throw new Exception("utente non registrato");
+        throw new Exception("Nessun metofo di pagamento");
     }
 
     $response = [
@@ -45,7 +45,7 @@ try{
         "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
-        
+
     ];
     echo json_encode($response);
 }
