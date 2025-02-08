@@ -324,6 +324,7 @@ const PaymentMethods = ({ cards }) => {
   };
 
   const handleAddCard = (e) => {
+    //da gestire con binlookup
     e.preventDefault();
     console.log("Nuova carta aggiunta:", formData);
     setShowAddCardModal(false);
