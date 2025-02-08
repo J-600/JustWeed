@@ -353,11 +353,29 @@ const PaymentMethods = () => {
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    let value = e.target.value;
+
+    if (e.target.name === "expiryDate") {
+      value = value.replace(/\D/g, ""); 
+      value = value.slice(0, 4);
+      if (value.length > 2) {
+        value = value.replace(/^(\d{2})(\d{1,2})$/, "$1/$2"); 
+      }
+    }
+
+    setFormData({ ...formData, [e.target.name]: value });
   };
+  function convertExpiryDateToSQL(expiryDate) {
+    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+        throw new Error("Formato non valido. Usa MM/AA.");
+    }
+
+    let [month, year] = expiryDate.split("/").map(num => parseInt(num, 10));
+    year += 2000; // Aggiunge 2000 per formati come "25" -> "2025"
+
+    return `${year}-${String(month).padStart(2, "0")}-01`; // Formatta YYYY-MM-01
+}
+
 
   const handleAddCard = async (e) => {
     e.preventDefault();
@@ -366,13 +384,15 @@ const PaymentMethods = () => {
       const res = await fetch("http://localhost:3000/add-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ number: formData.cardNumber, scadenza: formData.expiryDate, propietario: formData.cardholderName }),
+        body: JSON.stringify({ number: formData.cardNumber, scadenza: convertExpiryDateToSQL(formData.expiryDate), propietario: formData.cardholderName }),
         credentials: 'include'
       })
       const data = await res.json()
+      console.log(res)
       if (res.status !== 200) {
-        // setShowAddCardModal(false);
+        setShowAddCardModal(false);
         setErrorMessage(data.message || "Errore nell'upload dei dati.");
+        return
       }
       setShowAddCardModal(false);
       setSuccessMessage(data);

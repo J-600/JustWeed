@@ -289,7 +289,7 @@ app.get("/cardsdata", (req,res) => {
   if (!req.session.username){
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
-    console.log(req.session.email)
+    // console.log(req.session.email)
     fetch("http://localhost/justweed/backend/includes/view-payments-method.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -297,7 +297,7 @@ app.get("/cardsdata", (req,res) => {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data)
+      // console.log(data)
       if (data.message && data.response === 200){
         res.json(data.data)
       } else if (data.response === 500) {
@@ -330,7 +330,7 @@ app.post("/add-card", (req,res) => {
       if (data.message && data.response === 200){
         res.json(data.data);
       } else if (data.response === 500) {
-        res.status(500).json("errore nel db");
+        res.status(500).json("errore nell'upload dei dati");
       } else {
         res.status(400).json(data)
       }
@@ -341,6 +341,7 @@ app.post("/add-card", (req,res) => {
     });
   }
 })
+
 app.get("/account-info", (req,res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });

@@ -9,7 +9,7 @@ try {
     $table = "cards_jw"; 
 
     $number = $_POST["number"];
-    $scadenza = $_POST["scandenza"];
+    $scadenza = $_POST["scadenza"];
     $nome_titolare = $_POST["nome_titolare"];
 
     $sql = "INSERT INTO $table (number,scandenza, nome_titolare) VALUES (:number, :scandenza, :nome_titolare)";
