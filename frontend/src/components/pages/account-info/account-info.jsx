@@ -361,7 +361,7 @@ const PaymentMethods = () => {
 
   const handleAddCard = async (e) => {
     e.preventDefault();
-    // console.log("Nuova carta aggiunta:", formData);
+    
     try {
       const res = await fetch("http://localhost:3000/add-card", {
         method: "POST",
