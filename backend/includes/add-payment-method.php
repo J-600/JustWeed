@@ -6,13 +6,13 @@ try {
     }
 
     require_once "dbh.inc.php";
-    $table_cards = "cards_jw"; 
+    $table = "cards_jw"; 
 
     $number = $_POST["number"];
     $scadenza = $_POST["scandenza"];
     $nome_titolare = $_POST["nome_titolare"];
 
-    $sql = "INSERT INTO $table (number,scandeza, nome_titolare) VALUES (:number, :scandenza, :nome_titolare)";
+    $sql = "INSERT INTO $table (number,scandenza, nome_titolare) VALUES (:number, :scandenza, :nome_titolare)";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":number", $number);

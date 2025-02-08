@@ -361,12 +361,13 @@ const PaymentMethods = () => {
 
   const handleAddCard = async (e) => {
     e.preventDefault();
-    
+    console.log("aggiunta")
     try {
       const res = await fetch("http://localhost:3000/add-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ number: formData.cardNumber, scadenza: formData.expiryDate, propietario: formData.cardholderName })
+        body: JSON.stringify({ number: formData.cardNumber, scadenza: formData.expiryDate, propietario: formData.cardholderName }),
+        credentials: 'include'
       })
       const data = await res.json()
       if (res.status !== 200) {

@@ -313,7 +313,8 @@ app.get("/cardsdata", (req,res) => {
   }
 })
 
-app.post("add-card", (req,res) => {
+app.post("/add-card", (req,res) => {
+  console.log("aggiungendo")
   if (!req.session.username){
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
@@ -323,8 +324,9 @@ app.post("add-card", (req,res) => {
       headers: { "Content-type": "application/x-www-form-urlencoded" },
       body: `number=${number}&scandenza=${scadenza}&nome_titolare=${propietario}`
     })
-    .then(response => response,json())
+    .then(response => response.json())
     .then (data =>{
+      console.log(data)
       if (data.message && data.response === 200){
         res.json(data.data);
       } else if (data.response === 500) {
