@@ -303,6 +303,8 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
 const PaymentMethods = ({ cards }) => {
   const [showAddCardModal, setShowAddCardModal] = useState(false);
   const [expandedCard, setExpandedCard] = useState(null);
+  const [showRemoveCardModal, setShowRemoveCardModal] = useState(false);
+  const [removingCardIndex, setRemovingCardIndex] = useState(null);
   const [formData, setFormData] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -326,6 +328,13 @@ const PaymentMethods = ({ cards }) => {
     console.log("Nuova carta aggiunta:", formData);
     setShowAddCardModal(false);
   };
+  const handleConfirmRemove = () => {
+    console.log("Rimozione carta:", removingCardIndex);
+    // Aggiungi qui la logica effettiva di rimozione
+    setShowRemoveCardModal(false);
+    setRemovingCardIndex(null);
+  };
+
 
   return (
     <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
@@ -337,7 +346,7 @@ const PaymentMethods = ({ cards }) => {
         {cards.length === 0 ? (
           <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
             <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
-            <button 
+            <button
               onClick={() => setShowAddCardModal(true)}
               className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
             >
@@ -347,40 +356,41 @@ const PaymentMethods = ({ cards }) => {
         ) : (
           <div className="space-y-4">
             {cards.map((card, index) => (
-              <div 
+              <div
                 key={index}
-                className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${
-                  expandedCard === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'
-                }`}
+                className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedCard === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'
+                  }`}
               >
-                <div 
+                <div
                   className="flex items-center justify-between cursor-pointer"
                   onClick={() => toggleCardExpansion(index)}
                 >
                   <div className="flex items-center gap-4">
                     <CreditCard className="w-6 h-6 text-blue-400" />
-                    <div>
-                      <h3 className="font-bold text-white">
-                        {card.type}
-                      </h3>
-                      <p className="text-sm text-gray-400">
-                        Intestatario: {card.registered_at}
-                      </p>
+                    <div className="flex flex-col w-full">
+                      <h3 className="font-bold text-white">{card.type}</h3>
+
+                      <div className="flex justify-between w-full gap-4">
+                        <p className="text-sm text-gray-400">
+                          Intestatario: {card.registered_at}
+                        </p>
+                        <p className="text-sm text-gray-400 text-right">
+                          Aggiunta il: {card.extra_column}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                    expandedCard === index ? 'rotate-180' : ''
-                  }`}/>
+                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${expandedCard === index ? 'rotate-180' : ''
+                    }`} />
                 </div>
 
-                <div className={`overflow-hidden transition-all duration-300 ${
-                  expandedCard === index ? 'max-h-96 mt-4' : 'max-h-0'
-                }`}>
+                <div className={`overflow-hidden transition-all duration-300 ${expandedCard === index ? 'max-h-96 mt-4' : 'max-h-0'
+                  }`}>
                   <div className="pt-4 border-t border-blue-900/30 space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm text-blue-400">number</label>
-                        <p className="text-white">••••••••••••{card.email.slice(11,16)}</p>
+                        <p className="text-white">••••••••••••{card.email.slice(11, 16)}</p>
                       </div>
                       <div>
                         <label className="text-sm text-blue-400">Scadenza</label>
@@ -389,7 +399,10 @@ const PaymentMethods = ({ cards }) => {
                     </div>
 
                     <button
-                      onClick={() => console.log("Elimina carta", index)}
+                      onClick={() => {
+                        setRemovingCardIndex(index);
+                        setShowRemoveCardModal(true);
+                      }}
                       className="btn btn-error btn-sm w-full bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700"
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
@@ -400,7 +413,32 @@ const PaymentMethods = ({ cards }) => {
               </div>
             ))}
 
-            <button 
+{showRemoveCardModal && (
+          <div className="modal modal-open">
+            <div className="modal-box bg-[#1E2633] border border-blue-900/30">
+              <h3 className="font-bold text-lg text-white">Conferma Rimozione Carta</h3>
+              <p className="py-4 text-gray-400">
+                Sei sicuro di voler rimuovere questa carta? Questa azione non può essere annullata.
+              </p>
+              <div className="modal-action">
+                <button
+                  className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                  onClick={() => setShowRemoveCardModal(false)}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="btn btn-error bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700 transform transition-all duration-300 hover:scale-105"
+                  onClick={handleConfirmRemove}
+                >
+                  Conferma Rimozione
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+            <button
               onClick={() => setShowAddCardModal(true)}
               className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105 mt-6"
             >
@@ -506,12 +544,12 @@ const PaymentMethods = ({ cards }) => {
 const BillingAddresses = () => (
   <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
     <div className="card-body space-y-4">
-    <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6">
+      <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6">
         Indirizzo di fatturazione
       </h2>
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
-        
+
           <div>
             <p className="font-semibold text-gray-400">Nessun indirizzo di fatturazione</p>
           </div>
@@ -586,7 +624,7 @@ function AccountInfo() {
           />
         );
       case "payments":
-        return <PaymentMethods cards = {accountData}/>;
+        return <PaymentMethods cards={accountData} />;
       case "addresses":
         return <BillingAddresses />;
       default:
