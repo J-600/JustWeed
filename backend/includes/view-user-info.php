@@ -12,15 +12,12 @@ try{
 
     $email = $_POST["email"];
 
-    $sql = "SELECT email, username, type, registered_at, NULL AS extra_column 
-    FROM $table 
-    WHERE email = :email AND verified = 'T'
-    
-    UNION 
-    
-    SELECT numero, scadenza, circuito, nome_titolare, created_at 
-    FROM $table_cards 
-    WHERE email = :email";
+    $sql = "SELECT u.email, u.username, u.type, u.registered_at, 
+                   c.numero, c.scadenza, c.circuito, c.nome_titolare, c.created_at 
+            FROM $table u
+            JOIN $table_cards c ON u.email = c.email
+            WHERE u.email = :email AND u.verified = 'T'";
+
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);

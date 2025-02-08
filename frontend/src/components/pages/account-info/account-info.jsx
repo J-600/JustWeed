@@ -369,11 +369,11 @@ const PaymentMethods = ({ cards }) => {
                   <div className="flex items-center gap-4">
                     <CreditCard className="w-6 h-6 text-blue-400" />
                     <div className="flex flex-col w-full">
-                      <h3 className="font-bold text-white">{card.type} di {card.registered_at}</h3>
+                      <h3 className="font-bold text-white">{card.circuito} di {card.nome_titolare}</h3>
 
                       <div className="flex justify-between w-full">
                         <p className="text-sm text-gray-400 pt-1">
-                          Aggiunta il: {card.extra_column}
+                          Aggiunta il: {card.created_at}
                         </p>
                       </div>
                     </div>
@@ -388,11 +388,11 @@ const PaymentMethods = ({ cards }) => {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm text-blue-400">number</label>
-                        <p className="text-white">••••••••••••{card.email.slice(11, 16)}</p>
+                        <p className="text-white">••••••••••••{card.numero.slice(11, 16)}</p>
                       </div>
                       <div>
                         <label className="text-sm text-blue-400">Scadenza</label>
-                        <p className="text-white">{card.username}</p>
+                        <p className="text-white">{card.scadenza}</p>
                       </div>
                     </div>
 
@@ -587,7 +587,7 @@ function AccountInfo() {
         setUsername(data[0].username);
         setType(data[0].type);
         setRegisteredAt(data[0].registered_at);
-        setAccountData(data.slice(1));
+        setAccountData(data);
         setLoading(false);
       } catch (error) {
         console.error("Errore durante la richiesta:", error);
@@ -597,7 +597,7 @@ function AccountInfo() {
     fetchData();
   }, [navigate]);
 
-  const paymentMethods = accountData.filter(item => item.type === 'Mastercard');
+  const paymentMethods = accountData.filter(item => item.circuito === 'Mastercard');
 
   const handleUpdateEmail = (newEmail) => {
     setEmail(newEmail);
