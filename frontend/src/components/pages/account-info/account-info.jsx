@@ -329,8 +329,9 @@ const PaymentMethods = ({ cards }) => {
     setShowAddCardModal(false);
   };
   const handleConfirmRemove = () => {
+
+    //creare a mettere la fetch
     console.log("Rimozione carta:", removingCardIndex);
-    // Aggiungi qui la logica effettiva di rimozione
     setShowRemoveCardModal(false);
     setRemovingCardIndex(null);
   };
@@ -348,7 +349,7 @@ const PaymentMethods = ({ cards }) => {
             <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
             <button
               onClick={() => setShowAddCardModal(true)}
-              className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+              className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02]"
             >
               Aggiungi metodo di pagamento
             </button>
@@ -368,13 +369,10 @@ const PaymentMethods = ({ cards }) => {
                   <div className="flex items-center gap-4">
                     <CreditCard className="w-6 h-6 text-blue-400" />
                     <div className="flex flex-col w-full">
-                      <h3 className="font-bold text-white">{card.type}</h3>
+                      <h3 className="font-bold text-white">{card.type} di {card.registered_at}</h3>
 
-                      <div className="flex justify-between w-full gap-4">
-                        <p className="text-sm text-gray-400">
-                          Intestatario: {card.registered_at}
-                        </p>
-                        <p className="text-sm text-gray-400 text-right">
+                      <div className="flex justify-between w-full">
+                        <p className="text-sm text-gray-400 pt-1">
                           Aggiunta il: {card.extra_column}
                         </p>
                       </div>
@@ -413,34 +411,34 @@ const PaymentMethods = ({ cards }) => {
               </div>
             ))}
 
-{showRemoveCardModal && (
-          <div className="modal modal-open">
-            <div className="modal-box bg-[#1E2633] border border-blue-900/30">
-              <h3 className="font-bold text-lg text-white">Conferma Rimozione Carta</h3>
-              <p className="py-4 text-gray-400">
-                Sei sicuro di voler rimuovere questa carta? Questa azione non può essere annullata.
-              </p>
-              <div className="modal-action">
-                <button
-                  className="btn btn-ghost text-white hover:bg-[#2C3E50]"
-                  onClick={() => setShowRemoveCardModal(false)}
-                >
-                  Annulla
-                </button>
-                <button
-                  className="btn btn-error bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700 transform transition-all duration-300 hover:scale-105"
-                  onClick={handleConfirmRemove}
-                >
-                  Conferma Rimozione
-                </button>
+            {showRemoveCardModal && (
+              <div className="modal modal-open">
+                <div className="modal-box bg-[#1E2633] border border-blue-900/30">
+                  <h3 className="font-bold text-lg text-white">Conferma Rimozione Carta</h3>
+                  <p className="py-4 text-gray-400">
+                    Sei sicuro di voler rimuovere questa carta? Questa azione non può essere annullata.
+                  </p>
+                  <div className="modal-action">
+                    <button
+                      className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                      onClick={() => setShowRemoveCardModal(false)}
+                    >
+                      Annulla
+                    </button>
+                    <button
+                      className="btn btn-error bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700 transform transition-all duration-300 hover:scale-105"
+                      onClick={handleConfirmRemove}
+                    >
+                      Conferma Rimozione
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            )}
 
             <button
               onClick={() => setShowAddCardModal(true)}
-              className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105 mt-6"
+              className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02] mt-6"
             >
               <Plus className="w-5 h-5 mr-2" />
               Aggiungi Nuova Carta
