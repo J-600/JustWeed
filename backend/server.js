@@ -59,10 +59,14 @@ app.post("/signup", (req, res) => {
     html: htmlContent,
     text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
   };
+  const isEmailPending = Array.from(tokenMailMap.values()).includes(email);
 
-
+  if (isEmailPending) {
+    return res.status(400).json({ error: "Una richiesta di registrazione è già in corso per questa email" });
+  }
   // console.log(`Token generato: ${token}, Email associata: ${email}`);
   tokenMailMap.set(token, email)
+  // console.log(tokenMailMap)
   fetch("http://localhost/justweed/backend/includes/create-user.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -92,8 +96,11 @@ app.get("/confirm", (req, res) => {
   // console.log(token);
   // console.log(email);
   // console.log(tokenExpiration);
+  // console.log(tokenMailMap)
+  // console.log(tokenExpirationMap)
 
   if (!tokenExpiration || Date.now() > tokenExpiration) {
+    // console.log("scaduto")
     res.json({ data: "token scaduto...", message: false });
 
     // fetch("http://localhost/justweed/backend/includes/delete-user-unconfirmed.php", {
@@ -119,6 +126,7 @@ app.get("/confirm", (req, res) => {
       .then(response => response.json())
       .then(data => {
         deleteToken(token);
+        console.log(data)
         if (data.message && data.response === 200) {
           req.session.username = data.data[0].username;
           req.session.email = email;
@@ -392,26 +400,6 @@ app.post('/verify-card', async (req, res) => {
     });
   }
 });
-
-
-function luhnCheck(cardNumber) {
-  let sum = 0;
-  let shouldDouble = false;
-
-  for (let i = cardNumber.length - 1; i >= 0; i--) {
-    let digit = parseInt(cardNumber.charAt(i));
-
-    if (shouldDouble) {
-      if ((digit *= 2) > 9) digit -= 9;
-    }
-
-    sum += digit;
-    shouldDouble = !shouldDouble;
-  }
-
-  return sum % 10 === 0;
-}
-
 
 app.post("/add-card", (req,res) => {
   console.log("aggiungendo")

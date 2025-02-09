@@ -8,10 +8,11 @@ function Signup() {
     const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
-    const [responseMessage, setResponseMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,18 +27,21 @@ function Signup() {
             });
 
             const data = await res.json();
+            console.log(data)
+            console.log(res)
             try {
-                if (data.email == null) {
-                    throw new Error("error");
+                if (res.status === 200) {
+                    setSuccessMessage(data || "Account created successfully!");
+                    // navigate('/');
+                } else {
+                    setErrorMessage(data.error || "An error occurred. Please try again.");
                 }
-                setResponseMessage("Signup successful");
-                navigate('/login');
             } catch (error) {
-                setResponseMessage(data);
+                setErrorMessage(data);
             }
         } catch (error) {
             console.error('Request error:', error);
-            setResponseMessage('Network error. Please try again.');
+            setErrorMessage('Network error. Please try again.');
         }
     };
 
@@ -47,9 +51,9 @@ function Signup() {
             <div className="flex-grow flex items-center justify-center w-full">
                 <div className="card w-full max-w-md bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
                     <div className="card-body space-y-6 p-8">
-                    <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
-    Sign Up
-</h1>
+                        <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
+                            Sign Up
+                        </h1>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="form-control">
@@ -150,10 +154,40 @@ function Signup() {
                                 </label>
                             </div>
 
-                            {responseMessage && (
-                                <div className="alert alert-error shadow-lg animate-fade-in">
-                                    <AlertCircle className="w-6 h-6" />
-                                    <span>{responseMessage}</span>
+                            {successMessage && (
+                                <div className="alert alert-success shadow-lg">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="stroke-current shrink-0 h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                    <span>{successMessage}</span>
+                                </div>
+                            )}
+                            {errorMessage && (
+                                <div className="alert alert-error shadow-lg">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="stroke-current shrink-0 h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                    <span>{errorMessage}</span>
                                 </div>
                             )}
 

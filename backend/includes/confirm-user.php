@@ -20,7 +20,7 @@ try{
         throw new Exception("Utente non registrato");
     }
 
-    $sql = "UPDATE $table SET (verified,registered_at) VALUES ('T', NOW()) WHERE email = :email";
+    $sql = "UPDATE $table SET verified = 'T', registered_at = NOW() WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->execute();

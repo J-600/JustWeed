@@ -31,7 +31,7 @@ function Confirm() {
         if (responseData.message) {
           setEmail(responseData.email);
           setUsername(responseData.username);
-          setResponseMessage(responseData.message);
+          setResponseMessage(responseData.data);
           setResponseType('success');
         } else {
           setResponseMessage(responseData.error || "Errore durante la conferma.");
@@ -51,7 +51,7 @@ function Confirm() {
       }
     };
     fetchConfirm();
-  }, [navigate, params]);
+  }, []);
 
   if (loading) {
     return (
