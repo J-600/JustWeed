@@ -330,41 +330,55 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!stripe || !elements) return;
-
+  
     setIsProcessing(true);
     setErrorMessage('');
-
+  
     try {
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        console.error("❌ CardElement non trovato!");
+        setErrorMessage("Errore nel caricamento del modulo di pagamento.");
+        setIsProcessing(false);
+        return;
+      }
+      console.log("✅ CardElement trovato:", cardElement);
+  
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
-        card: elements.getElement(CardElement),
+        card: cardElement,
         billing_details: { name: cardholderName },
       });
-
-      if (error) throw error;
-
-      const verifyResponse = await fetch('http://localhost:3000/create-verification-intent', {
+  
+      if (error) throw new Error(error.message);
+      if (!paymentMethod) throw new Error("Errore nella creazione del metodo di pagamento");
+  
+      console.log("📤 Sending request to /verify-card with:", { paymentMethodId: paymentMethod.id });
+  
+      // 🔵 INVIA LA RICHIESTA AL BACKEND
+      const verifyResponse = await fetch('http://localhost:3000/verify-card', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ paymentMethodId: paymentMethod.id }),
+        body: JSON.stringify({ paymentMethodId: paymentMethod.id })
       });
-
+  
+      console.log("🔵 Response status:", verifyResponse.status);
+      console.log("🔵 Response headers:", verifyResponse.headers);
+  
       const verifyResult = await verifyResponse.json();
-      if (!verifyResponse.ok) throw new Error(verifyResult.message || 'Verification failed');
-
-      const { error: confirmError } = await stripe.confirmCardPayment(verifyResult.clientSecret);
-      if (confirmError) throw confirmError;
-
+      if (!verifyResponse.ok) throw new Error(verifyResult.message || 'Errore nella verifica della carta');
+  
       onSuccess({
         last4: paymentMethod.card.last4,
         expiry: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
         name: cardholderName,
         paymentMethodId: paymentMethod.id
       });
-
+  
     } catch (err) {
-      setErrorMessage(err.message || 'An error occurred during verification');
+      console.error("❌ Errore:", err);
+      setErrorMessage(err.message || 'Si è verificato un errore durante la verifica');
     } finally {
       setIsProcessing(false);
     }
@@ -393,24 +407,17 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
       </div>
 
       <div className="modal-action">
-        <button
-          type="button"
-          className="btn btn-ghost text-white hover:bg-[#2C3E50]"
-          onClick={onCancel}
-        >
+        <button type="button" className="btn btn-ghost text-white hover:bg-[#2C3E50]" onClick={onCancel}>
           Cancel
         </button>
-        <button
-          type="submit"
-          className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700"
-          disabled={!stripe}
-        >
+        <button type="submit" className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700" disabled={!stripe}>
           Verify Card
         </button>
       </div>
     </form>
   );
 };
+
 
 const PaymentMethods = () => {
   const [cards, setCards] = useState([]);
@@ -465,7 +472,7 @@ const PaymentMethods = () => {
       });
 
       if (!addRes.ok) throw new Error("Failed to save card");
-      
+
       setSuccessMessage("Card added successfully!");
       setShowAddCardModal(false);
       fetchCardsData();
@@ -489,7 +496,7 @@ const PaymentMethods = () => {
       });
 
       if (!res.ok) throw new Error("Failed to update card");
-      
+
       setSuccessMessage("Card updated successfully!");
       setShowEditCardModal(false);
       fetchCardsData();
@@ -508,7 +515,7 @@ const PaymentMethods = () => {
       });
 
       if (!res.ok) throw new Error("Failed to delete card");
-      
+
       setSuccessMessage("Card removed successfully!");
       setShowRemoveCardModal(false);
       fetchCardsData();
@@ -519,10 +526,10 @@ const PaymentMethods = () => {
 
   const handleInputChange = (e) => {
     let { name, value } = e.target;
-    
+
     if (name === "expiryDate") {
       value = value.replace(/\D/g, "");
-      
+
       if (value.length > 4) value = value.slice(0, 4);
       if (value.length > 2) {
         value = value.replace(/(\d{2})(\d{1,2})/, "$1/$2");
@@ -578,7 +585,7 @@ const PaymentMethods = () => {
                   <div className="flex items-center gap-4">
                     <CreditCard className="w-6 h-6 text-blue-400" />
                     <div>
-                      <h3 className="font-bold text-white">{card.circuito} n. ••••••••••••{card.numero.slice(12,16)}</h3>
+                      <h3 className="font-bold text-white">{card.circuito} n. ••••••••••••{card.numero.slice(12, 16)}</h3>
                       <p className="text-sm text-gray-400">Aggiunta il {new Date(card.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
@@ -599,7 +606,7 @@ const PaymentMethods = () => {
                     </div>
 
                     <div className="flex gap-2">
-                      <button onClick={() => { 
+                      <button onClick={() => {
                         setFormData({
                           scadenza: `${String(card.scadenza.split("-")[1]).padStart(2, '0')}/${String(card.scadenza.split("-")[0]).slice(-2)}`,
                           nome_titolare: card.nome_titolare
@@ -611,7 +618,7 @@ const PaymentMethods = () => {
                         Modifica
                       </button>
 
-                      <button onClick={() => { 
+                      <button onClick={() => {
                         setRemovingCardIndex(index);
                         setShowRemoveCardModal(true);
                       }} className="btn btn-error btn-sm flex-1 bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700">
@@ -638,8 +645,8 @@ const PaymentMethods = () => {
                 Aggiungi carta
               </h3>
               <Elements stripe={stripePromise}>
-                <StripeCardForm 
-                  onSuccess={handleCardSuccess} 
+                <StripeCardForm
+                  onSuccess={handleCardSuccess}
                   onCancel={() => setShowAddCardModal(false)}
                   setErrorMessage={setErrorMessage}
                   setIsProcessing={setIsProcessing}
@@ -732,7 +739,7 @@ const PaymentMethods = () => {
       </div>
     </div>
   );
-};        
+};
 
 
 

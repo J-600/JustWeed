@@ -342,6 +342,58 @@ app.post('/verify-card', (req, res) => {
   return res.status(200).json({ message: "Verifica completata con successo." });
 });
 
+
+app.post('/verify-card', async (req, res) => {
+  try {
+    const { paymentMethodId } = req.body;
+    if (!paymentMethodId) {
+      return res.status(400).json({ message: 'Payment method ID is required' });
+    }
+
+    // First verify the PaymentMethod exists and is valid
+    const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
+    
+    // Create a SetupIntent with the payment method
+    const setupIntent = await stripe.setupIntents.create({
+      payment_method: paymentMethodId,
+      confirm: true,
+      usage: 'off_session',
+      payment_method_types: ['card'],
+      // Add your customer ID here if you have one
+      // customer: 'cus_xxx',
+    });
+
+    // Check the status of the SetupIntent
+    switch (setupIntent.status) {
+      case 'succeeded':
+        return res.json({ success: true });
+      case 'requires_action':
+      case 'requires_confirmation':
+        return res.json({ 
+          success: false, 
+          clientSecret: setupIntent.client_secret 
+        });
+      default:
+        throw new Error('Unexpected SetupIntent status');
+    }
+
+  } catch (error) {
+    console.error("Stripe Error:", error);
+    
+    // Handle specific Stripe errors
+    if (error.type === 'StripeCardError') {
+      return res.status(400).json({ 
+        message: error.message || 'Carta non valida'
+      });
+    }
+    
+    return res.status(500).json({ 
+      message: 'Errore durante la verifica della carta'
+    });
+  }
+});
+
+
 function luhnCheck(cardNumber) {
   let sum = 0;
   let shouldDouble = false;
@@ -360,57 +412,6 @@ function luhnCheck(cardNumber) {
   return sum % 10 === 0;
 }
 
-app.post('/process-payment', async (req, res) => {
-  try {
-    const { amount, cardDetails } = req.body;
-    const { cardNumber, expiryDate, cardholderName, cvc } = cardDetails;
-
-    if (!cardNumber || !expiryDate || !cardholderName) {
-      return res.status(400).json({ message: "Dati della carta incompleti." });
-    }
-
-    if (!luhnCheck(cardNumber)) {
-      return res.status(400).json({ message: "La carta non è valida." });
-    }
-
-    const currentDate = new Date();
-    const [month, year] = expiryDate.split('/');
-    const expiryDateObj = new Date(`20${year}-${month}-01`);
-    if (expiryDateObj < currentDate) {
-      return res.status(400).json({ message: "La carta è scaduta." });
-    }
-
-    const paymentMethod = await stripe.paymentMethods.create({
-      type: 'card',
-      card: {
-        number: cardNumber,
-        exp_month: month,
-        exp_year: `20${year}`,
-        cvc: cvc, 
-      },
-      billing_details: {
-        name: cardholderName,
-      },
-    });
-
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100,
-      currency: 'usd', 
-      payment_method: paymentMethod.id,
-      confirm: true,
-    });
-
-    if (paymentIntent.status === 'succeeded') {
-      return res.status(200).json({ message: "Pagamento completato con successo." });
-    } else {
-      return res.status(500).json({ message: "Impossibile elaborare il pagamento." });
-    }
-  } catch (error) {
-    console.error("Errore durante il pagamento:", error);
-    return res.status(500).json({ message: "Si è verificato un errore. Riprova." });
-  }
-});
 
 app.post("/add-card", (req,res) => {
   console.log("aggiungendo")
