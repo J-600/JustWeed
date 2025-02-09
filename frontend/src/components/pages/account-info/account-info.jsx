@@ -4,6 +4,28 @@ import { Edit, User, CreditCard, MapPin, Trash2, ArrowLeft, Pencil, Lock, Chevro
 import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 import CryptoJS from 'crypto-js';
+import { Elements, CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe("pk_test_51Qqap7J0BPVuq51Y7Bp15pmKU75gD8W6jjBXlXZLWzSbRQjnUGOrDp0cbR6LVWmFDmYl88OiKuSYnbubSMbvmGBB00iqVsYVpf");
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      color: '#fff',
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      '::placeholder': {
+        color: '#aab7c4'
+      }
+    },
+    invalid: {
+      color: '#fa755a',
+      iconColor: '#fa755a'
+    }
+  },
+  hidePostalCode: true
+};
 
 
 const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail, onUpdateUsername }) => {
@@ -300,8 +322,98 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
   );
 };
 
+const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [cardholderName, setCardholderName] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setIsProcessing(true);
+    setErrorMessage('');
+
+    try {
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: elements.getElement(CardElement),
+        billing_details: { name: cardholderName },
+      });
+
+      if (error) throw error;
+
+      const verifyResponse = await fetch('http://localhost:3000/create-verification-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ paymentMethodId: paymentMethod.id }),
+      });
+
+      const verifyResult = await verifyResponse.json();
+      if (!verifyResponse.ok) throw new Error(verifyResult.message || 'Verification failed');
+
+      const { error: confirmError } = await stripe.confirmCardPayment(verifyResult.clientSecret);
+      if (confirmError) throw confirmError;
+
+      onSuccess({
+        last4: paymentMethod.card.last4,
+        expiry: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
+        name: cardholderName,
+        paymentMethodId: paymentMethod.id
+      });
+
+    } catch (err) {
+      setErrorMessage(err.message || 'An error occurred during verification');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="form-control">
+        <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+          <User className="w-4 h-4 opacity-70" />
+          <input
+            type="text"
+            className="grow text-white placeholder-gray-400 bg-transparent border-none focus:outline-none"
+            placeholder="Cardholder Name"
+            value={cardholderName}
+            onChange={(e) => setCardholderName(e.target.value)}
+            required
+          />
+        </label>
+      </div>
+
+      <div className="form-control">
+        <div className="input input-bordered input-info bg-[#2C3E50] p-3">
+          <CardElement options={CARD_ELEMENT_OPTIONS} />
+        </div>
+      </div>
+
+      <div className="modal-action">
+        <button
+          type="button"
+          className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+          onClick={onCancel}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700"
+          disabled={!stripe}
+        >
+          Verify Card
+        </button>
+      </div>
+    </form>
+  );
+};
+
 const PaymentMethods = () => {
-  const [cards, setCards] = useState(false);
+  const [cards, setCards] = useState([]);
   const [showAddCardModal, setShowAddCardModal] = useState(false);
   const [showEditCardModal, setShowEditCardModal] = useState(false);
   const [expandedCard, setExpandedCard] = useState(null);
@@ -309,16 +421,13 @@ const PaymentMethods = () => {
   const [removingCardIndex, setRemovingCardIndex] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
   const [loading, setLoading] = useState(true);
+  const [cardToEdit, setCardToEdit] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
-    cardNumber: '',
     expiryDate: '',
-    cvc: '',
     cardholderName: ''
   });
-
-  const [cardToEdit, setCardToEdit] = useState(null);
 
   const navigate = useNavigate();
 
@@ -329,261 +438,195 @@ const PaymentMethods = () => {
         method: "GET",
         credentials: "include",
       });
-
-      if (!res.ok) {
-        throw new Error(`HTTP Error! Status: ${res.status}`);
-      }
-
-      const data = await res.json();
-      setCards(data);
+      if (!res.ok) throw new Error(`HTTP Error! Status: ${res.status}`);
+      setCards(await res.json());
     } catch (error) {
-      console.error("Errore nel caricamento dei dati:", error);
+      console.error("Error loading data:", error);
       navigate("/");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchCardsData();
-  }, [navigate]);
+  useEffect(() => { fetchCardsData(); }, [navigate]);
 
-  const toggleCardExpansion = (index) => {
-    setExpandedCard(prev => prev === index ? null : index);
-  };
-
-  const handleInputChange = (e) => {
-    let value = e.target.value;
-
-    if (e.target.name === "expiryDate") {
-      value = value.replace(/\D/g, ""); 
-      value = value.slice(0, 4);
-      if (value.length > 2) {
-        value = value.replace(/^(\d{2})(\d{1,2})$/, "$1/$2"); 
-      }
-    }
-
-    setFormData({ ...formData, [e.target.name]: value });
-  };
-  function convertExpiryDateToSQL(expiryDate) {
-    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
-        throw new Error("Formato non valido. Usa MM/AA.");
-    }
-
-    let [month, year] = expiryDate.split("/").map(num => parseInt(num, 10));
-    year += 2000; // Aggiunge 2000 per formati come "25" -> "2025"
-
-    return `${year}-${String(month).padStart(2, "0")}-01`; // Formatta YYYY-MM-01
-}
-
-
-  const handleAddCard = async (e) => {
-    e.preventDefault();
-    console.log("aggiunta")
+  const handleCardSuccess = async (cardData) => {
     try {
-      const res = await fetch("http://localhost:3000/add-card", {
+      const addRes = await fetch("http://localhost:3000/add-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ number: formData.cardNumber, scadenza: convertExpiryDateToSQL(formData.expiryDate), propietario: formData.cardholderName }),
+        body: JSON.stringify({
+          payment_method_id: cardData.paymentMethodId,
+          last4: cardData.last4,
+          expiry: cardData.expiry,
+          holder_name: cardData.name
+        }),
         credentials: 'include'
-      })
-      const data = await res.json()
-      console.log(res)
-      if (res.status !== 200) {
-        setShowAddCardModal(false);
-        setErrorMessage(data.message || "Errore nell'upload dei dati.");
-        return
-      }
-      setShowAddCardModal(false);
-      setSuccessMessage(data);
-      setErrorMessage("");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      });
+
+      if (!addRes.ok) throw new Error("Failed to save card");
+      
+      setSuccessMessage("Card added successfully!");
       setShowAddCardModal(false);
       fetchCardsData();
     } catch (error) {
-      console.error("Errore durante la richiesta:", error);
-      setErrorMessage("An error occurred. Please try again.");
+      setErrorMessage(error.message);
     }
-
-
-    // setShowAddCardModal(false);
   };
 
-  const handleEditCard = (e) => {
+  const handleEditCard = async (e) => {
     e.preventDefault();
-    console.log("Carta modificata:", formData);
-    setShowEditCardModal(false);
-    setCardToEdit(null);
+    try {
+      const res = await fetch("http://localhost:3000/update-card", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cardId: cardToEdit.id,
+          expiry: formData.expiryDate,
+          holder_name: formData.cardholderName
+        }),
+        credentials: 'include'
+      });
+
+      if (!res.ok) throw new Error("Failed to update card");
+      
+      setSuccessMessage("Card updated successfully!");
+      setShowEditCardModal(false);
+      fetchCardsData();
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
-  const handleConfirmRemove = () => {
-    console.log("Rimozione carta:", removingCardIndex);
-    setShowRemoveCardModal(false);
-    setRemovingCardIndex(null);
+  const handleConfirmRemove = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/delete-card", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cardId: cards[removingCardIndex].id }),
+        credentials: 'include'
+      });
+
+      if (!res.ok) throw new Error("Failed to delete card");
+      
+      setSuccessMessage("Card removed successfully!");
+      setShowRemoveCardModal(false);
+      fetchCardsData();
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
-  const handleEditCardDetails = (card) => {
-    setFormData({
-      cardNumber: card.numero,
-      expiryDate: card.scadenza,
-      cvc: '',
-      cardholderName: card.nome_titolare
-    });
-    setCardToEdit(card);
-    setShowEditCardModal(true);
+  const handleInputChange = (e) => {
+    let { name, value } = e.target;
+    
+    if (name === "expiryDate") {
+      value = value.replace(/\D/g, "");
+      
+      if (value.length > 4) value = value.slice(0, 4);
+      if (value.length > 2) {
+        value = value.replace(/(\d{2})(\d{1,2})/, "$1/$2");
+      }
+    }
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
   return (
     <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
       <div className="card-body space-y-4">
-        <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
+        <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6">
           Metodi di pagamento
         </h2>
 
+        {successMessage && (
+          <div className="alert alert-success shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{successMessage}</span>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="alert alert-error shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
         {loading ? (
-          <div className="flex items-center justify-center border-b border-blue-900/30 pb-2">
-            <Loader></Loader>
+          <div className="flex items-center justify-center">
+            <Loader />
           </div>
         ) : cards.length === 0 ? (
           <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
-
-            <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
-            <button
-              onClick={() => setShowAddCardModal(true)}
-              className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02]"
-            >
-              Aggiungi metodo di pagamento
+            <p className="font-semibold text-gray-400">nessun metodo di pagamento</p>
+            <button onClick={() => setShowAddCardModal(true)} className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700">
+              aggiungi metodo di pagamento
             </button>
           </div>
         ) : (
           <div className="space-y-4">
-            {successMessage && (
-              <div className="alert alert-success shadow-lg">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="stroke-current shrink-0 h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{successMessage}</span>
-              </div>
-            )}
-            {errorMessage && (
-              <div className="alert alert-error shadow-lg">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="stroke-current shrink-0 h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{errorMessage}</span>
-              </div>
-            )}
             {cards.map((card, index) => (
-              <div
-                key={index}
-                className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedCard === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'
-                  }`}
-              >
-                <div
-                  className="flex items-center justify-between cursor-pointer"
-                  onClick={() => toggleCardExpansion(index)}
-                >
+              <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedCard === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'}`}>
+                <div className="flex items-center justify-between cursor-pointer" onClick={() => setExpandedCard(prev => prev === index ? null : index)}>
                   <div className="flex items-center gap-4">
                     <CreditCard className="w-6 h-6 text-blue-400" />
-                    <div className="flex flex-col w-full">
-                      <h3 className="font-bold text-white">{card.circuito} di {card.nome_titolare}</h3>
-                      <div className="flex justify-between w-full">
-                        <p className="text-sm text-gray-400 pt-1">
-                          Aggiunta il: {card.created_at}
-                        </p>
-                      </div>
+                    <div>
+                      <h3 className="font-bold text-white">{card.circuito} n. ••••••••••••{card.numero.slice(12,16)}</h3>
+                      <p className="text-sm text-gray-400">Aggiunta il {new Date(card.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${expandedCard === index ? 'rotate-180' : ''
-                    }`} />
+                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${expandedCard === index ? 'rotate-180' : ''}`} />
                 </div>
 
-                <div className={`overflow-hidden transition-all duration-300 ${expandedCard === index ? 'max-h-96 mt-4' : 'max-h-0'
-                  }`}>
+                <div className={`overflow-hidden transition-all ${expandedCard === index ? 'max-h-96 mt-4' : 'max-h-0'}`}>
                   <div className="pt-4 border-t border-blue-900/30 space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm text-blue-400">Numero</label>
-                        <p className="text-white">••••••••••••{card.numero.slice(11, 16)}</p>
+                        <label className="text-sm text-blue-400">scadenza</label>
+                        <p className="text-white">{card.scadenza.split("-")[1]}/{card.scadenza.split("-")[0].slice(2)}</p>
                       </div>
                       <div>
-                        <label className="text-sm text-blue-400">Scadenza</label>
-                        <p className="text-white">{card.scadenza}</p>
+                        <label className="text-sm text-blue-400">Propietario</label>
+                        <p className="text-white">{card.nome_titolare}</p>
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => handleEditCardDetails(card)} // Modifica i dettagli della carta
-                      className="btn btn-info btn-sm w-full bg-gradient-to-r from-green-500 to-teal-600 text-white border-none hover:from-green-600 hover:to-teal-700"
-                    >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Modifica Carta
-                    </button>
+                    <div className="flex gap-2">
+                      <button onClick={() => { 
+                        setFormData({
+                          scadenza: `${String(card.scadenza.split("-")[1]).padStart(2, '0')}/${String(card.scadenza.split("-")[0]).slice(-2)}`,
+                          nome_titolare: card.nome_titolare
+                        });
+                        setCardToEdit(card);
+                        setShowEditCardModal(true);
+                      }} className="btn btn-info btn-sm flex-1 bg-gradient-to-r from-green-500 to-teal-600 text-white border-none hover:from-green-600 hover:to-teal-700">
+                        <Edit className="w-4 h-4 mr-2" />
+                        Modifica
+                      </button>
 
-                    <button
-                      onClick={() => {
+                      <button onClick={() => { 
                         setRemovingCardIndex(index);
                         setShowRemoveCardModal(true);
-                      }}
-                      className="btn btn-error btn-sm w-full bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Rimuovi Carta
-                    </button>
+                      }} className="btn btn-error btn-sm flex-1 bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700">
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Rimuovi
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
-            {showRemoveCardModal && (
-              <div className="modal modal-open">
-                <div className="modal-box bg-[#1E2633] border border-blue-900/30">
-                  <h3 className="font-bold text-lg text-white">Conferma Rimozione Carta</h3>
-                  <p className="py-4 text-gray-400">
-                    Sei sicuro di voler rimuovere questa carta? Questa azione non può essere annullata.
-                  </p>
-                  <div className="modal-action">
-                    <button
-                      className="btn btn-ghost text-white hover:bg-[#2C3E50]"
-                      onClick={() => setShowRemoveCardModal(false)}
-                    >
-                      Annulla
-                    </button>
-                    <button
-                      className="btn btn-error bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700 transform transition-all duration-300 hover:scale-105"
-                      onClick={handleConfirmRemove}
-                    >
-                      Conferma Rimozione
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            <button
-              onClick={() => setShowAddCardModal(true)}
-              className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02] mt-6"
-            >
+
+            <button onClick={() => setShowAddCardModal(true)} className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 mt-6">
               <Plus className="w-5 h-5 mr-2" />
-              Aggiungi Nuova Carta
+              Aggiungi carta
             </button>
           </div>
         )}
@@ -592,94 +635,16 @@ const PaymentMethods = () => {
           <div className="modal modal-open">
             <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
               <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
-                Aggiungi Nuova Carta
+                Aggiungi carta
               </h3>
-              <form onSubmit={handleAddCard} className="space-y-6">
-                <div className="form-control">
-                  <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
-                    <CreditCard className="w-4 h-4 opacity-70" />
-                    <input
-                      type="text"
-                      name="cardNumber"
-                      className="grow text-white placeholder-gray-400"
-                      placeholder="Numero Carta"
-                      value={formData.cardNumber}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </label>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="form-control">
-                    <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
-                      <Lock className="w-4 h-4 opacity-70" />
-                      <input
-                        type="text"
-                        name="expiryDate"
-                        className="grow text-white placeholder-gray-400"
-                        placeholder="MM/AA"
-                        value={formData.expiryDate}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </label>
-                  </div>
-
-                  <div className="form-control">
-                    <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
-                      <Lock className="w-4 h-4 opacity-70" />
-                      <input
-                        type="text"
-                        name="cvc"
-                        className="grow text-white placeholder-gray-400"
-                        placeholder="CVC"
-                        value={formData.cvc}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <div className="form-control">
-                  <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
-                    <User className="w-4 h-4 opacity-70" />
-                    <input
-                      type="text"
-                      name="cardholderName"
-                      className="grow text-white placeholder-gray-400"
-                      placeholder="Intestatario Carta"
-                      value={formData.cardholderName}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </label>
-                </div>
-
-                <div className="modal-action">
-                  <button
-                    type="button"
-                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
-                    onClick={() => {
-                      setShowAddCardModal(false); setFormData({
-                        cardNumber: '',
-                        expiryDate: '',
-                        cvc: '',
-                        cardholderName: ''
-                      });
-                    }}
-                  >
-                    Annulla
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
-                  >
-                    Aggiungi Carta
-                  </button>
-                </div>
-              </form>
+              <Elements stripe={stripePromise}>
+                <StripeCardForm 
+                  onSuccess={handleCardSuccess} 
+                  onCancel={() => setShowAddCardModal(false)}
+                  setErrorMessage={setErrorMessage}
+                  setIsProcessing={setIsProcessing}
+                />
+              </Elements>
             </div>
           </div>
         )}
@@ -688,10 +653,9 @@ const PaymentMethods = () => {
           <div className="modal modal-open">
             <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
               <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
-                Modifica Carta
+                Modifica carta
               </h3>
               <form onSubmit={handleEditCard} className="space-y-6">
-
                 <div className="grid grid-cols-1 gap-4">
                   <div className="form-control">
                     <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
@@ -700,8 +664,8 @@ const PaymentMethods = () => {
                         type="text"
                         name="expiryDate"
                         className="grow text-white placeholder-gray-400"
-                        placeholder="MM/AA"
-                        value={formData.expiryDate}
+                        placeholder="MM/YY"
+                        value={formData.scadenza}
                         onChange={handleInputChange}
                         required
                       />
@@ -709,20 +673,13 @@ const PaymentMethods = () => {
                   </div>
                   <div className="form-control">
                     <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                        className="h-4 w-4 opacity-70">
-                        <path
-                          d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-                      </svg>
+                      <User className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
                         name="cardholderName"
                         className="grow text-white placeholder-gray-400"
-                        placeholder="Intestatario Carta"
-                        value={formData.cardholderName}
+                        placeholder="Cardholder Name"
+                        value={formData.nome_titolare}
                         onChange={handleInputChange}
                         required
                       />
@@ -730,38 +687,52 @@ const PaymentMethods = () => {
                   </div>
                 </div>
 
-
-
                 <div className="modal-action">
                   <button
                     type="button"
                     className="btn btn-ghost text-white hover:bg-[#2C3E50]"
-                    onClick={() => {
-                      setShowEditCardModal(false); setFormData({
-                        cardNumber: '',
-                        expiryDate: '',
-                        cvc: '',
-                        cardholderName: ''
-                      })
-                    }}
+                    onClick={() => setShowEditCardModal(false)}
                   >
                     Annulla
                   </button>
                   <button
                     type="submit"
-                    className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+                    className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700"
                   >
-                    Salva Modifiche
+                    Salva
                   </button>
                 </div>
               </form>
             </div>
           </div>
         )}
+
+        {showRemoveCardModal && (
+          <div className="modal modal-open">
+            <div className="modal-box bg-[#1E2633] border border-blue-900/30">
+              <h3 className="font-bold text-lg text-white">Confirm Removal</h3>
+              <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questa carta??</p>
+              <div className="modal-action">
+                <button
+                  className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                  onClick={() => setShowRemoveCardModal(false)}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="btn btn-error bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700"
+                  onClick={handleConfirmRemove}
+                >
+                  Elimina
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
-};
+};        
 
 
 

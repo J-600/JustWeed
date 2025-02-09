@@ -3,7 +3,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const creditCardType = require('credit-card-type');
 const session = require('express-session');
+
+const STRIPE_SECRET_KEY = 'sk_test_51Qqap7J0BPVuq51Y0ydAG9kn97Q39HQ2WAP4N0J1s794JiNzwIYj2PoorgFr6A4ZJdvwbMUTwTERatnoFOUf2ltd00A6Q3laNG';
+const stripe = require('stripe')(STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -313,20 +317,129 @@ app.get("/cardsdata", (req,res) => {
   }
 })
 
+app.use(bodyParser.json());
+
+app.post('/verify-card', (req, res) => {
+  const { number, expiry, name } = req.body;
+
+  const cardInfo = creditCardType(number);
+
+  if (cardInfo.length === 0) {
+    return res.status(400).json({ message: "Numero della carta non valido." });
+  }
+  if (!luhnCheck(number)) {
+    return res.status(400).json({ message: "La carta non è valida." });
+  }
+
+  const currentDate = new Date();
+  const [month, year] = expiry.split('/');
+  const expiryDate = new Date(`20${year}-${month}-01`);
+
+  if (expiryDate < currentDate) {
+    return res.status(400).json({ message: "La carta è scaduta." });
+  }
+
+  return res.status(200).json({ message: "Verifica completata con successo." });
+});
+
+function luhnCheck(cardNumber) {
+  let sum = 0;
+  let shouldDouble = false;
+
+  for (let i = cardNumber.length - 1; i >= 0; i--) {
+    let digit = parseInt(cardNumber.charAt(i));
+
+    if (shouldDouble) {
+      if ((digit *= 2) > 9) digit -= 9;
+    }
+
+    sum += digit;
+    shouldDouble = !shouldDouble;
+  }
+
+  return sum % 10 === 0;
+}
+
+app.post('/process-payment', async (req, res) => {
+  try {
+    const { amount, cardDetails } = req.body;
+    const { cardNumber, expiryDate, cardholderName, cvc } = cardDetails;
+
+    if (!cardNumber || !expiryDate || !cardholderName) {
+      return res.status(400).json({ message: "Dati della carta incompleti." });
+    }
+
+    if (!luhnCheck(cardNumber)) {
+      return res.status(400).json({ message: "La carta non è valida." });
+    }
+
+    const currentDate = new Date();
+    const [month, year] = expiryDate.split('/');
+    const expiryDateObj = new Date(`20${year}-${month}-01`);
+    if (expiryDateObj < currentDate) {
+      return res.status(400).json({ message: "La carta è scaduta." });
+    }
+
+    const paymentMethod = await stripe.paymentMethods.create({
+      type: 'card',
+      card: {
+        number: cardNumber,
+        exp_month: month,
+        exp_year: `20${year}`,
+        cvc: cvc, 
+      },
+      billing_details: {
+        name: cardholderName,
+      },
+    });
+
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount * 100,
+      currency: 'usd', 
+      payment_method: paymentMethod.id,
+      confirm: true,
+    });
+
+    if (paymentIntent.status === 'succeeded') {
+      return res.status(200).json({ message: "Pagamento completato con successo." });
+    } else {
+      return res.status(500).json({ message: "Impossibile elaborare il pagamento." });
+    }
+  } catch (error) {
+    console.error("Errore durante il pagamento:", error);
+    return res.status(500).json({ message: "Si è verificato un errore. Riprova." });
+  }
+});
+
 app.post("/add-card", (req,res) => {
   console.log("aggiungendo")
   if (!req.session.username){
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
     const {number, scadenza, propietario} = req.body; 
+    const bin = number.substring(0, 6);
+    fetch(`https://lookup.binlist.net/${bin}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.scheme) {
+                const circuito = data.scheme
+            } else {
+                res.status(404).json({ error: 'Circuito non trovato' });
+            }
+        })
+        .catch(error => {
+            res.status(500).json({ error: 'Errore del server' });
+        });
+
     fetch ("http://localhost/justweed/backend/includes/add-payment-method.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
-      body: `number=${number}&scandenza=${scadenza}&nome_titolare=${propietario}`
+      body: `number=${number}&scadenza=${scadenza}&nome_titolare=${propietario}&email=${req.session.email}&circuito=${ci}`
     })
     .then(response => response.json())
     .then (data =>{
-      console.log(data)
+      // console.log(data)
       if (data.message && data.response === 200){
         res.json(data.data);
       } else if (data.response === 500) {

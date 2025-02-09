@@ -1,22 +1,26 @@
 <?php
 try {
 
-    if ($_SERVER["REQUEST_METHOD"] != "POST") {
-        throw new Exception("Non è una richiesta POST");
-    }
+    // if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    //     throw new Exception("Non è una richiesta POST");
+    // }
 
     require_once "dbh.inc.php";
     $table = "cards_jw"; 
 
     $number = $_POST["number"];
+    $email = $_POST["email"];
+    $circuito = $_POST["circuito"];
     $scadenza = $_POST["scadenza"];
     $nome_titolare = $_POST["nome_titolare"];
 
-    $sql = "INSERT INTO $table (number,scandenza, nome_titolare) VALUES (:number, :scandenza, :nome_titolare)";
+    $sql = "INSERT INTO $table (numero, email, scadenza, circuito, nome_titolare) VALUES (:number, :email ,:scadenza, :circuito, :nome_titolare)";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":number", $number);
     $stmt->bindParam(":scadenza", $scadenza);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':circuito', $circuito);
     $stmt->bindParam(":nome_titolare", $nome_titolare);
 
     $stmt->execute();
