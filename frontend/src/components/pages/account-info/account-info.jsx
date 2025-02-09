@@ -337,12 +337,10 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
     try {
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) {
-        console.error("❌ CardElement non trovato!");
         setErrorMessage("Errore nel caricamento del modulo di pagamento.");
         setIsProcessing(false);
         return;
       }
-      console.log("✅ CardElement trovato:", cardElement);
   
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
@@ -353,18 +351,13 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
       if (error) throw new Error(error.message);
       if (!paymentMethod) throw new Error("Errore nella creazione del metodo di pagamento");
   
-      console.log("📤 Sending request to /verify-card with:", { paymentMethodId: paymentMethod.id });
   
-      // 🔵 INVIA LA RICHIESTA AL BACKEND
       const verifyResponse = await fetch('http://localhost:3000/verify-card', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ paymentMethodId: paymentMethod.id })
       });
-  
-      console.log("🔵 Response status:", verifyResponse.status);
-      console.log("🔵 Response headers:", verifyResponse.headers);
   
       const verifyResult = await verifyResponse.json();
       if (!verifyResponse.ok) throw new Error(verifyResult.message || 'Errore nella verifica della carta');
@@ -377,7 +370,6 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
       });
   
     } catch (err) {
-      console.error("❌ Errore:", err);
       setErrorMessage(err.message || 'Si è verificato un errore durante la verifica');
     } finally {
       setIsProcessing(false);

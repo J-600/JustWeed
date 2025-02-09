@@ -317,30 +317,30 @@ app.get("/cardsdata", (req,res) => {
   }
 })
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
-app.post('/verify-card', (req, res) => {
-  const { number, expiry, name } = req.body;
+// app.post('/verify-card', (req, res) => {
+//   const { number, expiry, name } = req.body;
 
-  const cardInfo = creditCardType(number);
+//   const cardInfo = creditCardType(number);
 
-  if (cardInfo.length === 0) {
-    return res.status(400).json({ message: "Numero della carta non valido." });
-  }
-  if (!luhnCheck(number)) {
-    return res.status(400).json({ message: "La carta non è valida." });
-  }
+//   if (cardInfo.length === 0) {
+//     return res.status(400).json({ message: "Numero della carta non valido." });
+//   }
+//   if (!luhnCheck(number)) {
+//     return res.status(400).json({ message: "La carta non è valida." });
+//   }
 
-  const currentDate = new Date();
-  const [month, year] = expiry.split('/');
-  const expiryDate = new Date(`20${year}-${month}-01`);
+//   const currentDate = new Date();
+//   const [month, year] = expiry.split('/');
+//   const expiryDate = new Date(`20${year}-${month}-01`);
 
-  if (expiryDate < currentDate) {
-    return res.status(400).json({ message: "La carta è scaduta." });
-  }
+//   if (expiryDate < currentDate) {
+//     return res.status(400).json({ message: "La carta è scaduta." });
+//   }
 
-  return res.status(200).json({ message: "Verifica completata con successo." });
-});
+//   return res.status(200).json({ message: "Verifica completata con successo." });
+// });
 
 
 app.post('/verify-card', async (req, res) => {
