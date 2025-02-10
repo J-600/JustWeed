@@ -401,7 +401,7 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
 
       <div className="modal-action">
         <button type="button" className="btn btn-ghost text-white hover:bg-[#2C3E50]" onClick={onCancel}>
-          Annull
+          Annulla
         </button>
         <button type="submit" className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700" disabled={!stripe}>
           Verifica carta
@@ -607,7 +607,7 @@ const PaymentMethods = () => {
                       </div>
                     </div>
 
-                    <div className="flex flez gap-2">
+                    <div className="flex gap-2">
                       <button onClick={() => {
                         setFormData({
                           scadenza: `${String(card.scadenza.split("/")[0]).padStart(2, '0')}/${String(card.scadenza.split("/")[1]).slice(-2)}`,

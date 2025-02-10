@@ -5,6 +5,10 @@ try {
         throw new Exception("Non è una richiesta POST");
     }
 
+    $data = $_POST["data"];
+    $nome_titolare = $_POST["nome_titolare"];
+
+
 } catch (PDOException $e) {
     $response = [
         "response" => 500,

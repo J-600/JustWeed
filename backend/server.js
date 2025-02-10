@@ -436,7 +436,7 @@ app.post("/add-card", (req, res) => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        // console.log(data)
         if (data.message && data.response === 200) {
           res.json(data.data);
         } else if (data.response === 500) {
@@ -495,7 +495,7 @@ app.post("/becomeAseller", (req, res) => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
+        // console.log(data); 
         if (data.response === 200) {
           res.json(data.data);
         } else {
@@ -522,7 +522,7 @@ app.post("/updateProducts", (req, res) => {
   })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
+      // console.log(data);
       if (data.response === 200) {
         res.json(data.data);
       } else {
