@@ -126,7 +126,7 @@ app.get("/confirm", (req, res) => {
       .then(response => response.json())
       .then(data => {
         deleteToken(token);
-        console.log(data)
+        // console.log(data)
         if (data.message && data.response === 200) {
           req.session.username = data.data[0].username;
           req.session.email = email;
@@ -402,13 +402,13 @@ app.post('/verify-card', async (req, res) => {
 });
 
 app.post("/add-card", (req, res) => {
-  console.log("aggiungendo")
+  // console.log("aggiungendo")
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
     const { metodoPagamento, numero, scadenza, nome_titolare, circuito } = req.body;
-    console.log(req.body)
-    console.log(scadenza)
+    // console.log(req.body) 
+    // console.log(scadenza)
     let [month, year] = scadenza.split('/');
     month = month.padStart(2, '0');
     year = year.slice(-2);

@@ -456,7 +456,7 @@ const PaymentMethods = () => {
 
   const handleCardSuccess = async (cardData) => {
     try {
-      console.log(cardData)
+      // console.log(cardData) 
       const addRes = await fetch("http://localhost:3000/add-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },

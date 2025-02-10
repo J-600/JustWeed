@@ -5,8 +5,13 @@ try {
         throw new Exception("Non è una richiesta POST");
     }
 
-    $data = $_POST["data"];
-    $nome_titolare = $_POST["nome_titolare"];
+
+    $data = isset($_POST["data"]) ? $_POST["data"] : null;
+    $nome_titolare = isset($_POST["nome_titolare"]) ? $_POST["nome_titolare"] : null;
+    $metodo = $_POST["newMetodo"];
+    $email = $_POST["email"];
+
+    $sql = "";
 
 
 } catch (PDOException $e) {
