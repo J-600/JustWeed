@@ -10,7 +10,7 @@ try {
     $email = $_POST["email"] ?? "jhonpanora06@gmail.com"; 
     $table_users = "users_jw";
 
-    $sql = "SELECT c.numero, c.scadenza, c.circuito, c.nome_titolare, c.created_at, c.updated_at 
+    $sql = "SELECT c.id, c.numero, c.scadenza, c.circuito, c.nome_titolare, c.created_at, c.updated_at 
             FROM $table c
             JOIN $table_users u ON u.email = c.email AND u.verified = 'T'
             WHERE c.email = :email";

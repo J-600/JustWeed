@@ -366,7 +366,8 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
         last4: paymentMethod.card.last4,
         expiry: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
         name: cardholderName,
-        paymentMethodId: paymentMethod.id
+        paymentMethodId: paymentMethod.id,
+        brand: paymentMethod.card.brand
       });
   
     } catch (err) {
@@ -400,10 +401,10 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
 
       <div className="modal-action">
         <button type="button" className="btn btn-ghost text-white hover:bg-[#2C3E50]" onClick={onCancel}>
-          Cancel
+          Annull
         </button>
         <button type="submit" className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700" disabled={!stripe}>
-          Verify Card
+          Verifica carta
         </button>
       </div>
     </form>
@@ -437,11 +438,15 @@ const PaymentMethods = () => {
         method: "GET",
         credentials: "include",
       });
-      if (!res.ok) throw new Error(`HTTP Error! Status: ${res.status}`);
-      setCards(await res.json());
+      const data = await res.json();
+      console.log(data)
+      console.log(res)
+
+      if (res.status == 200) 
+        setCards(data);
     } catch (error) {
       console.error("Error loading data:", error);
-      navigate("/");
+      // navigate("/");
     } finally {
       setLoading(false);
     }
@@ -451,18 +456,23 @@ const PaymentMethods = () => {
 
   const handleCardSuccess = async (cardData) => {
     try {
+      console.log(cardData)
       const addRes = await fetch("http://localhost:3000/add-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          payment_method_id: cardData.paymentMethodId,
-          last4: cardData.last4,
-          expiry: cardData.expiry,
-          holder_name: cardData.name
+          metodoPagamento: cardData.paymentMethodId,
+          numero: cardData.last4,
+          scadenza: cardData.expiry,
+          nome_titolare: cardData.name,
+          circuito: cardData.brand
         }),
         credentials: 'include'
       });
 
+      console.log(addRes)
+      const data = await addRes.json()
+      console.log(data)
       if (!addRes.ok) throw new Error("Failed to save card");
 
       setSuccessMessage("Card added successfully!");
@@ -481,8 +491,8 @@ const PaymentMethods = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cardId: cardToEdit.id,
-          expiry: formData.expiryDate,
-          holder_name: formData.cardholderName
+          scadenza: formData.expiryDate,
+          nome_titolare: formData.cardholderName
         }),
         credentials: 'include'
       });
@@ -536,7 +546,7 @@ const PaymentMethods = () => {
   return (
     <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
       <div className="card-body space-y-4">
-        <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6">
+        <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
           Metodi di pagamento
         </h2>
 
@@ -564,7 +574,7 @@ const PaymentMethods = () => {
           </div>
         ) : cards.length === 0 ? (
           <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
-            <p className="font-semibold text-gray-400">nessun metodo di pagamento</p>
+            <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
             <button onClick={() => setShowAddCardModal(true)} className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700">
               aggiungi metodo di pagamento
             </button>
@@ -577,7 +587,7 @@ const PaymentMethods = () => {
                   <div className="flex items-center gap-4">
                     <CreditCard className="w-6 h-6 text-blue-400" />
                     <div>
-                      <h3 className="font-bold text-white">{card.circuito} n. ••••••••••••{card.numero.slice(12, 16)}</h3>
+                      <h3 className="font-bold text-white">{card.circuito} n. ••••••••••••{card.numero}</h3>
                       <p className="text-sm text-gray-400">Aggiunta il {new Date(card.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
@@ -589,7 +599,7 @@ const PaymentMethods = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="text-sm text-blue-400">scadenza</label>
-                        <p className="text-white">{card.scadenza.split("-")[1]}/{card.scadenza.split("-")[0].slice(2)}</p>
+                        <p className="text-white">{card.scadenza.split("/")[0]}/{card.scadenza.split("/")[1]}</p>
                       </div>
                       <div>
                         <label className="text-sm text-blue-400">Propietario</label>
@@ -597,10 +607,10 @@ const PaymentMethods = () => {
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flez gap-2">
                       <button onClick={() => {
                         setFormData({
-                          scadenza: `${String(card.scadenza.split("-")[1]).padStart(2, '0')}/${String(card.scadenza.split("-")[0]).slice(-2)}`,
+                          scadenza: `${String(card.scadenza.split("/")[0]).padStart(2, '0')}/${String(card.scadenza.split("/")[1]).slice(-2)}`,
                           nome_titolare: card.nome_titolare
                         });
                         setCardToEdit(card);

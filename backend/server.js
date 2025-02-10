@@ -241,7 +241,7 @@ app.post("/updateData", (req, res) => {
   const { password, email, new_email, new_username, new_password } = req.body;
   var nE = new_email
 
-  if (email == new_email){
+  if (email == new_email) {
     nE = null
   }
   fetch("http://localhost/justweed/backend/includes/update-user-info.php", {
@@ -253,11 +253,11 @@ app.post("/updateData", (req, res) => {
     .then(data => {
       console.log(data);
       if (data.response === 200 && data.message) {
-        if (new_email){
+        if (new_email) {
           req.session.email = new_email;
         }
-        if (new_username){
-          req.session.username = new_username; 
+        if (new_username) {
+          req.session.username = new_username;
         }
         req.session.save(err => {
           if (err) {
@@ -297,31 +297,31 @@ app.get("/products", (req, res) => {
   }
 });
 
-app.get("/cardsdata", (req,res) => {
-  if (!req.session.username){
+app.get("/cardsdata", (req, res) => {
+  if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
-    // console.log(req.session.email)
     fetch("http://localhost/justweed/backend/includes/view-payments-method.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
       body: `email=${req.session.email}`
     })
-    .then(response => response.json())
-    .then(data => {
-      // console.log(data)
-      if (data.message && data.response === 200){
-        res.json(data.data)
-      } else if (data.response === 500) {
-        res.status(500).json("errore nel db");
-      } else {
-        res.status(400).json(data)
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
+      .then(response => response.json())
+      .then(data => {
+        if (data.message && data.response === 200) {
+          res.json(data.data)
+        } else if (data.response === 500) {
+          res.status(500).json("errore nel db");
+        } else if (data.response === 200) {
+          res.status(201).json(data)
+        } else {
+          res.status(400).json(data)
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+      });
   }
 })
 
@@ -360,7 +360,7 @@ app.post('/verify-card', async (req, res) => {
 
     // First verify the PaymentMethod exists and is valid
     const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
-    
+
     // Create a SetupIntent with the payment method
     const setupIntent = await stripe.setupIntents.create({
       payment_method: paymentMethodId,
@@ -377,9 +377,9 @@ app.post('/verify-card', async (req, res) => {
         return res.json({ success: true });
       case 'requires_action':
       case 'requires_confirmation':
-        return res.json({ 
-          success: false, 
-          clientSecret: setupIntent.client_secret 
+        return res.json({
+          success: false,
+          clientSecret: setupIntent.client_secret
         });
       default:
         throw new Error('Unexpected SetupIntent status');
@@ -387,87 +387,99 @@ app.post('/verify-card', async (req, res) => {
 
   } catch (error) {
     console.error("Stripe Error:", error);
-    
+
     // Handle specific Stripe errors
     if (error.type === 'StripeCardError') {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: error.message || 'Carta non valida'
       });
     }
-    
-    return res.status(500).json({ 
+
+    return res.status(500).json({
       message: 'Errore durante la verifica della carta'
     });
   }
 });
 
-app.post("/add-card", (req,res) => {
+app.post("/add-card", (req, res) => {
   console.log("aggiungendo")
-  if (!req.session.username){
+  if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
-    const {number, scadenza, propietario} = req.body; 
-    const bin = number.substring(0, 6);
-    fetch(`https://lookup.binlist.net/${bin}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.scheme) {
-                const circuito = data.scheme
-            } else {
-                res.status(404).json({ error: 'Circuito non trovato' });
-            }
-        })
-        .catch(error => {
-            res.status(500).json({ error: 'Errore del server' });
-        });
+    const { metodoPagamento, numero, scadenza, nome_titolare, circuito } = req.body;
+    console.log(req.body)
+    console.log(scadenza)
+    let [month, year] = scadenza.split('/');
+    month = month.padStart(2, '0');
+    year = year.slice(-2);
+    // scadenza = `${month}/${year}`;
+    // const bin = numero.substring(0, 6);
+    // fetch(`https://lookup.binlist.net/${bin}`)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       console.log(data)
+    //         if (data.scheme) {
+    //             const circuito = data.scheme
 
-    fetch ("http://localhost/justweed/backend/includes/add-payment-method.php", {
+    //         } else {
+    //             res.status(404).json({ error: 'Circuito non trovato' });
+    //         }
+    //     })
+    //     .catch(error => {
+    //         res.status(500).json({ error: 'Errore del server' });
+    // });
+
+    fetch("http://localhost/justweed/backend/includes/add-payment-method.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
-      body: `number=${number}&scadenza=${scadenza}&nome_titolare=${propietario}&email=${req.session.email}&circuito=${ci}`
+      body: `number=${numero}&metodo=${metodoPagamento}&scadenza=${`${month}/${year}`}&nome_titolare=${nome_titolare}&email=${req.session.email}&circuito=${circuito}`
     })
-    .then(response => response.json())
-    .then (data =>{
-      // console.log(data)
-      if (data.message && data.response === 200){
-        res.json(data.data);
-      } else if (data.response === 500) {
-        res.status(500).json("errore nell'upload dei dati");
-      } else {
-        res.status(400).json(data)
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        if (data.message && data.response === 200) {
+          res.json(data.data);
+        } else if (data.response === 500) {
+          res.status(500).json("errore nell'upload dei dati");
+        } else {
+          res.status(400).json(data)
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+      });
+
+
+
+
   }
 })
 
-app.get("/account-info", (req,res) => {
+app.get("/account-info", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
-  } else { 
+  } else {
     fetch("http://localhost/justweed/backend/includes/view-user-info.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
       body: `email=${req.session.email}`
     })
-    .then(response => response.json())
-    .then(data =>{
-      // console.log(data) 
-      if (data.message && data.response === 200){
-        res.json(data.data[0]);
-      } else if (data.response === 500) {
-        res.status(500).json("errore nel db");
-      } else {
-        res.status(400).json(data)
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
+      .then(response => response.json())
+      .then(data => {
+        // console.log(data) 
+        if (data.message && data.response === 200) {
+          res.json(data.data[0]);
+        } else if (data.response === 500) {
+          res.status(500).json("errore nel db");
+        } else {
+          res.status(400).json(data)
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+      });
   }
 })
 
@@ -495,7 +507,7 @@ app.post("/becomeAseller", (req, res) => {
         res.status(500).json({ error: "An error occurred" });
       });
   }
-  
+
 });
 
 app.post("/updateProducts", (req, res) => {
@@ -549,7 +561,7 @@ app.post("/delete-user", (req, res) => {
 
 app.post("/newpassword", (req, res) => {
 
-  if(req.session.email){
+  if (req.session.email) {
     res.status(401).json("Non autorizzato")
   }
   const { token, password } = req.body;
@@ -580,7 +592,7 @@ app.post("/forgotpassword", (req, res) => {
   if (!email) {
     return res.status(400).json({ error: "Email is required" });
   }
-  
+
   const token = crypto.randomBytes(16).toString('hex');
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
@@ -661,19 +673,19 @@ setInterval(() => {
   }
 }, 60 * 60 * 1000);
 
-app.use((req, res, next) => { 
+app.use((req, res, next) => {
   if (!req.session || !req.session.username) {
     return res.status(401).json({ error: false });
   }
   next();
-  
+
 });
 
 app.get("/session", (req, res) => {
   if (!req.session.username || !req.session.email) {
     return res.status(401).json({ error: "Utente non autenticato" });
   }
-  
+
   res.json({
     username: req.session.username,
     email: req.session.email

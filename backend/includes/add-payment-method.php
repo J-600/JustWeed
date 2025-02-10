@@ -1,9 +1,9 @@
 <?php
 try {
 
-    // if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    //     throw new Exception("Non è una richiesta POST");
-    // }
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+        throw new Exception("Non è una richiesta POST");
+    }
 
     require_once "dbh.inc.php";
     $table = "cards_jw"; 
@@ -13,12 +13,14 @@ try {
     $circuito = $_POST["circuito"];
     $scadenza = $_POST["scadenza"];
     $nome_titolare = $_POST["nome_titolare"];
+    $metodo = $_POST["metodo"];
 
-    $sql = "INSERT INTO $table (numero, email, scadenza, circuito, nome_titolare) VALUES (:number, :email ,:scadenza, :circuito, :nome_titolare)";
+    $sql = "INSERT INTO $table (numero, email, metodo, scadenza, circuito, nome_titolare) VALUES (:number, :email , :metodo,:scadenza, :circuito, :nome_titolare)";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":number", $number);
     $stmt->bindParam(":scadenza", $scadenza);
+    $stmt->bindParam(":metodo", $metodo);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':circuito', $circuito);
     $stmt->bindParam(":nome_titolare", $nome_titolare);
@@ -28,7 +30,7 @@ try {
     $response = [
         "response" => 200,
         "message" => True,
-        "data" => "dati aggiunti correttamente"
+        "data" => $nome_titolare
     ];
     echo json_encode($response);
 
