@@ -22,7 +22,7 @@ try {
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($result)){
-        throw new Exception("Nessun metofo di pagamento");
+        throw new Exception("Nessun metodo di pagamento");
     }
 
     $response = [

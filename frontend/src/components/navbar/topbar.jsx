@@ -37,9 +37,12 @@ export default function Topbar({ username, mail }) {
           className="text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300"
           onClick={() => navigate("/")}
         />
-        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient">
-          JustWeed
-        </h1>
+        <div
+        className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient cursor-pointer transform transition-all duration-500 hover:scale-105 hover:from-blue-500 hover:to-purple-600"
+        onClick={() => navigate("/")}
+      >
+        JustWeed
+      </div>
         <FaUser
           ref={userButtonRef}
           className={`text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300 ${

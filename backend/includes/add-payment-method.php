@@ -30,7 +30,7 @@ try {
     $response = [
         "response" => 200,
         "message" => True,
-        "data" => $nome_titolare
+        "data" => "Carta aggiunta con successo"
     ];
     echo json_encode($response);
 

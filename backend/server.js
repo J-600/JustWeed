@@ -308,12 +308,10 @@ app.get("/cardsdata", (req, res) => {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.message && data.response === 200) {
+        if (data.response === 200) {
           res.json(data.data)
         } else if (data.response === 500) {
           res.status(500).json("errore nel db");
-        } else if (data.response === 200) {
-          res.status(201).json(data)
         } else {
           res.status(400).json(data)
         }
@@ -412,23 +410,6 @@ app.post("/add-card", (req, res) => {
     let [month, year] = scadenza.split('/');
     month = month.padStart(2, '0');
     year = year.slice(-2);
-    // scadenza = `${month}/${year}`;
-    // const bin = numero.substring(0, 6);
-    // fetch(`https://lookup.binlist.net/${bin}`)
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       console.log(data)
-    //         if (data.scheme) {
-    //             const circuito = data.scheme
-
-    //         } else {
-    //             res.status(404).json({ error: 'Circuito non trovato' });
-    //         }
-    //     })
-    //     .catch(error => {
-    //         res.status(500).json({ error: 'Errore del server' });
-    // });
-
     fetch("http://localhost/justweed/backend/includes/add-payment-method.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -449,10 +430,27 @@ app.post("/add-card", (req, res) => {
         console.error("Error:", error);
         res.status(500).json({ error: "An error occurred" });
       });
+  }
+})
 
-
-
-
+app.post("/update-card", (req, res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const {cardId, scadenza, nome_titolare} = req.body;
+    fetch("http://localhost/justweed/backend/includes/update-card.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `id=${cardId}&data=${scadenza ?? ""}&nome_titolare${nome_titolare ?? ""}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.response === 200){
+        res.json(data.data)
+      } else if (data.response === 500) {
+        res.status(500).json("errore nell'upload dei dati");
+      }
+    })
   }
 })
 

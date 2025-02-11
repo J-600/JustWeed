@@ -115,7 +115,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
   return (
     <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
       <div className="card-body space-y-4">
-        <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6">
+        <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
           Infomazione dell'account
         </h2>
         <div className="space-y-6">
@@ -330,10 +330,10 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!stripe || !elements) return;
-  
+
     setIsProcessing(true);
     setErrorMessage('');
-  
+
     try {
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) {
@@ -341,27 +341,27 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
         setIsProcessing(false);
         return;
       }
-  
+
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
         billing_details: { name: cardholderName },
       });
-  
+
       if (error) throw new Error(error.message);
       if (!paymentMethod) throw new Error("Errore nella creazione del metodo di pagamento");
-  
-  
+
+
       const verifyResponse = await fetch('http://localhost:3000/verify-card', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ paymentMethodId: paymentMethod.id })
       });
-  
+
       const verifyResult = await verifyResponse.json();
       if (!verifyResponse.ok) throw new Error(verifyResult.message || 'Errore nella verifica della carta');
-  
+
       onSuccess({
         last4: paymentMethod.card.last4,
         expiry: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
@@ -369,7 +369,7 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
         paymentMethodId: paymentMethod.id,
         brand: paymentMethod.card.brand
       });
-  
+
     } catch (err) {
       setErrorMessage(err.message || 'Si è verificato un errore durante la verifica');
     } finally {
@@ -442,8 +442,9 @@ const PaymentMethods = () => {
       console.log(data)
       console.log(res)
 
-      if (res.status == 200) 
-        setCards(data);
+      if (res.status !== 200)
+        setErrorMessage("errore nel loading dei dati")
+      setCards(data);
     } catch (error) {
       console.error("Error loading data:", error);
       // navigate("/");
@@ -470,12 +471,14 @@ const PaymentMethods = () => {
         credentials: 'include'
       });
 
-      console.log(addRes)
+      // console.log(addRes)
       const data = await addRes.json()
-      console.log(data)
-      if (!addRes.ok) throw new Error("Failed to save card");
+      // console.log(data)
+      if (addRes.status !== 200) throw new Error({error: "Errore nel salvataggio della carta"});
 
-      setSuccessMessage("Card added successfully!");
+      setErrorMessage("");
+      setSuccessMessage(data)
+      setTimeout(() => setSuccessMessage(""), 3000);
       setShowAddCardModal(false);
       fetchCardsData();
     } catch (error) {
@@ -486,6 +489,7 @@ const PaymentMethods = () => {
   const handleEditCard = async (e) => {
     e.preventDefault();
     try {
+      console.log(cardToEdit)
       const res = await fetch("http://localhost:3000/update-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
@@ -496,10 +500,13 @@ const PaymentMethods = () => {
         }),
         credentials: 'include'
       });
+      const data = res.json();
+      if (res.status !== 200)
+        setErrorMessage("Errore nella modifica dei dati");
 
-      if (!res.ok) throw new Error("Failed to update card");
-
-      setSuccessMessage("Card updated successfully!");
+      setErrorMessage("");
+      setSuccessMessage(data)
+      setTimeout(() => setSuccessMessage(""), 3000);
       setShowEditCardModal(false);
       fetchCardsData();
     } catch (error) {
@@ -516,10 +523,10 @@ const PaymentMethods = () => {
         credentials: 'include'
       });
 
-      if (!res.ok) throw new Error("Failed to delete card");
+      // if (!res.ok) throw new Error("Failed to delete card");
 
-      setSuccessMessage("Card removed successfully!");
-      setShowRemoveCardModal(false);
+      // setSuccessMessage("Card removed successfully!");
+      // setShowRemoveCardModal(false);
       fetchCardsData();
     } catch (error) {
       setErrorMessage(error.message);
@@ -529,7 +536,7 @@ const PaymentMethods = () => {
   const handleInputChange = (e) => {
     let { name, value } = e.target;
 
-    if (name === "expiryDate") {
+    if (name === "scadenza") {
       value = value.replace(/\D/g, "");
 
       if (value.length > 4) value = value.slice(0, 4);
@@ -572,14 +579,7 @@ const PaymentMethods = () => {
           <div className="flex items-center justify-center">
             <Loader />
           </div>
-        ) : cards.length === 0 ? (
-          <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
-            <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
-            <button onClick={() => setShowAddCardModal(true)} className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700">
-              aggiungi metodo di pagamento
-            </button>
-          </div>
-        ) : (
+        ) : Array.isArray(cards) && cards.length > 0 ? (
           <div className="space-y-4">
             {cards.map((card, index) => (
               <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedCard === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'}`}>
@@ -638,6 +638,15 @@ const PaymentMethods = () => {
               Aggiungi carta
             </button>
           </div>
+
+
+        ) : (
+          <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
+            <p className="font-semibold text-gray-400">Nessun metodo di pagamento</p>
+            <button onClick={() => setShowAddCardModal(true)} className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700">
+              aggiungi metodo di pagamento
+            </button>
+          </div>
         )}
 
         {showAddCardModal && (
@@ -671,7 +680,7 @@ const PaymentMethods = () => {
                       <Calendar className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
-                        name="expiryDate"
+                        name="scadenza"
                         className="grow text-white placeholder-gray-400"
                         placeholder="MM/YY"
                         value={formData.scadenza}
@@ -685,7 +694,7 @@ const PaymentMethods = () => {
                       <User className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
-                        name="cardholderName"
+                        name="nome_titolare"
                         className="grow text-white placeholder-gray-400"
                         placeholder="Cardholder Name"
                         value={formData.nome_titolare}
@@ -748,7 +757,7 @@ const PaymentMethods = () => {
 const BillingAddresses = () => (
   <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
     <div className="card-body space-y-4">
-      <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6">
+      <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
         Indirizzo di fatturazione
       </h2>
       <div className="space-y-4">
@@ -876,7 +885,7 @@ function AccountInfo() {
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <User className="w-5 h-5" />
-                  Account Info
+                  Informazioni dell'account
                 </a>
               </li>
               <li
@@ -885,7 +894,7 @@ function AccountInfo() {
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <CreditCard className="w-5 h-5" />
-                  Payment Methods
+                  Metodi di pagamento
                 </a>
               </li>
               <li
@@ -894,7 +903,7 @@ function AccountInfo() {
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <MapPin className="w-5 h-5" />
-                  Billing Addresses
+                  Indirizzi di fatturazione
                 </a>
               </li>
             </ul>
