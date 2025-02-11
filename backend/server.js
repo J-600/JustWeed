@@ -251,7 +251,7 @@ app.post("/updateData", (req, res) => {
   })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
+      // console.log(data);
       if (data.response === 200 && data.message) {
         if (new_email) {
           req.session.email = new_email;
@@ -264,7 +264,7 @@ app.post("/updateData", (req, res) => {
             console.error("Errore salvataggio sessione:", err);
             return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
           }
-          res.json(data.data[0]);
+          res.json(data.data);
         });
       } else {
         res.status(401).json(data.data);
@@ -441,7 +441,7 @@ app.post("/update-card", (req, res) => {
     fetch("http://localhost/justweed/backend/includes/update-card.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
-      body: `id=${cardId}&data=${scadenza ?? ""}&nome_titolare${nome_titolare ?? ""}`
+      body: `id=${cardId}&data=${scadenza ?? ""}&nome_titolare=${nome_titolare ?? ""}`
     })
     .then(response => response.json())
     .then(data => {
@@ -451,6 +451,35 @@ app.post("/update-card", (req, res) => {
         res.status(500).json("errore nell'upload dei dati");
       }
     })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
+  }
+})
+
+app.post("/delete-card", (req,res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const { cardId } = req.body;
+    fetch("http://localhost/justweed/backend/includes/delete-card.php", {
+      method:"POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `id=${cardId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.response === 200){
+        res.json(data.data)
+      } else if (data.response === 500) {
+        res.status(500).json("errore nell'upload dei dati");
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
   }
 })
 
@@ -538,7 +567,8 @@ app.post("/delete-user", (req, res) => {
     return res.status(401).json({ error: "Utente non autenticato" });
   }
   const { email, password } = req.body;
-  fetch("http://localhost/JustWeed/backend/delete-user.php", {
+  // console.log(req.body) 
+  fetch("http://localhost/Justweed/backend/includes/delete-user.php", {
     method: "POST",
     headers: { "Content-type": "application/x-www-form-urlencoded" },
     body: `email=${email}&password=${password}`
@@ -546,6 +576,10 @@ app.post("/delete-user", (req, res) => {
     .then(response => response.json())
     .then(data => {
       if (data.message) {
+        req.session.destroy(err => {
+          if (err) {
+              return res.status(500).send("Errore nel logout");
+          }});
         res.json(data.data);
       } else {
         res.status(400).json(data.data);

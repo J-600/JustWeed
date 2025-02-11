@@ -58,7 +58,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
       const responseData = await res.json();
 
       if (res.status !== 200) {
-        setErrorMessage(responseData.message || "Errore nell'upload dei dati.");
+        setErrorMessage(responseData || "Errore nell'upload dei dati.");
         setEditedUsername(username);
         setEditedEmail(email);
         return;
@@ -102,7 +102,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
         return;
       }
 
-      setSuccessMessage("Password changed successfully!");
+      setSuccessMessage(data);
       setTimeout(() => setSuccessMessage(""), 3000);
       setShowPasswordModal(false);
       setErrorMessage("");
@@ -259,7 +259,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
                   className="text-white bg-transparent border-b border-blue-500 focus:outline-none w-full mt-1"
-                  placeholder="Enter your old password"
+                  placeholder="Inserisci la password attuale"
                 />
               </div>
               <div>
@@ -269,7 +269,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   className="text-white bg-transparent border-b border-blue-500 focus:outline-none w-full mt-1"
-                  placeholder="Enter your new password"
+                  placeholder="Inserisci la nuova password"
                 />
               </div>
               <div>
@@ -279,7 +279,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
                   className="text-white bg-transparent border-b border-blue-500 focus:outline-none w-full mt-1"
-                  placeholder="Confirm your new password"
+                  placeholder="Conferma la nuova password"
                 />
               </div>
               {errorMessage && (
@@ -474,7 +474,7 @@ const PaymentMethods = () => {
       // console.log(addRes)
       const data = await addRes.json()
       // console.log(data)
-      if (addRes.status !== 200) throw new Error({error: "Errore nel salvataggio della carta"});
+      if (addRes.status !== 200) throw new Error({ error: "Errore nel salvataggio della carta" });
 
       setErrorMessage("");
       setSuccessMessage(data)
@@ -489,14 +489,15 @@ const PaymentMethods = () => {
   const handleEditCard = async (e) => {
     e.preventDefault();
     try {
-      console.log(cardToEdit)
+      // console.log(cardToEdit)
+      // console.log(formData)
       const res = await fetch("http://localhost:3000/update-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cardId: cardToEdit.id,
-          scadenza: formData.expiryDate,
-          nome_titolare: formData.cardholderName
+          scadenza: formData.scadenza,
+          nome_titolare: formData.nome_titolare
         }),
         credentials: 'include'
       });
@@ -522,11 +523,14 @@ const PaymentMethods = () => {
         body: JSON.stringify({ cardId: cards[removingCardIndex].id }),
         credentials: 'include'
       });
-
-      // if (!res.ok) throw new Error("Failed to delete card");
-
-      // setSuccessMessage("Card removed successfully!");
-      // setShowRemoveCardModal(false);
+      const data = res.json();
+      if (res.status !== 200) {
+        throw new Error(data)
+      }
+      setErrorMessage("");
+      setSuccessMessage(data)
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setShowRemoveCardModal(false);
       fetchCardsData();
     } catch (error) {
       setErrorMessage(error.message);
@@ -728,8 +732,8 @@ const PaymentMethods = () => {
         {showRemoveCardModal && (
           <div className="modal modal-open">
             <div className="modal-box bg-[#1E2633] border border-blue-900/30">
-              <h3 className="font-bold text-lg text-white">Confirm Removal</h3>
-              <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questa carta??</p>
+              <h3 className="font-bold text-lg text-white">Elimina Carta</h3>
+              <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questa carta?</p>
               <div className="modal-action">
                 <button
                   className="btn btn-ghost text-white hover:bg-[#2C3E50]"
@@ -778,11 +782,13 @@ const BillingAddresses = () => (
 function AccountInfo() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  // const [accountData, setAccountData] = useState([]);
   const [type, setType] = useState("");
   const [registeredAt, setRegisteredAt] = useState("");
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [activeTab, setActiveTab] = useState("account");
+  const [password, setPassword] = useState(''); 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const navigate = useNavigate();
@@ -802,7 +808,6 @@ function AccountInfo() {
         setUsername(data.username);
         setType(data.type);
         setRegisteredAt(data.registered_at);
-        // setAccountData(data);
         setLoading(false);
       } catch (error) {
         console.error("Errore durante la richiesta:", error);
@@ -812,7 +817,39 @@ function AccountInfo() {
     fetchData();
   }, [navigate]);
 
-  // const paymentMethods = accountData.filter(item => item.circuito === 'Mastercard');
+
+  const handleDeleteAccount = async () => {
+
+    if (!password) {
+      setErrorMessage("Password richiesta");
+      return;
+    }
+    try {
+      // console.log(email)
+      const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
+      const res = await fetch("http://localhost:3000/delete-user", {
+        method:"POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({email: email, password: hashedPassword}),
+        credentials: "include",
+      })
+      const data = await res.json();
+      console.log(data)
+      if (res.status !== 200)
+        throw new Error(data)
+
+      setErrorMessage("");
+      setSuccessMessage(data)
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setShowDeleteConfirm(false);
+
+      setTimeout(() => navigate("/"),3000)
+    } catch (error) {
+      // console.log(error.message)
+      setErrorMessage(error.message)
+    }
+
+  }
 
   const handleUpdateEmail = (newEmail) => {
     setEmail(newEmail);
@@ -877,6 +914,23 @@ function AccountInfo() {
               <ArrowLeft className="w-5 h-5" />
               Back
             </button>
+            {successMessage && (
+          <div className="alert alert-success shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{successMessage}</span>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="alert alert-error shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
             <ul className="menu">
               <li
@@ -914,7 +968,7 @@ function AccountInfo() {
               onClick={() => setShowDeleteConfirm(true)}
             >
               <Trash2 className="w-5 h-5 mr-2" />
-              Delete Account
+              Elimna Account
             </button>
           </div>
         </div>
@@ -927,25 +981,45 @@ function AccountInfo() {
       {showDeleteConfirm && (
         <div className="modal modal-open">
           <div className="modal-box bg-[#1E2633] border border-blue-900/30">
-            <h3 className="font-bold text-lg text-white">Delete Account</h3>
+            <h3 className="font-bold text-lg text-white">Elimina Account</h3>
             <p className="py-4 text-gray-400">
-              Are you sure you want to delete your account? This action cannot be undone.
+              Sei sicuro di voler eliminare questo account? l'operazione sarà irreversibile.
             </p>
+            <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                className="h-4 w-4 opacity-70">
+                <path
+                  fillRule="evenodd"
+                  d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                  clipRule="evenodd" />
+              </svg>
+              <input
+                type="password"
+                name="password"
+                className="grow text-white placeholder-gray-400"
+                placeholder="Inserisci la password per eliminare l'account"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </label>
             <div className="modal-action">
               <button
                 className="btn btn-ghost text-white hover:bg-[#2C3E50]"
                 onClick={() => setShowDeleteConfirm(false)}
               >
-                Cancel
+                Annulla
               </button>
               <button
                 className="btn btn-error bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700 transform transition-all duration-300 hover:scale-105"
                 onClick={() => {
-                  alert("Account deleted");
-                  setShowDeleteConfirm(false);
+                  handleDeleteAccount();
                 }}
               >
-                Confirm Delete
+                Elimina Account
               </button>
             </div>
           </div>

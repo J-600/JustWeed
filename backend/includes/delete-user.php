@@ -13,13 +13,17 @@ try {
     $table = "users_jw";
     $table_products = "products_jw";
 
+    if (empty($email) || empty($password)) {
+        throw new Exception("Fornire email e password");
+    }
+
     $sql = "SELECT password FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':email', $email);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user || !password_verify($password, $user['password'])) {
+    if (!$user || $password != $user["password"]) {
         throw new Exception("Password errata");
     }
 
@@ -36,7 +40,7 @@ try {
     $response = [
         "response" => 200,
         "message" => true,
-        "data" => "Utente eliminato correttamente..."
+        "data" => "Utente eliminato correttamente"
     ];
     echo json_encode($response);
 
