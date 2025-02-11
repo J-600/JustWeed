@@ -7,7 +7,7 @@ try {
 
     require_once "dbh.inc.php";
     $table = "cards_jw";
-    $email = $_POST["email"] ?? "jhonpanora06@gmail.com"; 
+    $email = $_POST["email"]; 
     $table_users = "users_jw";
 
     $sql = "SELECT c.id, c.numero, c.scadenza, c.circuito, c.nome_titolare, c.created_at, c.updated_at 

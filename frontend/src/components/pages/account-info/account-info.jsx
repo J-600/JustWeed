@@ -777,6 +777,50 @@ const BillingAddresses = () => {
   const [cities, setCities] = useState([]);
   const [isCheckingCap, setIsCheckingCap] = useState(false);
   const [capError, setCapError] = useState("");
+  const [editCities, setEditCities] = useState([]);
+  const [isCheckingEditCap, setIsCheckingEditCap] = useState(false);
+  const [editCapError, setEditCapError] = useState("");
+
+  useEffect(() => {
+    const verifyEditCap = async () => {
+      // console.log("asd")
+      if (AddressToEdit?.zip?.length === 5 && !isNaN(AddressToEdit.zip)) {
+        setIsCheckingEditCap(true);
+        setEditCapError("");
+        try {
+          const response = await fetch(`https://api.zippopotam.us/it/${AddressToEdit.zip}`);
+
+          if (!response.ok) {
+            setEditCapError("CAP non valido");
+            setEditCities([]);
+            return;
+          }
+
+          const data = await response.json();
+          const citiesList = data.places.map(place => place['place name']);
+          setEditCities(citiesList);
+
+          if (citiesList.length === 1) {
+            setAddressToEdit(prev => ({
+              ...prev,
+              city: citiesList[0]
+            }));
+          }
+        } catch (error) {
+          setEditCapError("Errore nella verifica del CAP");
+          setEditCities([]);
+        } finally {
+          setIsCheckingEditCap(false);
+        }
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      verifyEditCap();
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [AddressToEdit?.zip]);
 
   useEffect(() => {
     const verifyCap = async () => {
@@ -1059,7 +1103,6 @@ const BillingAddresses = () => {
           </div>
         )}
 
-        {/* Modale Modifica Indirizzo */}
         {showEditAddressModal && (
           <div className="modal modal-open">
             <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
@@ -1068,7 +1111,10 @@ const BillingAddresses = () => {
               </h3>
               <form onSubmit={(e) => {
                 e.preventDefault();
-                // Aggiorna l'indirizzo
+                if (editCapError || editCities.length === 0) {
+                  setErrorMessage("CAP non valido o città non selezionata");
+                  return;
+                }
                 const updatedAddresses = addresses.map(addr =>
                   addr.id === AddressToEdit.id ? { ...AddressToEdit } : addr
                 );
@@ -1110,7 +1156,7 @@ const BillingAddresses = () => {
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <Hash className="w-4 h-4 text-gray-400" />
-                          {isCheckingCap && (
+                          {isCheckingEditCap && (
                             <span className="loading loading-spinner loading-xs ml-2"></span>
                           )}
                         </div>
@@ -1124,12 +1170,12 @@ const BillingAddresses = () => {
                           onChange={(e) => {
                             const value = e.target.value.replace(/\D/g, '');
                             setAddressToEdit({ ...AddressToEdit, zip: value.slice(0, 5) });
-                            setCities([]);
+                            setEditCities([]);
                           }}
                         />
                       </div>
-                      {capError && (
-                        <p className="text-xs text-red-400 mt-1">{capError}</p>
+                      {editCapError && (
+                        <p className="text-xs text-red-400 mt-1">{editCapError}</p>
                       )}
                     </div>
 
@@ -1138,7 +1184,7 @@ const BillingAddresses = () => {
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <Building2 className="w-4 h-4 text-gray-400" />
                         </div>
-                        {cities.length > 0 ? (
+                        {editCities.length > 0 ? (
                           <select
                             className="select select-bordered w-full pl-10 bg-[#2C3E50] text-white"
                             value={AddressToEdit?.city || ''}
@@ -1146,7 +1192,7 @@ const BillingAddresses = () => {
                             required
                           >
                             <option value="">Seleziona città</option>
-                            {cities.map((city, index) => (
+                            {editCities.map((city, index) => (
                               <option key={index} value={city}>{city}</option>
                             ))}
                           </select>
@@ -1184,8 +1230,6 @@ const BillingAddresses = () => {
             </div>
           </div>
         )}
-
-        {/* Modale Rimuovi Indirizzo */}
         {showRemoveAddressModal && (
           <div className="modal modal-open">
             <div className="modal-box bg-[#1E2633] border border-blue-900/30">
