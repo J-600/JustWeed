@@ -31,12 +31,15 @@ function Signup() {
             console.log(res)
             try {
                 if (res.status === 200) {
-                    setSuccessMessage(data || "Account created successfully!");
+                    setErrorMessage("")
+                    setSuccessMessage(data || "Account creato con successo");
                     // navigate('/');
                 } else {
-                    setErrorMessage(data.error || "An error occurred. Please try again.");
+                    setSuccessMessage("")
+                    setErrorMessage(data.error || "Si è verificato un errore, riprova più tardi");
                 }
             } catch (error) {
+                setSuccessMessage("")
                 setErrorMessage(data);
             }
         } catch (error) {

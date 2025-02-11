@@ -758,26 +758,38 @@ const PaymentMethods = () => {
 
 
 
-const BillingAddresses = () => (
-  <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
-    <div className="card-body space-y-4">
-      <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
-        Indirizzo di fatturazione
-      </h2>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
+const BillingAddresses = () => {
+  const [addresses, setAddresses] = useState([]);
+  const [showAddAddressModal, setShowAddAddressModal] = useState(false);
+  const [showEditAddressModal, setShowEditAddressModal] = useState(false);
+  const [expandedAddress, setExpandedAddress] = useState(null);
+  const [showRemoveAddressModal, setShowRemoveAddressModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [AddressToEdit, setAddressToEdit] = useState(null);
 
-          <div>
-            <p className="font-semibold text-gray-400">Nessun indirizzo di fatturazione</p>
+  return (
+    <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+      <div className="card-body space-y-4">
+        <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
+          Indirizzo di fatturazione
+        </h2>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
+
+            <div>
+              <p className="font-semibold text-gray-400">Nessun indirizzo di fatturazione</p>
+            </div>
+            <button className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105">
+              Aggiungi indirizzo
+            </button>
           </div>
-          <button className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105">
-            Aggiungi indirizzo
-          </button>
         </div>
       </div>
     </div>
-  </div>
-);
+  )
+};
 
 function AccountInfo() {
   const [email, setEmail] = useState("");
@@ -788,7 +800,7 @@ function AccountInfo() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [activeTab, setActiveTab] = useState("account");
-  const [password, setPassword] = useState(''); 
+  const [password, setPassword] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const navigate = useNavigate();
@@ -828,9 +840,9 @@ function AccountInfo() {
       // console.log(email)
       const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
       const res = await fetch("http://localhost:3000/delete-user", {
-        method:"POST",
+        method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({email: email, password: hashedPassword}),
+        body: JSON.stringify({ email: email, password: hashedPassword }),
         credentials: "include",
       })
       const data = await res.json();
@@ -843,7 +855,7 @@ function AccountInfo() {
       setTimeout(() => setSuccessMessage(""), 3000);
       setShowDeleteConfirm(false);
 
-      setTimeout(() => navigate("/"),3000)
+      setTimeout(() => navigate("/"), 3000)
     } catch (error) {
       // console.log(error.message)
       setErrorMessage(error.message)
@@ -915,22 +927,22 @@ function AccountInfo() {
               Back
             </button>
             {successMessage && (
-          <div className="alert alert-success shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{successMessage}</span>
-          </div>
-        )}
+              <div className="alert alert-success shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{successMessage}</span>
+              </div>
+            )}
 
-        {errorMessage && (
-          <div className="alert alert-error shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{errorMessage}</span>
-          </div>
-        )}
+            {errorMessage && (
+              <div className="alert alert-error shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{errorMessage}</span>
+              </div>
+            )}
 
             <ul className="menu">
               <li

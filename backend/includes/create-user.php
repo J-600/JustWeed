@@ -14,13 +14,13 @@ try{
     $password = $_POST["password"];
     
 
-    $sql = "SELECT * FROM $table WHERE email = :email";
+    $sql = "SELECT * FROM $table WHERE email = :email AND verified = 'F'";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if(!empty($result)){
-        throw new Exception("Utente già registrato");
+        throw new Exception("Utente già registrato ma non confermato\nreinviando una email");
     } else {
         $sql = "INSERT INTO $table (username, email, password) VALUES (:username, :email, :password)";
         $stmt = $pdo->prepare($sql);
