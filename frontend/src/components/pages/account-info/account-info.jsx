@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Edit, User, CreditCard, MapPin, Trash2, ArrowLeft, Pencil, Lock, ChevronDown, Plus, Calendar } from "lucide-react";
+import { Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Globe, FileDigit, ArrowLeft, Pencil, Lock, ChevronDown, Plus, Calendar } from "lucide-react";
 import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 import CryptoJS from 'crypto-js';
@@ -303,10 +303,10 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
             </div>
             <div className="modal-action">
               <button
-                className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                className="btn btn-ghost hover:bg-[#2C3E50]"
                 onClick={() => setShowPasswordModal(false)}
               >
-                Cancel
+                Annulla
               </button>
               <button
                 className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
@@ -400,7 +400,7 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
       </div>
 
       <div className="modal-action">
-        <button type="button" className="btn btn-ghost text-white hover:bg-[#2C3E50]" onClick={onCancel}>
+        <button type="button" className="btn btn-ghost hover:bg-[#2C3E50]" onClick={onCancel}>
           Annulla
         </button>
         <button type="submit" className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700" disabled={!stripe}>
@@ -712,7 +712,7 @@ const PaymentMethods = () => {
                 <div className="modal-action">
                   <button
                     type="button"
-                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                    className="btn btn-ghost hover:bg-[#2C3E50]"
                     onClick={() => setShowEditCardModal(false)}
                   >
                     Annulla
@@ -736,7 +736,7 @@ const PaymentMethods = () => {
               <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questa carta?</p>
               <div className="modal-action">
                 <button
-                  className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                  className="btn btn-ghost hover:bg-[#2C3E50]"
                   onClick={() => setShowRemoveCardModal(false)}
                 >
                   Annulla
@@ -766,8 +766,77 @@ const BillingAddresses = () => {
   const [showRemoveAddressModal, setShowRemoveAddressModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [AddressToEdit, setAddressToEdit] = useState(null);
+  const [newAddress, setNewAddress] = useState({
+    name: '',
+    street: '',
+    city: '',
+    zip: '',
+  });
+  const [cities, setCities] = useState([]);
+  const [isCheckingCap, setIsCheckingCap] = useState(false);
+  const [capError, setCapError] = useState("");
+
+  useEffect(() => {
+    const verifyCap = async () => {
+      if (newAddress.zip.length === 5 && !isNaN(newAddress.zip)) {
+        setIsCheckingCap(true);
+        setCapError("");
+        try {
+          const response = await fetch(`https://api.zippopotam.us/it/${newAddress.zip}`);
+
+          if (!response.ok) {
+            setCapError("CAP non valido");
+            setCities([]);
+            return;
+          }
+
+          const data = await response.json();
+          const citiesList = data.places.map(place => place['place name']);
+          setCities(citiesList);
+
+          if (citiesList.length === 1) {
+            setNewAddress(prev => ({
+              ...prev,
+              city: citiesList[0],
+            }));
+          }
+        } catch (error) {
+          setCapError("Errore nella verifica del CAP");
+          setCities([]);
+        } finally {
+          setIsCheckingCap(false);
+        }
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      verifyCap();
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [newAddress.zip]);
+
+  const handleCitySelect = (selectedCity) => {
+    setNewAddress(prev => ({
+      ...prev,
+      city: selectedCity
+    }));
+  };
+
+  const handleAddAddress = (e) => {
+    e.preventDefault();
+    if (capError || cities.length === 0) {
+      setErrorMessage("CAP non valido o città non selezionata");
+      return;
+    }
+    setAddresses([...addresses, { ...newAddress, id: Date.now() }]);
+    setShowAddAddressModal(false);
+    setNewAddress({ name: '', street: '', city: '', zip: '' });
+    setSuccessMessage('Indirizzo aggiunto con successo!');
+    setTimeout(() => setSuccessMessage(""), 3000);
+  };
 
   return (
     <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
@@ -775,20 +844,378 @@ const BillingAddresses = () => {
         <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
           Indirizzo di fatturazione
         </h2>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
 
-            <div>
-              <p className="font-semibold text-gray-400">Nessun indirizzo di fatturazione</p>
-            </div>
-            <button className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105">
+        {successMessage && (
+          <div className="alert alert-success shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{successMessage}</span>
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="alert alert-error shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="flex items-center justify-center">
+            <Loader />
+          </div>
+        ) : addresses.length > 0 ? (
+          <div className="space-y-4">
+            {addresses.map((address, index) => (
+              <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedAddress === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'}`}>
+                <div className="flex items-center justify-between cursor-pointer" onClick={() => setExpandedAddress(prev => prev === index ? null : index)}>
+                  <div className="flex items-center gap-4">
+                    <MapPin className="w-6 h-6 text-blue-400" />
+                    <div>
+                      <h3 className="font-bold text-white">{address.name || address.street}</h3>
+                      <p className="text-sm text-gray-400">Aggiunto il {new Date().toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${expandedAddress === index ? 'rotate-180' : ''}`} />
+                </div>
+
+                <div className={`overflow-hidden transition-all ${expandedAddress === index ? 'max-h-96 mt-4' : 'max-h-0'}`}>
+                  <div className="pt-4 border-t border-blue-900/30 space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm text-blue-400">Indirizzo</label>
+                        <p className="text-white">{address.street}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm text-blue-400">Città</label>
+                        <p className="text-white">{address.city}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm text-blue-400">CAP</label>
+                        <p className="text-white">{address.zip}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setAddressToEdit(address);
+                          setShowEditAddressModal(true);
+                        }}
+                        className="btn btn-info btn-sm flex-1 bg-gradient-to-r from-green-500 to-teal-600 text-white border-none hover:from-green-600 hover:to-teal-700">
+                        <Edit className="w-4 h-4 mr-2" />
+                        Modifica
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setAddressToEdit(address);
+                          setShowRemoveAddressModal(true);
+                        }}
+                        className="btn btn-error btn-sm flex-1 bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700">
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Rimuovi
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <button
+              onClick={() => setShowAddAddressModal(true)}
+              className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 mt-6">
+              <Plus className="w-5 h-5 mr-2" />
               Aggiungi indirizzo
             </button>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
+            <p className="font-semibold text-gray-400">Nessun indirizzo di fatturazione</p>
+            <button
+              onClick={() => setShowAddAddressModal(true)}
+              className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700">
+              Aggiungi indirizzo
+            </button>
+          </div>
+        )}
+
+        {/* Modale Aggiungi Indirizzo */}
+        {showAddAddressModal && (
+          <div className="modal modal-open">
+            <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
+              <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
+                Aggiungi indirizzo
+              </h3>
+              <form onSubmit={handleAddAddress} className="space-y-6">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="form-control">
+                    <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
+                      <User className="w-4 h-4 opacity-70" />
+                      <input
+                        type="text"
+                        placeholder="Nome/Ragione Sociale"
+                        className="grow text-white placeholder-gray-400"
+                        value={newAddress.name}
+                        onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="form-control">
+                    <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
+                      <MapPin className="w-4 h-4 opacity-70" />
+                      <input
+                        type="text"
+                        placeholder="Indirizzo*"
+                        className="grow text-white placeholder-gray-400"
+                        required
+                        value={newAddress.street}
+                        onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="form-control">
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Hash className="w-4 h-4 text-gray-400" />
+                          {isCheckingCap && (
+                            <span className="loading loading-spinner loading-xs ml-2"></span>
+                          )}
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="CAP*"
+                          className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400"
+                          required
+                          maxLength="5"
+                          value={newAddress.zip}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            setNewAddress({ ...newAddress, zip: value.slice(0, 5) });
+                            setCities([]);
+                          }}
+                        />
+                      </div>
+                      {capError && (
+                        <p className="text-xs text-red-400 mt-1">{capError}</p>
+                      )}
+                    </div>
+
+                    <div className="form-control">
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Building2 className="w-4 h-4 text-gray-400" />
+                        </div>
+                        {cities.length > 0 ? (
+                          <select
+                            className="select select-bordered w-full pl-10 bg-[#2C3E50] text-white"
+                            value={newAddress.city}
+                            onChange={(e) => handleCitySelect(e.target.value)}
+                            required
+                          >
+                            <option value="">Seleziona città</option>
+                            {cities.map((city, index) => (
+                              <option key={index} value={city}>{city}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            placeholder="Città*"
+                            className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400"
+                            required
+                            value={newAddress.city}
+                            onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-action">
+                  <button
+                    type="button"
+                    className="btn btn-ghost hover:bg-[#2C3E50]"
+                    onClick={() => setShowAddAddressModal(false)}
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700"
+                  >
+                    Salva Indirizzo
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Modale Modifica Indirizzo */}
+        {showEditAddressModal && (
+          <div className="modal modal-open">
+            <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
+              <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
+                Modifica Indirizzo
+              </h3>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                // Aggiorna l'indirizzo
+                const updatedAddresses = addresses.map(addr =>
+                  addr.id === AddressToEdit.id ? { ...AddressToEdit } : addr
+                );
+                setAddresses(updatedAddresses);
+                setShowEditAddressModal(false);
+                setSuccessMessage('Indirizzo aggiornato con successo!');
+                setTimeout(() => setSuccessMessage(""), 3000);
+              }} className="space-y-6">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="form-control">
+                    <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
+                      <User className="w-4 h-4 opacity-70" />
+                      <input
+                        type="text"
+                        placeholder="Nome/Ragione Sociale"
+                        className="grow text-white placeholder-gray-400"
+                        value={AddressToEdit?.name || ''}
+                        onChange={(e) => setAddressToEdit({ ...AddressToEdit, name: e.target.value })}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="form-control">
+                    <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
+                      <MapPin className="w-4 h-4 opacity-70" />
+                      <input
+                        type="text"
+                        placeholder="Indirizzo*"
+                        className="grow text-white placeholder-gray-400"
+                        required
+                        value={AddressToEdit?.street || ''}
+                        onChange={(e) => setAddressToEdit({ ...AddressToEdit, street: e.target.value })}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="form-control">
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Hash className="w-4 h-4 text-gray-400" />
+                          {isCheckingCap && (
+                            <span className="loading loading-spinner loading-xs ml-2"></span>
+                          )}
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="CAP*"
+                          className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400"
+                          required
+                          maxLength="5"
+                          value={AddressToEdit?.zip || ''}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            setAddressToEdit({ ...AddressToEdit, zip: value.slice(0, 5) });
+                            setCities([]);
+                          }}
+                        />
+                      </div>
+                      {capError && (
+                        <p className="text-xs text-red-400 mt-1">{capError}</p>
+                      )}
+                    </div>
+
+                    <div className="form-control">
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <Building2 className="w-4 h-4 text-gray-400" />
+                        </div>
+                        {cities.length > 0 ? (
+                          <select
+                            className="select select-bordered w-full pl-10 bg-[#2C3E50] text-white"
+                            value={AddressToEdit?.city || ''}
+                            onChange={(e) => setAddressToEdit({ ...AddressToEdit, city: e.target.value })}
+                            required
+                          >
+                            <option value="">Seleziona città</option>
+                            {cities.map((city, index) => (
+                              <option key={index} value={city}>{city}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            placeholder="Città*"
+                            className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400"
+                            required
+                            value={AddressToEdit?.city || ''}
+                            onChange={(e) => setAddressToEdit({ ...AddressToEdit, city: e.target.value })}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-action">
+                  <button
+                    type="button"
+                    className="btn btn-ghost hover:bg-[#2C3E50]"
+                    onClick={() => setShowEditAddressModal(false)}
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700"
+                  >
+                    Salva Modifiche
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Modale Rimuovi Indirizzo */}
+        {showRemoveAddressModal && (
+          <div className="modal modal-open">
+            <div className="modal-box bg-[#1E2633] border border-blue-900/30">
+              <h3 className="font-bold text-lg text-white">Elimina Indirizzo</h3>
+              <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questo indirizzo?</p>
+              <div className="modal-action">
+                <button
+                  className="btn btn-ghost hover:bg-[#2C3E50]"
+                  onClick={() => setShowRemoveAddressModal(false)}
+                >
+                  Annulla
+                </button>
+                <button
+                  className="btn btn-error bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700"
+                  onClick={() => {
+                    setAddresses(addresses.filter(addr => addr.id !== AddressToEdit.id));
+                    setShowRemoveAddressModal(false);
+                    setSuccessMessage('Indirizzo rimosso con successo!');
+                    setTimeout(() => setSuccessMessage(""), 3000);
+                  }}
+                >
+                  Elimina
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  )
+  );
 };
 
 function AccountInfo() {
@@ -969,7 +1396,7 @@ function AccountInfo() {
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <MapPin className="w-5 h-5" />
-                  Indirizzi di fatturazione
+                  I tuoi indirizzi
                 </a>
               </li>
             </ul>
@@ -980,7 +1407,7 @@ function AccountInfo() {
               onClick={() => setShowDeleteConfirm(true)}
             >
               <Trash2 className="w-5 h-5 mr-2" />
-              Elimna Account
+              Elimina Account
             </button>
           </div>
         </div>
@@ -1020,7 +1447,7 @@ function AccountInfo() {
             </label>
             <div className="modal-action">
               <button
-                className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                className="btn btn-ghost hover:bg-[#2C3E50]"
                 onClick={() => setShowDeleteConfirm(false)}
               >
                 Annulla
