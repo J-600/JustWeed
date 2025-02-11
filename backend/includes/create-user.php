@@ -1,7 +1,7 @@
 <?php
 
-try{
-    if ($_SERVER["REQUEST_METHOD"] != "POST"){
+try {
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
         throw new Exception("Non e' una richiesta POST");
     }
 
@@ -12,16 +12,26 @@ try{
     // $token = $_POST["token"];
     $username = $_POST["username"];
     $password = $_POST["password"];
-    
+
 
     $sql = "SELECT * FROM $table WHERE email = :email AND verified = 'F'";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if(!empty($result)){
+    if (!empty($result)) {
         throw new Exception("Utente già registrato ma non confermato\nreinviando una email");
+
     } else {
+        $sql = "SELECT * FROM $table WHERE email = :email";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":email", $email);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($result)) {
+            throw new Exception("Utente già registrato");
+        }
+
         $sql = "INSERT INTO $table (username, email, password) VALUES (:username, :email, :password)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":username", $username);
@@ -49,7 +59,7 @@ try{
         "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
-        
+
     ];
     echo json_encode($response);
 }

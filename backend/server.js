@@ -715,26 +715,119 @@ app.post("/forgotpassword", (req, res) => {
 
   const token = crypto.randomBytes(16).toString('hex');
   const htmlContent = `
-    <div style="font-family: Arial, sans-serif; color: #333; text-align: center;">
-      <h1 style="color: #6699cc;">🔒 Reimposta la tua password</h1>
-      <p style="font-size: 16px;">
-        Abbiamo ricevuto una richiesta per reimpostare la tua password.  
-        Clicca sul pulsante qui sotto per procedere:
-      </p>
-      <a href="http://localhost:3001/newpassword?token=${token}" 
-        style="display: inline-block; padding: 12px 24px; background-color: #6699cc; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; margin: 20px 0;">
-          🔑 Reimposta la password
-      </a>
-      <p style="font-size: 14px; color: #777;">
-        Se non hai richiesto il reset della password, ignora questa email.  
-        Il link scadrà tra <strong>10 minuti</strong>.
-      </p>
-      <p style="font-size: 14px; color: #777;">Se il pulsante non funziona, copia e incolla questo link nel tuo browser:</p>
-      <p style="font-size: 14px; color: #4CAF50; word-wrap: break-word;">
-        http://localhost:3001/newpassword?token=${token}
-      </p>
-      <p style="font-size: 14px; color: #777;">A presto,<br>Il Team JustWeed 🌿</p>
-    </div>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: #0A1128; border-radius: 12px; min-height: 100vh;">
+  <tr>
+    <td align="center" valign="center">
+      <!-- Contenitore principale -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 500px; background: #1E2633; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; margin: 20px; padding: 40px;">
+        <tr>
+          <td align="center" style="font-family: Arial, sans-serif; color: #E5E7EB;">
+            <!-- Titolo con gradient -->
+            <h1 style="
+              font-size: 28px;
+              font-weight: bold;
+              background: linear-gradient(45deg, #60A5FA, #818CF8);
+              -webkit-background-clip: text;
+              background-clip: text;
+              color: transparent;
+              margin-bottom: 25px;
+            ">
+              🔒 Reimposta Password
+            </h1>
+
+            <!-- Messaggio principale -->
+            <p style="
+              font-size: 16px;
+              line-height: 1.5;
+              color: #9CA3AF;
+              margin-bottom: 25px;
+            ">
+              Abbiamo ricevuto una richiesta di reset password. Clicca sul pulsante per reimpostare le credenziali:
+            </p>
+
+            <!-- Bottone con gradient -->
+            <a href="http://localhost:3001/newpassword?token=${token}" style="
+              display: inline-block;
+              padding: 14px 32px;
+              background: linear-gradient(45deg, #4F46E5, #9333EA);
+              color: white;
+              text-decoration: none;
+              border-radius: 8px;
+              font-weight: bold;
+              font-size: 16px;
+              margin-bottom: 25px;
+              transition: opacity 0.3s;
+            " onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+              🔑 Reimposta Password
+            </a>
+
+            <!-- Avviso sicurezza -->
+            <p style="
+              font-size: 14px;
+              color: #F472B6;
+              margin-bottom: 25px;
+            ">
+              ⚠️ Se non hai richiesto il reset, ignora questa email
+            </p>
+
+            <!-- Timer -->
+            <div style="
+              background: #2C3E50;
+              padding: 16px;
+              border-radius: 8px;
+              margin-bottom: 25px;
+            ">
+              <p style="
+                font-size: 14px;
+                color: #FBBF24;
+                margin: 0;
+              ">
+                ⏳ Link valido per <strong>10 minuti</strong>
+              </p>
+            </div>
+
+            <!-- Link alternativo -->
+            <div style="
+              background: #2C3E50;
+              padding: 16px;
+              border-radius: 8px;
+              margin-bottom: 25px;
+            ">
+              <p style="
+                font-size: 14px;
+                color: #9CA3AF;
+                margin: 0 0 10px 0;
+              ">
+                Link alternativo:
+              </p>
+              <code style="
+                color: #60A5FA;
+                word-break: break-all;
+                font-size: 12px;
+                background: rgba(96, 165, 250, 0.1);
+                padding: 8px 12px;
+                border-radius: 4px;
+                display: block;
+              ">
+                http://localhost:3001/newpassword?token=${token}
+              </code>
+            </div>
+
+            <!-- Footer -->
+            <p style="
+              font-size: 14px;
+              color: #6B7280;
+              margin: 20px 0 0 0;
+            ">
+              A presto,<br>
+              <span style="color: #60A5FA;">Il Team JustWeed</span> 🌿
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 `;
 
   let mailOptions = {
