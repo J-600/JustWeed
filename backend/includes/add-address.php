@@ -11,16 +11,18 @@ try {
     $email = $_POST["email"];
     $name = $_POST["name"];
     $street = $_POST["street"];
+    $city = $_POST["city"];
     $zip = $_POST["zip"];
 
-    if (empty($email) || empty($name) || empty($street) || empty($zip))
+    if (empty($email) || empty($name) || empty($street) || empty($zip) || empty($city))
         throw new Exception("Errore nella ricezione dei dati");
 
-    $sql = "INSERT INTO $table (email, name, street, zip) VALUES (:email, :name, :street, :zip)";
+    $sql = "INSERT INTO $table (email, name, street, city, zip) VALUES (:email, :name, :street, :city, :zip)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->bindParam(":name", $name);
     $stmt->bindParam(":street", $street);
+    $stmt->bindParam(":city", $city);
     $stmt->bindParam(":zip", $zip);
 
     $stmt->execute();

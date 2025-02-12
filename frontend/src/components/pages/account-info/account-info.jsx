@@ -908,6 +908,7 @@ const BillingAddresses = () => {
         body: JSON.stringify({
           name: newAddress.name,
           street: newAddress.street,
+          city: newAddress.city,
           zip: newAddress.zip,
         }),
         credentials: 'include',
@@ -931,6 +932,45 @@ const BillingAddresses = () => {
     // setNewAddress({ name: '', street: '', city: '', zip: '' });
     // setSuccessMessage('Indirizzo aggiunto con successo!');
     // setTimeout(() => setSuccessMessage(""), 3000);
+  };
+
+  const handleEditAddress = async (e) => {
+    e.preventDefault();
+    try {
+      if (editCapError || editCities.length === 0) {
+        setErrorMessage("CAP non valido o città non selezionata");
+        return;
+      }
+
+      console.log(AddressToEdit)
+
+      const res = await fetch("http://localhost:3000/update-address", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: AddressToEdit.id,
+          name: AddressToEdit.name,
+          street: AddressToEdit.street,
+          city: AddressToEdit.city,
+          zip: AddressToEdit.zip,
+        }),
+        credentials: 'include',
+      })
+
+      const data = await res.json()
+      if (res.status !== 200)
+        throw new Error(data)
+      setShowEditAddressModal(false);
+      setErrorMessage("");
+      setSuccessMessage(data);
+      setTimeout(() => setSuccessMessage(""), 3000);
+
+      fetchAddresses();
+
+    }catch (error) {
+      // console.log('Not authenticated');
+      setErrorMessage(error.message);
+    }
   };
 
   return (
@@ -1160,20 +1200,7 @@ const BillingAddresses = () => {
               <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
                 Modifica Indirizzo
               </h3>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                if (editCapError || editCities.length === 0) {
-                  setErrorMessage("CAP non valido o città non selezionata");
-                  return;
-                }
-                const updatedAddresses = addresses.map(addr =>
-                  addr.id === AddressToEdit.id ? { ...AddressToEdit } : addr
-                );
-                setAddresses(updatedAddresses);
-                setShowEditAddressModal(false);
-                setSuccessMessage('Indirizzo aggiornato con successo!');
-                setTimeout(() => setSuccessMessage(""), 3000);
-              }} className="space-y-6">
+              <form onSubmit={handleEditAddress} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                   <div className="form-control">
                     <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
