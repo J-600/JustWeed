@@ -461,8 +461,8 @@ const PaymentMethods = () => {
         credentials: "include",
       });
       const data = await res.json();
-      console.log(data)
-      console.log(res)
+      // console.log(data)
+      // console.log(res)
 
       if (res.status !== 200)
         setErrorMessage("errore nel loading dei dati")
@@ -810,7 +810,7 @@ const BillingAddresses = () => {
       })
 
       const data = await res.json();
-      console.log(res)
+      // console.log(res)
 
       if (res.status !== 200)
         throw new Error("errore nel loading dei dati");
@@ -964,7 +964,7 @@ const BillingAddresses = () => {
         return;
       }
 
-      console.log(AddressToEdit)
+      // console.log(AddressToEdit)
 
       const res = await fetch("http://localhost:3000/update-address", {
         method: "POST",
@@ -1441,7 +1441,7 @@ function AccountInfo() {
         credentials: "include",
       })
       const data = await res.json();
-      console.log(data)
+      // console.log(data) 
       if (res.status !== 200)
         throw new Error(data)
 
