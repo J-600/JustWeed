@@ -16,12 +16,11 @@ try {
     if (empty($result)) {
         throw new Exception("Non sono presenti prodotti");
     } else {
-        // Converti le immagini in Base64
         foreach ($result as $key => $row) {
             if (!empty($row["img"])) {
                 $result[$key]["img"] = "data:image/png;base64," . base64_encode($row["img"]);
             } else {
-                $result[$key]["img"] = null; // Evita problemi se l'immagine è assente
+                $result[$key]["img"] = null;
             }
         }
 

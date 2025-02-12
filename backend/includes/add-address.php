@@ -7,31 +7,32 @@ try {
     require_once "dbh.inc.php";
 
     $table = "addresses_jw";
-    $table_us = "users_jw";
-    $email = $_POST["email"] ?? "jhonpanora06@gmail.com";
 
-    $sql = "SELECT * FROM $table a
-            JOIN $table_us u ON u.verified = 'T'
-            WHERE a.email = :email";
-    
+    $email = $_POST["email"];
+    $name = $_POST["name"];
+    $street = $_POST["street"];
+    $zip = $_POST["zip"];
+
+    if (empty($email) || empty($name) || empty($street) || empty($zip))
+        throw new Exception("Errore nella ricezione dei dati");
+
+    $sql = "INSERT INTO $table (email, name, street, zip) VALUES (:email, :name, :street, :zip)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
+    $stmt->bindParam(":name", $name);
+    $stmt->bindParam(":street", $street);
+    $stmt->bindParam(":zip", $zip);
+
     $stmt->execute();
-
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if(empty($result))
-    {
-        throw new Exception("Nessun indirizzo di fatturazione");
-    }
 
     $response = [
         "response" => 200,
         "message" => True,
-        "data" => $result
+        "data" => "Indirizzo aggiunto con successo"
     ];
+    echo json_encode($response);
 
-}  catch (PDOException $e) {
+} catch (PDOException $e) {
     $response = [
         "response" => 500,
         "message" => false,
@@ -43,7 +44,7 @@ try {
         "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
-
+        
     ];
     echo json_encode($response);
 }

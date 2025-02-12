@@ -303,7 +303,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
             </div>
             <div className="modal-action">
               <button
-                className="btn btn-ghost hover:bg-[#2C3E50]"
+                className="btn btn-ghost text-white hover:bg-[#2C3E50]"
                 onClick={() => setShowPasswordModal(false)}
               >
                 Annulla
@@ -400,7 +400,7 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
       </div>
 
       <div className="modal-action">
-        <button type="button" className="btn btn-ghost hover:bg-[#2C3E50]" onClick={onCancel}>
+        <button type="button" className="btn btn-ghost text-white hover:bg-[#2C3E50]" onClick={onCancel}>
           Annulla
         </button>
         <button type="submit" className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700" disabled={!stripe}>
@@ -712,7 +712,7 @@ const PaymentMethods = () => {
                 <div className="modal-action">
                   <button
                     type="button"
-                    className="btn btn-ghost hover:bg-[#2C3E50]"
+                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
                     onClick={() => setShowEditCardModal(false)}
                   >
                     Annulla
@@ -736,7 +736,7 @@ const PaymentMethods = () => {
               <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questa carta?</p>
               <div className="modal-action">
                 <button
-                  className="btn btn-ghost hover:bg-[#2C3E50]"
+                  className="btn btn-ghost text-white hover:bg-[#2C3E50]"
                   onClick={() => setShowRemoveCardModal(false)}
                 >
                   Annulla
@@ -766,7 +766,7 @@ const BillingAddresses = () => {
   const [showRemoveAddressModal, setShowRemoveAddressModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [AddressToEdit, setAddressToEdit] = useState(null);
   const [newAddress, setNewAddress] = useState({
     name: '',
@@ -780,6 +780,32 @@ const BillingAddresses = () => {
   const [editCities, setEditCities] = useState([]);
   const [isCheckingEditCap, setIsCheckingEditCap] = useState(false);
   const [editCapError, setEditCapError] = useState("");
+
+  const fetchAddresses = async () => {
+    try{
+      const res = await fetch("http://localhost:3000/addresses", {
+        credentials: 'include',
+      })
+
+      const data = await res.json();
+      console.log(res)
+
+      if (res.status !== 200)
+          setErrorMessage("errore nel loading dei dati")
+      
+      setAddresses(data);
+    }catch (error) {
+      console.log('Not authenticated');
+      setAddresses(error.message);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchAddresses()
+  }, [])
 
   useEffect(() => {
     const verifyEditCap = async () => {
@@ -911,7 +937,7 @@ const BillingAddresses = () => {
           <div className="flex items-center justify-center">
             <Loader />
           </div>
-        ) : addresses.length > 0 ? (
+        ) :  Array.isArray(addresses) && addresses.length > 0 ? (
           <div className="space-y-4">
             {addresses.map((address, index) => (
               <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedAddress === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'}`}>
@@ -978,7 +1004,7 @@ const BillingAddresses = () => {
           </div>
         ) : (
           <div className="flex items-center justify-between border-b border-blue-900/30 pb-2">
-            <p className="font-semibold text-gray-400">Nessun indirizzo di fatturazione</p>
+            <p className="font-semibold text-gray-400">{addresses}</p>
             <button
               onClick={() => setShowAddAddressModal(true)}
               className="btn btn-primary btn-sm bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700">
@@ -987,7 +1013,6 @@ const BillingAddresses = () => {
           </div>
         )}
 
-        {/* Modale Aggiungi Indirizzo */}
         {showAddAddressModal && (
           <div className="modal modal-open">
             <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
@@ -1072,10 +1097,11 @@ const BillingAddresses = () => {
                           <input
                             type="text"
                             placeholder="Città*"
-                            className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400"
+                            className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400 disabled:bg-[#2C3E50] disabled:text-white disabled:placeholder-gray-400 disabled:border-[#2C3E50]"
                             required
                             value={newAddress.city}
                             onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+                            disabled
                           />
                         )}
                       </div>
@@ -1086,8 +1112,8 @@ const BillingAddresses = () => {
                 <div className="modal-action">
                   <button
                     type="button"
-                    className="btn btn-ghost hover:bg-[#2C3E50]"
-                    onClick={() => setShowAddAddressModal(false)}
+                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                    onClick={() => {setShowAddAddressModal(false); setNewAddress({city: '', name: '', zip: '', street:''}); setCities([])}}
                   >
                     Annulla
                   </button>
@@ -1200,10 +1226,11 @@ const BillingAddresses = () => {
                           <input
                             type="text"
                             placeholder="Città*"
-                            className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400"
+                            className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400 disabled:bg-[#2C3E50] disabled:text-white disabled:placeholder-gray-400 disabled:border-[#2C3E50]"
                             required
                             value={AddressToEdit?.city || ''}
                             onChange={(e) => setAddressToEdit({ ...AddressToEdit, city: e.target.value })}
+                            disabled
                           />
                         )}
                       </div>
@@ -1214,7 +1241,7 @@ const BillingAddresses = () => {
                 <div className="modal-action">
                   <button
                     type="button"
-                    className="btn btn-ghost hover:bg-[#2C3E50]"
+                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
                     onClick={() => setShowEditAddressModal(false)}
                   >
                     Annulla
@@ -1237,7 +1264,7 @@ const BillingAddresses = () => {
               <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questo indirizzo?</p>
               <div className="modal-action">
                 <button
-                  className="btn btn-ghost hover:bg-[#2C3E50]"
+                  className="btn btn-ghost text-white hover:bg-[#2C3E50]"
                   onClick={() => setShowRemoveAddressModal(false)}
                 >
                   Annulla
@@ -1491,7 +1518,7 @@ function AccountInfo() {
             </label>
             <div className="modal-action">
               <button
-                className="btn btn-ghost hover:bg-[#2C3E50]"
+                className="btn btn-ghost text-white hover:bg-[#2C3E50]"
                 onClick={() => setShowDeleteConfirm(false)}
               >
                 Annulla
