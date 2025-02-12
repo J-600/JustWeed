@@ -469,6 +469,31 @@ app.post("/update-address", (req, res) => {
   }
 })
 
+app.post("/delete-address", (req, res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const { id } = req.body;
+    fetch("http://localhost/justweed/backend/includes/delete-address.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `id=${id}`
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.response === 200) {
+          res.json(data.data)
+        } else if (data.response === 500) {
+          res.status(500).json("errore nell'upload dei dati");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+      });
+  }
+})
+
 app.get("/cardsdata", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });

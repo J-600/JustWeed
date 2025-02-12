@@ -80,6 +80,17 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
     }
   };
 
+  const handleCalcel = () => {
+    if (!isEditingUsername) {
+      setEditedUsername(username);
+    }
+    if (!isEditingEmail) {
+      setEditedEmail(email);
+    }
+    setIsEditingUsername(false);
+    setIsEditingEmail(false);
+  }
+
   const handleChangePassword = async () => {
     if (newPassword !== confirmNewPassword) {
       setErrorMessage("Le password non coincidono.");
@@ -223,12 +234,23 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
           )}
 
           {(isEditingUsername || isEditingEmail) && (
-            <button
-              onClick={handleSave}
-              className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
-            >
-              Conferma
-            </button>
+            <div className="card-actions gap-2">
+              <button
+                className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                onClick={handleCalcel}
+              >
+                Annulla
+              </button>
+              
+
+              <button
+                onClick={handleSave}
+                className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+              >
+                Conferma
+              </button>
+            </div>
+
           )}
 
           <div>
@@ -782,7 +804,7 @@ const BillingAddresses = () => {
   const [editCapError, setEditCapError] = useState("");
 
   const fetchAddresses = async () => {
-    try{
+    try {
       const res = await fetch("http://localhost:3000/addresses", {
         credentials: 'include',
       })
@@ -791,8 +813,8 @@ const BillingAddresses = () => {
       console.log(res)
 
       if (res.status !== 200)
-          throw new Error("errore nel loading dei dati");
-      
+        throw new Error("errore nel loading dei dati");
+
       setAddresses(data);
     } catch (error) {
       // console.log('Not authenticated');
@@ -914,7 +936,7 @@ const BillingAddresses = () => {
         credentials: 'include',
       })
       const data = await res.json();
-      if (res.status !== 200){
+      if (res.status !== 200) {
         throw new Error(data)
       }
 
@@ -923,7 +945,7 @@ const BillingAddresses = () => {
       setTimeout(() => setSuccessMessage(""), 3000);
       setShowAddAddressModal(false)
       fetchAddresses();
-    }catch (error) {
+    } catch (error) {
       // console.log('Not authenticated');
       setErrorMessage(error.message);
     }
@@ -967,10 +989,38 @@ const BillingAddresses = () => {
 
       fetchAddresses();
 
-    }catch (error) {
+    } catch (error) {
       // console.log('Not authenticated');
       setErrorMessage(error.message);
     }
+  };
+
+  const handleRemoveAddress = async () => {
+
+    try {
+      const res = await fetch("http://localhost:3000/delete-address", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: AddressToEdit.id }),
+        credentials: 'include'
+      });
+      const data = res.json();
+      if (res.status !== 200) {
+        throw new Error(data)
+      }
+      setErrorMessage("");
+      setSuccessMessage(data)
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setShowRemoveAddressModal(false);
+      fetchAddresses()
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+    // setAddresses(addresses.filter(addr => addr.id !== AddressToEdit.id));  
+
+    // setSuccessMessage('Indirizzo rimosso con successo!');
+    // setTimeout(() => setSuccessMessage(""), 3000);
+
   };
 
   return (
@@ -1002,7 +1052,7 @@ const BillingAddresses = () => {
           <div className="flex items-center justify-center">
             <Loader />
           </div>
-        ) :  Array.isArray(addresses) && addresses.length > 0 ? (
+        ) : Array.isArray(addresses) && addresses.length > 0 ? (
           <div className="space-y-4">
             {addresses.map((address, index) => (
               <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedAddress === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'}`}>
@@ -1178,7 +1228,7 @@ const BillingAddresses = () => {
                   <button
                     type="button"
                     className="btn btn-ghost text-white hover:bg-[#2C3E50]"
-                    onClick={() => {setShowAddAddressModal(false); setNewAddress({city: '', name: '', zip: '', street:''}); setCities([])}}
+                    onClick={() => { setShowAddAddressModal(false); setNewAddress({ city: '', name: '', zip: '', street: '' }); setCities([]) }}
                   >
                     Annulla
                   </button>
@@ -1323,12 +1373,7 @@ const BillingAddresses = () => {
                 </button>
                 <button
                   className="btn btn-error bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700"
-                  onClick={() => {
-                    setAddresses(addresses.filter(addr => addr.id !== AddressToEdit.id));
-                    setShowRemoveAddressModal(false);
-                    setSuccessMessage('Indirizzo rimosso con successo!');
-                    setTimeout(() => setSuccessMessage(""), 3000);
-                  }}
+                  onClick={handleRemoveAddress}
                 >
                   Elimina
                 </button>
