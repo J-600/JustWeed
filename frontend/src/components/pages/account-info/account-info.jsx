@@ -791,12 +791,12 @@ const BillingAddresses = () => {
       console.log(res)
 
       if (res.status !== 200)
-          setErrorMessage("errore nel loading dei dati")
+          throw new Error("errore nel loading dei dati");
       
       setAddresses(data);
-    }catch (error) {
-      console.log('Not authenticated');
-      setAddresses(error.message);
+    } catch (error) {
+      // console.log('Not authenticated');
+      setErrorMessage(error.message);
     }
     finally {
       setLoading(false);
@@ -895,17 +895,42 @@ const BillingAddresses = () => {
     }));
   };
 
-  const handleAddAddress = (e) => {
+  const handleAddAddress = async (e) => {
     e.preventDefault();
     if (capError || cities.length === 0) {
       setErrorMessage("CAP non valido o città non selezionata");
       return;
     }
-    setAddresses([...addresses, { ...newAddress, id: Date.now() }]);
-    setShowAddAddressModal(false);
-    setNewAddress({ name: '', street: '', city: '', zip: '' });
-    setSuccessMessage('Indirizzo aggiunto con successo!');
-    setTimeout(() => setSuccessMessage(""), 3000);
+    try {
+      const res = await fetch("http://localhost:3000/add-address", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newAddress.name,
+          street: newAddress.street,
+          zip: newAddress.zip,
+        }),
+        credentials: 'include',
+      })
+      const data = await res.json();
+      if (res.status !== 200){
+        throw new Error(data)
+      }
+
+      setErrorMessage("");
+      setSuccessMessage(data);
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setShowAddAddressModal(false)
+      fetchAddresses();
+    }catch (error) {
+      // console.log('Not authenticated');
+      setErrorMessage(error.message);
+    }
+    // setAddresses([...addresses, { ...newAddress, id: Date.now() }]);
+    // setShowAddAddressModal(false);
+    // setNewAddress({ name: '', street: '', city: '', zip: '' });
+    // setSuccessMessage('Indirizzo aggiunto con successo!');
+    // setTimeout(() => setSuccessMessage(""), 3000);
   };
 
   return (

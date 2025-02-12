@@ -10,7 +10,7 @@ try {
     $table_us = "users_jw";
     $email = $_POST["email"] ?? "jhonpanora06@gmail.com";
 
-    $sql = "SELECT * FROM $table a
+    $sql = "SELECT a.* FROM $table a
             JOIN $table_us u ON u.verified = 'T'
             WHERE a.email = :email";
     
@@ -30,6 +30,7 @@ try {
         "message" => True,
         "data" => $result
     ];
+    echo json_encode($response);
 
 }  catch (PDOException $e) {
     $response = [
