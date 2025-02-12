@@ -74,7 +74,7 @@ export default function Topbar({ username, mail }) {
             </li>
             <li
               className="text-white hover:text-blue-400 cursor-pointer transition-colors duration-300"
-              onClick={() => navigate("/recent-purchases")}
+              onClick={() => navigate("/purchase")}
             >
               Acquisti Recenti
             </li>
