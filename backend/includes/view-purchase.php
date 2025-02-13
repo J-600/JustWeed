@@ -34,13 +34,14 @@ try {
             JOIN $table_products p ON s.id_product = p.id
             JOIN $table_addresses a ON s.id_address = a.id
             JOIN $table_cards c ON s.id_payment = c.id
-            GROUP BY s.date
-            HAVING s.email = :email";
+            WHERE s.email = :email";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo $sql;
     
     if(empty($result))
         throw new Exception("Non sono presenti acquisti");
@@ -48,7 +49,7 @@ try {
 
     foreach ($result as $key => $row) {
         if (!empty($row["img"])) {
-            $result[$key]["img"] = "data:image/png;base64," . base64_encode($row["img"]);
+            $result[$key]["img"] = "";
         } else {
             $result[$key]["img"] = null;
         }
