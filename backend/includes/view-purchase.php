@@ -12,7 +12,7 @@ try {
     $table_products = "products_jw";
     $table_addresses = "addresses_jw";
     $table_cards = "cards_jw";
-    $email = $_POST["email"] ?? "jhonpanora06@gmail.com";
+    $email = $_POST["email"];
 
     $sql = "SELECT s.*,
                     p.name as product_name,
