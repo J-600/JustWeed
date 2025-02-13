@@ -69,7 +69,7 @@ function App() {
           navigate('/products', { state: { email, username } });
         }, 1000);
       } else {
-        setResponseMessage(data.error || "Mail o password sbagliate");
+        setResponseMessage(data);
         setResponseType('error'); 
       }
     } catch (error) {
