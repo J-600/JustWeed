@@ -440,6 +440,14 @@ app.post("/add-address", (req, res) => {
   }
 })
 
+app.get("/view-purchase", (req,res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+
+  }
+})
+
 app.post("/update-address", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
