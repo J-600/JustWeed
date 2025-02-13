@@ -2,9 +2,9 @@
 
 try {
 
-    // if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    //     throw new Exception("Non è una richiesta POST");
-    // }
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+        throw new Exception("Non è una richiesta POST");
+    }
 
     require_once "dbh.inc.php";
 
@@ -34,7 +34,8 @@ try {
             JOIN $table_products p ON s.id_product = p.id
             JOIN $table_addresses a ON s.id_address = a.id
             JOIN $table_cards c ON s.id_payment = c.id
-            WHERE s.email = :email";
+            GROUP BY s.date
+            HAVING s.email = :email";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
