@@ -40,8 +40,6 @@ try {
     $stmt->bindParam(":email", $email);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    echo $sql;
     
     if(empty($result))
         throw new Exception("Non sono presenti acquisti");
