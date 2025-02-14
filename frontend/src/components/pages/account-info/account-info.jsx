@@ -515,9 +515,10 @@ const PaymentMethods = () => {
       return (
         <svg width="50" height="30" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
           <rect width="100" height="60" rx="8" fill="white" />
-          <img className="w-full md:w-50 h-30" src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" alt="Visa Home"></img>
+          <image href="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png"
+            width="80" height="48"
+            x="10" y="6" />
         </svg>
-
       );
     }
 
@@ -530,6 +531,17 @@ const PaymentMethods = () => {
           <path d="M47 18a18 18 0 000 24 18 18 0 000-24z" fill="#FF6400" />
         </svg>
       );
+    }
+
+    if (circuit === 'amex') {
+      return (
+        <svg width="50" height="30" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="60" rx="8" fill="white" />
+          <image href="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png"
+            width="80" height="48"
+            x="10" y="6" />
+        </svg>
+      )
     }
 
     return (
