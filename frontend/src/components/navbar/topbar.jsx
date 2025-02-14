@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaBars, FaUser, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function Topbar({ username, mail }) {
+export default function Topbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const userButtonRef = useRef(null);
