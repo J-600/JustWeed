@@ -54,7 +54,7 @@ function Purchase() {
                                 {dateKeys.map((date, index) => (
                                     <div key={index} className="border border-blue-900/30 rounded-lg p-6 bg-[#1E2633]">
                                         <div className="flex justify-between items-center mb-4">
-                                            <h3 className="text-xl font-semibold text-blue-300">Ordini del {new Date(date).toLocaleDateString()}</h3>
+                                            <h3 className="text-2xl font-bold text-blue-300">Ordini del {new Date(date).toLocaleDateString()}</h3>
                                             <div>
                                                 <p className="text-white">Totale: <span className="text-white font-bold">€{purchases[date]
                                                     .reduce((sum, order) => sum + order.product_price * order.quantity, 0)
@@ -64,19 +64,23 @@ function Purchase() {
                                         <div className="space-y-4">
                                             {purchases[date].map((item, index) => (
                                                 <div key={index} className="flex items-start gap-4 border-b border-blue-900/30 pb-4 last:border-b-0">
+                                                <div className="flex flex-col items-start gap-5">
+                                                    <h3 className="text-xl font-semibold text-blue-300">{item.product_name}</h3>
                                                     <img
                                                         src={item.img}
                                                         alt={item.product_name}
-                                                        className="w-40 h-40 object-cover rounded-lg"
+                                                        className="w-40 h-40 object-cover rounded-lg " 
                                                     />
-                                                    <div className="flex-1">
-                                                        <h3 className="font-bold text-white">{item.name}</h3>
-                                                        <p className="text-sm text-gray-400">Nome: {item.product_name}</p>
-                                                        <p className="text-sm text-gray-400">Quantità: {item.quantity}</p>
-                                                        <p className="text-sm text-gray-400">Prezzo: €{(item.product_price * item.quantity).toFixed(2)}</p>
-                                                        <p className="text-sm text-gray-400">Stato: <span className={`${item.status === "Consegnato" ? 'text-green-400' : 'text-yellow-400'}`}>{item.status}</span></p>
-                                                        <p className="text-sm text-gray-400">Data di consegna: {new Date(item.deliveryDate).toLocaleDateString()}</p>
-                                                    </div>
+                                                </div>
+                                                <div className="flex-1 pt-11">
+                                                    <h3 className="font-bold text-white">{item.name}</h3>
+                                                    <p className="text-m text-gray-400">Nome: {item.product_name}</p>
+                                                    <p className="text-m text-gray-400">Quantità: {item.quantity}</p>
+                                                    <p className="text-m text-gray-400">Prezzo: €{(item.product_price * item.quantity).toFixed(2)}</p>
+                                                    <p className="text-m text-gray-400">Stato: <span className={`${item.status === "Consegnato" ? 'text-green-400' : 'text-yellow-400'}`}>{item.status}</span></p>
+                                                    <p className="text-m text-gray-400">Data di consegna: {new Date(item.deliveryDate).toLocaleDateString()}</p>
+                                                </div>
+                                                <div className="flex gap-2">
                                                     <button className="btn btn-sm bg-gradient-to-r from-green-500 to-teal-600 text-white border-none hover:from-green-600 hover:to-teal-700">
                                                         Traccia pacco
                                                     </button>
@@ -84,6 +88,7 @@ function Purchase() {
                                                         Acquista di nuovo
                                                     </button>
                                                 </div>
+                                            </div>
                                             ))}
                                         </div>
                                     </div>
