@@ -69,7 +69,7 @@ function Products() {
                 >
                   <figure className="px-4 pt-4">
                     <img
-                      src={product.img || "https://via.placeholder.com/150"}
+                      src={product.img}
                       alt={product.name}
                       className="w-full h-48 object-cover rounded-lg"
                     />

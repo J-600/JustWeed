@@ -453,11 +453,12 @@ app.get("/view-purchase", (req, res) => {
     .then(response => response.json())
     .then(data => {
 
-      if (data.response === 200 && res.message){
+      if (data.response === 200 && data.message){
         let res_temp = {}
         data.data.forEach(x => {
           !res_temp[x["date"]] ? res_temp[x["date"]] = [x] : res_temp[x["date"]].push(x)
         });
+        console.log(res_temp)
         res.json(res_temp)
       } else if (data.response === 500) {
         res.status(500).json("errore nel db");

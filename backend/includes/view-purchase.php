@@ -47,7 +47,7 @@ try {
 
     foreach ($result as $key => $row) {
         if (!empty($row["img"])) {
-            $result[$key]["img"] =  " a";//"data:image/png;base64," . base64_encode($row["img"]);
+            $result[$key]["img"] = "data:image/png;base64," . base64_encode($row["img"]);
         } else {
             $result[$key]["img"] = null;
         }
