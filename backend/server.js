@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const creditCardType = require('credit-card-type');
 const session = require('express-session');
+const { console } = require('inspector');
 
 const STRIPE_SECRET_KEY = 'sk_test_51Qqap7J0BPVuq51Y0ydAG9kn97Q39HQ2WAP4N0J1s794JiNzwIYj2PoorgFr6A4ZJdvwbMUTwTERatnoFOUf2ltd00A6Q3laNG';
 const stripe = require('stripe')(STRIPE_SECRET_KEY);
@@ -417,7 +418,7 @@ app.post("/add-address", (req, res) => {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
     const { name, street, city, zip } = req.body;
-    
+
     fetch("http://localhost/justweed/backend/includes/add-address.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
@@ -440,11 +441,34 @@ app.post("/add-address", (req, res) => {
   }
 })
 
-app.get("/view-purchase", (req,res) => {
+app.get("/view-purchase", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
+  fetch("http://localhost/justweed/backend/includes/view-purchase.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `email=${req.session.email}`
+  })
+    .then(response => response.json())
+    .then(data => {
 
+      if (data.response === 200 && res.message){
+        let res_temp = {}
+        data.data.forEach(x => {
+          !res_temp[x["date"]] ? res_temp[x["date"]] = [x] : res_temp[x["date"]].push(x)
+        });
+        res.json(res_temp)
+      } else if (data.response === 500) {
+        res.status(500).json("errore nel db");
+      } else {
+        res.json(data.data)
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
   }
 })
 
