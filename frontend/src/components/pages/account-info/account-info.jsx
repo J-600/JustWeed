@@ -241,7 +241,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
               >
                 Annulla
               </button>
-              
+
 
               <button
                 onClick={handleSave}
@@ -508,6 +508,35 @@ const PaymentMethods = () => {
     }
   };
 
+  const CardIcon = ({ circuito }) => {
+    const circuit = circuito.toLowerCase();
+
+    if (circuit === 'visa') {
+      return (
+        <svg width="50" height="30" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="60" rx="8" fill="white" />
+          <img className="w-full md:w-50 h-30" src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" alt="Visa Home"></img>
+        </svg>
+
+      );
+    }
+
+    if (circuit === 'mastercard') {
+      return (
+        <svg width="50" height="30" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="60" rx="8" fill="black" />
+          <circle cx="35" cy="30" r="18" fill="#EA001B" />
+          <circle cx="65" cy="30" r="18" fill="#FFA200" />
+          <path d="M47 18a18 18 0 000 24 18 18 0 000-24z" fill="#FF6400" />
+        </svg>
+      );
+    }
+
+    return (
+      <CreditCard className="w-12 h-7 text-blue-400" />
+    );
+  };
+
   const handleEditCard = async (e) => {
     e.preventDefault();
     try {
@@ -611,7 +640,7 @@ const PaymentMethods = () => {
               <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedCard === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'}`}>
                 <div className="flex items-center justify-between cursor-pointer" onClick={() => setExpandedCard(prev => prev === index ? null : index)}>
                   <div className="flex items-center gap-4">
-                    <CreditCard className="w-6 h-6 text-blue-400" />
+                    <CardIcon circuito={card.circuito} className="w-6 h-6 text-blue-400" />
                     <div>
                       <h3 className="font-bold text-white">{card.circuito} n. ••••••••••••{card.numero}</h3>
                       <p className="text-sm text-gray-400">Aggiunta il {new Date(card.created_at).toLocaleDateString()}</p>
@@ -633,7 +662,7 @@ const PaymentMethods = () => {
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <button onClick={() => {
                         setFormData({
                           scadenza: `${String(card.scadenza.split("/")[0]).padStart(2, '0')}/${String(card.scadenza.split("/")[1]).slice(-2)}`,
@@ -1084,7 +1113,7 @@ const BillingAddresses = () => {
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <button
                         onClick={() => {
                           setAddressToEdit(address);
@@ -1132,6 +1161,7 @@ const BillingAddresses = () => {
           <div className="modal modal-open">
             <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
               <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
+                Aggiungi indirizzo
                 Aggiungi indirizzo
               </h3>
               <form onSubmit={handleAddAddress} className="space-y-6">
@@ -1469,7 +1499,7 @@ function AccountInfo() {
 
 
   const renderContent = () => {
-    
+
     switch (activeTab) {
       case "account":
         return (
@@ -1522,9 +1552,8 @@ function AccountInfo() {
 
       <div className="flex flex-1">
         <div
-          className={`fixed inset-0 z-index lg:static lg:translate-x-0 transform ${
-            isMenuOpen ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 w-64 bg-[#1E2633] p-4 border-t-0 border-r border-blue-900/30 flex flex-col justify-between z-40`}
+          className={`fixed inset-0 z-index lg:static lg:translate-x-0 transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+            } transition-transform duration-300 w-64 bg-[#1E2633] p-4 border-t-0 border-r border-blue-900/30 flex flex-col justify-between z-40`}
         >
           <div>
             <button
@@ -1555,7 +1584,7 @@ function AccountInfo() {
             <ul className="menu">
               <li
                 className={`mb-2 ${activeTab === "account" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-                onClick={() => {setActiveTab("account"); setIsMenuOpen(false)}}
+                onClick={() => { setActiveTab("account"); setIsMenuOpen(false) }}
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <User className="w-5 h-5" />
@@ -1564,7 +1593,7 @@ function AccountInfo() {
               </li>
               <li
                 className={`mb-2 ${activeTab === "payments" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-                onClick={() => {setActiveTab("payments") ; setIsMenuOpen(false)}}
+                onClick={() => { setActiveTab("payments"); setIsMenuOpen(false) }}
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <CreditCard className="w-5 h-5" />
@@ -1573,7 +1602,7 @@ function AccountInfo() {
               </li>
               <li
                 className={`mb-2 ${activeTab === "addresses" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-                onClick={() => {setActiveTab("addresses") ; setIsMenuOpen(false)}}
+                onClick={() => { setActiveTab("addresses"); setIsMenuOpen(false) }}
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <MapPin className="w-5 h-5" />
