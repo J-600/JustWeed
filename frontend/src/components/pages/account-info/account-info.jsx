@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Globe, FileDigit, ArrowLeft, Pencil, Lock, ChevronDown, Plus, Calendar } from "lucide-react";
+import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Globe, FileDigit, ArrowLeft, Pencil, Lock, ChevronDown, Plus, Calendar } from "lucide-react";
 import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 import CryptoJS from 'crypto-js';
@@ -1397,6 +1397,7 @@ function AccountInfo() {
   const [activeTab, setActiveTab] = useState("account");
   const [password, setPassword] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -1468,6 +1469,7 @@ function AccountInfo() {
 
 
   const renderContent = () => {
+    
     switch (activeTab) {
       case "account":
         return (
@@ -1511,8 +1513,19 @@ function AccountInfo() {
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
       <TopBar />
 
+      <button
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#1E2633] rounded-lg text-white"
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
+        <Menu className="w-6 h-6" />
+      </button>
+
       <div className="flex flex-1">
-        <div className="w-64 bg-[#1E2633] p-4 border-t-0 border-r border-blue-900/30 flex flex-col justify-between">
+        <div
+          className={`fixed inset-0 z-index lg:static lg:translate-x-0 transform ${
+            isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 w-64 bg-[#1E2633] p-4 border-t-0 border-r border-blue-900/30 flex flex-col justify-between z-40`}
+        >
           <div>
             <button
               className="btn btn-ghost w-full flex items-center gap-2 text-white hover:bg-[#2C3E50] mb-4"
@@ -1542,7 +1555,7 @@ function AccountInfo() {
             <ul className="menu">
               <li
                 className={`mb-2 ${activeTab === "account" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-                onClick={() => setActiveTab("account")}
+                onClick={() => {setActiveTab("account"); setIsMenuOpen(false)}}
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <User className="w-5 h-5" />
@@ -1551,7 +1564,7 @@ function AccountInfo() {
               </li>
               <li
                 className={`mb-2 ${activeTab === "payments" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-                onClick={() => setActiveTab("payments")}
+                onClick={() => {setActiveTab("payments") ; setIsMenuOpen(false)}}
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <CreditCard className="w-5 h-5" />
@@ -1560,7 +1573,7 @@ function AccountInfo() {
               </li>
               <li
                 className={`mb-2 ${activeTab === "addresses" ? "bg-[#2C3E50] rounded-lg" : ""}`}
-                onClick={() => setActiveTab("addresses")}
+                onClick={() => {setActiveTab("addresses") ; setIsMenuOpen(false)}}
               >
                 <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
                   <MapPin className="w-5 h-5" />
@@ -1634,6 +1647,6 @@ function AccountInfo() {
       )}
     </div>
   );
-}
+};
 
 export default AccountInfo;
