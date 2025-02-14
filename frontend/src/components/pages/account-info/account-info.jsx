@@ -534,14 +534,7 @@ const PaymentMethods = () => {
     }
 
     if (circuit === 'amex') {
-      return (
-        <svg width="50" height="30" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100" height="60" rx="8" fill="white" />
-          <image href="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png"
-            width="80" height="48"
-            x="10" y="6" />
-        </svg>
-      )
+      
     }
 
     return (
