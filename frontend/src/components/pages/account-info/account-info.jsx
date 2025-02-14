@@ -534,7 +534,7 @@ const PaymentMethods = () => {
     }
 
     if (circuit === 'amex') {
-      
+
     }
 
     return (
@@ -1557,72 +1557,181 @@ function AccountInfo() {
 
       <div className="flex flex-1">
         <div
-          className={`fixed inset-0 z-index lg:static lg:translate-x-0 transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-            } transition-transform duration-300 w-64 bg-[#1E2633] p-4 border-t-0 border-r border-blue-900/30 flex flex-col justify-between z-40`}
+          className={`fixed inset-0 z-40 lg:static lg:translate-x-0 transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+            } transition-all duration-300 w-72 bg-[#1E2633] p-6 border-r border-blue-900/30 flex flex-col justify-between shadow-2xl`}
         >
-          <div>
+          {/* Contenuto principale */}
+          <div className="space-y-6">
+            {/* Pulsante Back */}
             <button
-              className="btn btn-ghost w-full flex items-center gap-2 text-white hover:bg-[#2C3E50] mb-4"
               onClick={() => navigate("/")}
+              className="group flex items-center gap-2 w-full p-3 hover:bg-[#2A3444] rounded-lg transition-all duration-300"
             >
-              <ArrowLeft className="w-5 h-5" />
-              Back
+              <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="w-5 h-5 text-blue-400"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </div>
+              <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-semibold">
+                Torna alla Home
+              </span>
             </button>
-            {successMessage && (
-              <div className="alert alert-success shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>{successMessage}</span>
-              </div>
-            )}
 
-            {errorMessage && (
-              <div className="alert alert-error shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>{errorMessage}</span>
-              </div>
-            )}
+            {/* Messaggi di stato */}
+            <div className="space-y-4">
+              {successMessage && (
+                <div className="p-4 bg-gradient-to-br from-green-500/20 to-teal-600/20 rounded-lg border border-green-900/30 flex items-start gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="flex-shrink-0 w-6 h-6 text-green-400"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-green-200 text-sm">{successMessage}</span>
+                </div>
+              )}
 
-            <ul className="menu">
-              <li
-                className={`mb-2 ${activeTab === "account" ? "bg-[#2C3E50] rounded-lg" : ""}`}
+              {errorMessage && (
+                <div className="p-4 bg-gradient-to-br from-red-500/20 to-pink-600/20 rounded-lg border border-red-900/30 flex items-start gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="flex-shrink-0 w-6 h-6 text-red-400"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <span className="text-red-200 text-sm">{errorMessage}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Menu Navigazione */}
+            <nav className="space-y-2">
+              <div
                 onClick={() => { setActiveTab("account"); setIsMenuOpen(false) }}
+                className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "account"
+                    ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
+                    : "hover:bg-[#2A3444]"
+                  }`}
               >
-                <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
-                  <User className="w-5 h-5" />
-                  Informazioni dell'account
-                </a>
-              </li>
-              <li
-                className={`mb-2 ${activeTab === "payments" ? "bg-[#2C3E50] rounded-lg" : ""}`}
+                <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="w-5 h-5 text-blue-400"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <span className="text-white group-hover:text-blue-400 transition-colors duration-300">
+                  Informazioni Account
+                </span>
+              </div>
+
+              <div
                 onClick={() => { setActiveTab("payments"); setIsMenuOpen(false) }}
+                className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "payments"
+                    ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
+                    : "hover:bg-[#2A3444]"
+                  }`}
               >
-                <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
-                  <CreditCard className="w-5 h-5" />
-                  Metodi di pagamento
-                </a>
-              </li>
-              <li
-                className={`mb-2 ${activeTab === "addresses" ? "bg-[#2C3E50] rounded-lg" : ""}`}
+                <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="w-5 h-5 text-purple-400"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                </div>
+                <span className="text-white group-hover:text-purple-400 transition-colors duration-300">
+                  Metodi di Pagamento
+                </span>
+              </div>
+
+              <div
                 onClick={() => { setActiveTab("addresses"); setIsMenuOpen(false) }}
+                className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "addresses"
+                    ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
+                    : "hover:bg-[#2A3444]"
+                  }`}
               >
-                <a className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors duration-300">
-                  <MapPin className="w-5 h-5" />
-                  I tuoi indirizzi
-                </a>
-              </li>
-            </ul>
+                <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="w-5 h-5 text-blue-400"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <span className="text-white group-hover:text-blue-400 transition-colors duration-300">
+                  I Tuoi Indirizzi
+                </span>
+              </div>
+            </nav>
           </div>
-          <div>
+
+          <div className="mt-8 pt-6 border-t border-blue-900/30">
             <button
-              className="btn btn-error w-full bg-gradient-to-r from-red-500 to-pink-600 text-white border-none hover:from-red-600 hover:to-pink-700 transform transition-all duration-300 hover:scale-105"
               onClick={() => setShowDeleteConfirm(true)}
+              className="w-full bg-gradient-to-r from-red-500/20 to-pink-600/20 px-6 py-3 rounded-lg font-semibold
+                 text-red-400 hover:text-red-300 transform transition-all duration-300 hover:scale-[1.02]
+                 border border-red-900/30 hover:border-red-700/50 relative overflow-hidden
+                 before:absolute before:inset-0 before:bg-gradient-to-r before:from-red-400/20 before:to-pink-500/20 
+                 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300"
             >
-              <Trash2 className="w-5 h-5 mr-2" />
-              Elimina Account
+              <div className="flex items-center justify-center gap-2 relative z-10">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="w-5 h-5"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Elimina Account
+              </div>
             </button>
           </div>
         </div>

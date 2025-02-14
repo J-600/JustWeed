@@ -38,59 +38,110 @@ export default function Topbar() {
           onClick={() => navigate("/")}
         />
         <div
-        className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient cursor-pointer transform transition-all duration-500 hover:scale-105 hover:from-blue-500 hover:to-purple-600"
-        onClick={() => navigate("/")}
-      >
-        JustWeed
-      </div>
+          className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient cursor-pointer transform transition-all duration-500 hover:scale-105 hover:from-blue-500 hover:to-purple-600"
+          onClick={() => navigate("/")}
+        >
+          JustWeed
+        </div>
         <FaUser
           ref={userButtonRef}
-          className={`text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300 ${
-            isSidebarOpen ? "text-purple-500" : ""
-          }`}
+          className={`text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300 ${isSidebarOpen ? "text-purple-500" : ""
+            }`}
           onClick={toggleSidebar}
         />
       </div>
       <div
         ref={sidebarRef}
-        className={`fixed top-0 right-0 h-screen bg-[#1E2633] shadow-2xl border-l border-blue-900/30 transform transition-all duration-500 ease-in-out ${
-          isSidebarOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-        style={{ width: "250px", zIndex: 1000 }}
+        className={`fixed top-0 right-0 h-screen bg-[#1E2633] shadow-2xl border-l border-blue-900/30 transform transition-all duration-500 ease-in-out ${isSidebarOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        style={{ width: "300px", zIndex: 1000 }}
       >
-        <div className="flex justify-end p-4">
-          <FaTimes
-            className="text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300"
-            onClick={toggleSidebar}
-          />
-        </div>
-        <div className="p-6 space-y-6">
-          <ul className="space-y-4">
-            <li
-              className="text-white hover:text-blue-400 cursor-pointer transition-colors duration-300"
-              onClick={() => navigate("/account-info")}
+        <div className="flex flex-col h-full">
+          <div className="flex justify-between items-center p-6 border-b border-blue-900/30">
+            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              Menu Utente
+            </h2>
+            <button
+              onClick={toggleSidebar}
+              className="p-2 hover:bg-blue-900/20 rounded-full transition-colors duration-300"
             >
-              Informazioni Account
-            </li>
-            <li
-              className="text-white hover:text-blue-400 cursor-pointer transition-colors duration-300"
-              onClick={() => navigate("/purchase")}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-blue-400 h-6 w-6"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="flex-1 p-6 overflow-y-auto">
+            <nav className="space-y-4">
+              <div
+                onClick={() => navigate("/account-info")}
+                className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-[#2A3444] cursor-pointer transition-all duration-300"
+              >
+                <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5 text-blue-400"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <span className="text-white group-hover:text-blue-400 transition-colors duration-300">
+                  Informazioni Account
+                </span>
+              </div>
+
+              <div
+                onClick={() => navigate("/purchase")}
+                className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-[#2A3444] cursor-pointer transition-all duration-300"
+              >
+                <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="h-5 w-5 text-purple-400"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <span className="text-white group-hover:text-purple-400 transition-colors duration-300">
+                  Acquisti Recenti
+                </span>
+              </div>
+            </nav>
+          </div>
+
+          <div className="p-6">
+            <button
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold
+                   hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02]
+                   shadow-lg hover:shadow-[0_5px_30px_-5px_rgba(99,102,241,0.3)] relative overflow-hidden
+                   before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-400/20 before:to-purple-500/20 
+                   before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300"
+              onClick={() => navigate("/become-weeder")}
             >
-              Acquisti Recenti
-            </li>
-            <li
-              className="text-white hover:text-blue-400 cursor-pointer transition-colors duration-300"
-              onClick={() => navigate("/payment-methods")}
-            >
-              Modalità di Pagamento
-            </li>
-          </ul>
-          <button
-            className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
-            onClick={() => navigate("/become-weeder")}
-          >
-            Diventa uno Weeder
-          </button>
+              <span className="relative z-10">Diventa uno Weeder</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
