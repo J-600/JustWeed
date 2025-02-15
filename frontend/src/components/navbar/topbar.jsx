@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaBars, FaUser, FaTimes } from "react-icons/fa";
+import { FaBars, FaUser, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function Topbar() {
@@ -33,22 +33,39 @@ export default function Topbar() {
   return (
     <div>
       <div className="w-full bg-[#1E2633] shadow-lg border-b border-blue-900/30 p-4 flex items-center justify-between rounded-b-3xl">
-        <FaBars
-          className="text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300"
-          onClick={() => navigate("/")}
-        />
+        <div className="relative group">
+          <button
+            onClick={() => navigate("/")}
+            className="p-2 rounded-full hover:bg-red-500/10 transition-all duration-300 transform hover:rotate-180"
+          >
+            <FaSignOutAlt className="text-2xl text-red-400 hover:text-red-300 transition-colors duration-300" />
+          </button>
+          <div className="absolute left-full top-1/2 -translate-y-1/2 mr-2 px-2 py-1 bg-[#2A3444] text-red-400 text-sm rounded-lg border border-red-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+            Logout
+            <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#2A3444] border-l border-b border-red-900/30 transform rotate-45" />
+          </div>
+        </div>
         <div
           className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient cursor-pointer transform transition-all duration-500 hover:scale-105 hover:from-blue-500 hover:to-purple-600"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/products")}
         >
           JustWeed
         </div>
-        <FaUser
-          ref={userButtonRef}
-          className={`text-2xl text-blue-400 cursor-pointer hover:text-purple-500 transition-colors duration-300 ${isSidebarOpen ? "text-purple-500" : ""
-            }`}
-          onClick={toggleSidebar}
-        />
+        <div className="relative group flex justify-end">
+          <button
+            ref={userButtonRef}
+            onClick={toggleSidebar}
+            className="p-2 rounded-full hover:bg-blue-500/10 transition-colors duration-300"
+          >
+            <FaUser
+              className={`text-2xl ${isSidebarOpen ? "text-purple-400" : "text-blue-400"} hover:text-purple-300 transition-colors duration-300`}
+            />
+          </button>
+          <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-1.5 bg-[#2A3444] text-blue-400 text-sm rounded-lg border border-blue-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+            Profilo
+            <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2 h-2 bg-[#2A3444] border-r border-b border-blue-900/30 transform rotate-45" />
+          </div>
+        </div>
       </div>
       <div
         ref={sidebarRef}

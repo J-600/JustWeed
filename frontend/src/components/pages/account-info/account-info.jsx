@@ -844,7 +844,7 @@ const BillingAddresses = () => {
       })
 
       const data = await res.json();
-      // console.log(res)
+      console.log(data)
 
       if (res.status !== 200)
         throw new Error("errore nel loading dei dati");
@@ -1444,8 +1444,13 @@ function AccountInfo() {
           credentials: "include",
         });
         const data = await res.json();
+        if(!res.ok){
+          navigate("/")
+          return
+      }
+
         if (res.status !== 200) {
-          navigate("/");
+          throw new Error(data)
         }
         setEmail(data.email);
         setUsername(data.username);
@@ -1458,7 +1463,7 @@ function AccountInfo() {
       }
     };
     fetchData();
-  }, [navigate]);
+  }, []);
 
 
   const handleDeleteAccount = async () => {
@@ -1558,13 +1563,12 @@ function AccountInfo() {
       <div className="flex flex-1">
         <div
           className={`fixed inset-0 z-40 lg:static lg:translate-x-0 transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-            } transition-all duration-300 w-72 bg-[#1E2633] p-6 border-r border-blue-900/30 flex flex-col justify-between shadow-2xl`}
+            } transition-all duration-300 w-72 bg-[#1E2633] p-6 border-r border-blue-900/30 flex flex-col justify-between shadow-2xl `}
         >
-          {/* Contenuto principale */}
-          <div className="space-y-6">
-            {/* Pulsante Back */}
+
+          <div className="space-y-6 lg:pt-0 pt-10">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/products")}
               className="group flex items-center gap-2 w-full p-3 hover:bg-[#2A3444] rounded-lg transition-all duration-300"
             >
               <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -1586,7 +1590,6 @@ function AccountInfo() {
               </span>
             </button>
 
-            {/* Messaggi di stato */}
             <div className="space-y-4">
               {successMessage && (
                 <div className="p-4 bg-gradient-to-br from-green-500/20 to-teal-600/20 rounded-lg border border-green-900/30 flex items-start gap-3">
@@ -1625,7 +1628,6 @@ function AccountInfo() {
               )}
             </div>
 
-            {/* Menu Navigazione */}
             <nav className="space-y-2">
               <div
                 onClick={() => { setActiveTab("account"); setIsMenuOpen(false) }}

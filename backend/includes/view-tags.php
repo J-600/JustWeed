@@ -1,37 +1,36 @@
 <?php
-try {
-    if ($_SERVER["REQUEST_METHOD"] != "POST") {
-        throw new Exception("Non è una richiesta POST");
-    }
 
+try{
+
+    if ($_SERVER["REQUEST_METHOD"] != "GET") {
+        throw new Exception("Non è una richiesta GET");
+    }
     require_once "dbh.inc.php";
 
-    $table = "addresses_jw";
-    $table_us = "users_jw";
-    $email = $_POST["email"];
+    $table =  "tags_jw";
 
-    $sql = "SELECT a.* FROM $table a
-            WHERE a.email = :email";
-    
+    $sql = "SELECT * FROM $table";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":email", $email);
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if(empty($result))
-    {
-        throw new Exception("Nessun indirizzo di fatturazione");
-    }
+        throw new Exception("Non sono presenti tag");
 
+    
     $response = [
         "response" => 200,
         "message" => True,
         "data" => $result
     ];
+
+    
+
     echo json_encode($response);
 
-}  catch (PDOException $e) {
+
+} catch (PDOException $e) {
     $response = [
         "response" => 500,
         "message" => false,
@@ -43,7 +42,6 @@ try {
         "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
-
     ];
     echo json_encode($response);
 }

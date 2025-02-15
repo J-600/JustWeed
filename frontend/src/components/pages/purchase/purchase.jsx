@@ -57,8 +57,12 @@ function Purchase() {
                     credentials: "include"
                 });
                 const data = await res.json();
+                if (!res.ok) {
+                    navigate("/")
+                    return
+                }
                 if (res.status !== 200) throw new Error(data);
-                
+
                 setDateKeys(Object.keys(data));
                 setPurchases(data);
                 setLoading(false);
@@ -79,19 +83,22 @@ function Purchase() {
     const filteredDates = dateKeys
         .filter(date => {
             const currentDate = new Date(date);
-            return (!startDate || currentDate >= startDate) && 
-                   (!endDate || currentDate <= endDate);
+            return (!startDate || currentDate >= startDate) &&
+                (!endDate || currentDate <= endDate);
         })
-        .sort((a, b) => sortOrder === "recenti" ? 
+        .sort((a, b) => sortOrder === "recenti" ?
             new Date(b) - new Date(a) : new Date(a) - new Date(b));
 
     const filteredPurchases = filteredDates.reduce((acc, date) => {
-        const filteredItems = purchases[date].filter(item => {
-            const matchesSearch = item.product_name.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesTags = selectedTags.size === 0 || selectedTags.has(item.status);
-            return matchesSearch && matchesTags;
-        });
-        if (filteredItems.length > 0) acc[date] = filteredItems;
+        const orders = purchases[date];
+        if (Array.isArray(orders)) {
+            const filteredItems = orders.filter(item => {
+                const matchesSearch = item.product_name.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesTags = selectedTags.size === 0 || selectedTags.has(item.status);
+                return matchesSearch && matchesTags;
+            });
+            if (filteredItems.length > 0) acc[date] = filteredItems;
+        }
         return acc;
     }, {});
 
@@ -99,7 +106,7 @@ function Purchase() {
         <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
             <TopBar />
             <style>{customDatePickerStyles}</style>
-            
+
             <div className="flex-1 p-4 md:p-8 overflow-y-auto">
                 <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 w-full max-w-none md:w-full md:mx-auto">
                     <div className="card-body space-y-6 px-4 md:px-6">
@@ -110,7 +117,7 @@ function Purchase() {
 
                         <div className="relative group max-w-2xl mx-auto w-full">
                             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 animate-gradient" />
-                            
+
                             <div className="relative flex items-center bg-[#1E2633] rounded-lg border border-blue-900/30">
                                 <input
                                     type="text"
@@ -121,22 +128,22 @@ function Purchase() {
                                 />
 
                                 <div className="flex items-center pr-2 border-r border-blue-900/30">
-                                    <button 
+                                    <button
                                         onClick={() => setIsFilterOpen(!isFilterOpen)}
                                         className="p-2 hover:bg-blue-900/20 rounded-lg transition-colors"
                                     >
-                                        <svg 
-                                            xmlns="http://www.w3.org/2000/svg" 
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
                                             className="h-5 w-5 text-purple-500"
-                                            fill="none" 
-                                            viewBox="0 0 24 24" 
+                                            fill="none"
+                                            viewBox="0 0 24 24"
                                             stroke="currentColor"
                                         >
-                                            <path 
-                                                strokeLinecap="round" 
-                                                strokeLinejoin="round" 
-                                                strokeWidth={2} 
-                                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" 
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
                                             />
                                         </svg>
                                     </button>
@@ -149,21 +156,19 @@ function Purchase() {
                                             <div className="space-y-2">
                                                 <button
                                                     onClick={() => setSortOrder("recenti")}
-                                                    className={`w-full text-left px-3 py-2 rounded-md ${
-                                                        sortOrder === "recenti" 
-                                                            ? 'bg-purple-500/20 text-purple-400' 
+                                                    className={`w-full text-left px-3 py-2 rounded-md ${sortOrder === "recenti"
+                                                            ? 'bg-purple-500/20 text-purple-400'
                                                             : 'hover:bg-blue-900/20 text-gray-300'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     Più recenti
                                                 </button>
                                                 <button
                                                     onClick={() => setSortOrder("vecchi")}
-                                                    className={`w-full text-left px-3 py-2 rounded-md ${
-                                                        sortOrder === "vecchi" 
-                                                            ? 'bg-purple-500/20 text-purple-400' 
+                                                    className={`w-full text-left px-3 py-2 rounded-md ${sortOrder === "vecchi"
+                                                            ? 'bg-purple-500/20 text-purple-400'
                                                             : 'hover:bg-blue-900/20 text-gray-300'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     Più vecchi
                                                 </button>
@@ -278,15 +283,15 @@ function Purchase() {
                                                         </div>
                                                     </div>
                                                     <div className="flex flex-col gap-3 md:w-48">
-                                                        <button 
+                                                        <button
                                                             className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
-                                                            onClick={() => navigate(`/tracking/${item.order_id}`)}
+                                                            onClick={() => navigate("/tracking")}
                                                         >
                                                             Traccia pacco
                                                         </button>
-                                                        <button 
+                                                        <button
                                                             className="btn bg-gradient-to-r from-green-500 to-teal-600 text-white border-none hover:from-green-600 hover:to-teal-700 transform transition-all duration-300 hover:scale-105"
-                                                            onClick={() => navigate(`/product/${item.product_id}`)}
+                                                            onClick={() => navigate("/product")}
                                                         >
                                                             Acquista di nuovo
                                                         </button>

@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../../navbar/topbar";
 import Loader from "../../loader/loader";
-import DatePicker from "react-datepicker";
 
 function Products() {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState("recenti");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [selectedTags, setSelectedTags] = useState(new Set());
+  const [availableTags, setAvailableTags] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { email, username } = location.state || {};
   const [products, setProducts] = useState([]);
@@ -18,23 +17,44 @@ function Products() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductsAndTags = async () => {
       try {
-        const res = await fetch("http://localhost:3000/products", {
-          method: "GET",
-          credentials: "include",
-        });
-        const data = await res.json();
-        if (res.status !== 200) {
+        const [productsRes, tagsRes] = await Promise.all([
+          fetch("http://localhost:3000/products", {
+            method: "GET",
+            credentials: "include",
+          }),
+          fetch("http://localhost:3000/view-tags", {
+            method: "GET",
+            credentials: "include",
+          })
+        ]);
+
+        if (!productsRes.ok || !tagsRes.ok) {
           navigate("/");
+          return;
         }
-        setProducts(data);
+
+        const productsData = await productsRes.json();
+        const tagsData = await tagsRes.json();
+
+        const productsWithTags = productsData.map(product => ({
+          ...product,
+          tags: tagsData
+            .filter(tag => tag.prodotto === product.id)
+            .map(tag => tag.tag)
+        }));
+
+        setProducts(productsWithTags);
+        setAvailableTags([...new Set(tagsData.map(tag => tag.tag))]);
         setLoading(false);
       } catch (error) {
         console.error("Errore durante la richiesta:", error);
+        navigate("/");
       }
     };
-    fetchProduct();
+
+    fetchProductsAndTags();
   }, []);
 
   const handleTagToggle = (tag) => {
@@ -43,17 +63,31 @@ function Products() {
     setSelectedTags(newTags);
   };
 
+  const filteredProducts = products.filter(product => {
+    const matchesName = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesMinPrice = minPrice ? product.price >= parseFloat(minPrice) : true;
+    const matchesMaxPrice = maxPrice ? product.price <= parseFloat(maxPrice) : true;
+    const matchesTags = selectedTags.size === 0 || 
+      product.tags.some(tag => selectedTags.has(tag));
+
+    return matchesName && matchesMinPrice && matchesMaxPrice && matchesTags;
+  });
+
+  const handleAddToCart = (productId) => {
+    console.log("Aggiunto al carrello:", productId);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
       <TopBar username={username} email={email} />
       <div className="flex-grow flex flex-col items-center p-6 pt-[6em]">
         <div className="relative group max-w-2xl mx-auto w-full">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 animate-gradient " />
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 animate-gradient" />
 
           <div className="relative flex items-center bg-[#1E2633] rounded-lg border border-blue-900/30">
             <input
               type="text"
-              placeholder="Cerca ordini..."
+              placeholder="Cerca prodotti..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-3 bg-transparent text-white placeholder-gray-400 border-none focus:ring-0 focus:outline-none"
@@ -84,71 +118,55 @@ function Products() {
             {isFilterOpen && (
               <div className="absolute top-full right-0 mt-2 w-64 bg-[#2A3444] rounded-lg shadow-xl border border-blue-900/30 p-4 z-50">
                 <div className="mb-4">
-                  <h3 className="text-sm font-semibold text-blue-400 mb-2">Ordina per</h3>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => setSortOrder("recenti")}
-                      className={`w-full text-left px-3 py-2 rounded-md ${sortOrder === "recenti"
-                          ? 'bg-purple-500/20 text-purple-400'
-                          : 'hover:bg-blue-900/20 text-gray-300'
-                        }`}
-                    >
-                      Più recenti
-                    </button>
-                    <button
-                      onClick={() => setSortOrder("vecchi")}
-                      className={`w-full text-left px-3 py-2 rounded-md ${sortOrder === "vecchi"
-                          ? 'bg-purple-500/20 text-purple-400'
-                          : 'hover:bg-blue-900/20 text-gray-300'
-                        }`}
-                    >
-                      Più vecchi
-                    </button>
-                  </div>
-                </div>
-                <div className="border-t border-blue-900/30 pt-4">
-                  <h3 className="text-sm font-semibold text-blue-400 mb-2">Intervallo date</h3>
+                  <h3 className="text-sm font-semibold text-blue-400 mb-2">Filtra per prezzo</h3>
                   <div className="space-y-3">
                     <div>
-                      <label className="text-xs text-gray-400 block mb-1">Da</label>
-                      <DatePicker
-                        selected={startDate}
-                        onChange={setStartDate}
+                      <label className="text-xs text-gray-400 block mb-1">Prezzo minimo</label>
+                      <input
+                        type="number"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
                         className="w-full bg-[#1E2633] rounded-md px-3 py-2 text-white border border-blue-900/30"
-                        placeholderText="Seleziona data"
+                        placeholder="€0.00"
+                        min="0"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-gray-400 block mb-1">A</label>
-                      <DatePicker
-                        selected={endDate}
-                        onChange={setEndDate}
+                      <label className="text-xs text-gray-400 block mb-1">Prezzo massimo</label>
+                      <input
+                        type="number"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
                         className="w-full bg-[#1E2633] rounded-md px-3 py-2 text-white border border-blue-900/30"
-                        placeholderText="Seleziona data"
-                        minDate={startDate}
+                        placeholder="€999.99"
+                        min="0"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="border-t border-blue-900/30 pt-4">
-                  <h3 className="text-sm font-semibold text-blue-400 mb-2">Stato ordine</h3>
-                  <div className="space-y-2">
-                    {["Consegnato", "In elaborazione", "Spedito"].map((tag) => (
-                      <label key={tag} className="flex items-center space-x-2 text-gray-300 hover:bg-blue-900/20 p-2 rounded-md">
-                        <input
-                          type="checkbox"
-                          checked={selectedTags.has(tag)}
-                          onChange={() => handleTagToggle(tag)}
-                          className="checkbox checkbox-xs bg-[#1E2633] border-blue-900/30 checked:bg-purple-500"
-                        />
-                        <span>{tag}</span>
-                      </label>
-                    ))}
+            
+                {availableTags.length > 0 && (
+                  <div className="border-t border-blue-900/30 pt-4">
+                    <h3 className="text-sm font-semibold text-blue-400 mb-2">Filtra per tag</h3>
+                    <div className="space-y-2">
+                      {availableTags.map((tag) => (
+                        <label key={tag} className="flex items-center space-x-2 text-gray-300 hover:bg-blue-900/20 p-2 rounded-md">
+                          <input
+                            type="checkbox"
+                            checked={selectedTags.has(tag)}
+                            onChange={() => handleTagToggle(tag)}
+                            className="checkbox checkbox-xs bg-[#1E2633] border-blue-900/30 checked:bg-purple-500"
+                          />
+                          <span className="capitalize">{tag}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
+
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 mx-4 text-purple-500"
@@ -165,19 +183,20 @@ function Products() {
             </svg>
           </div>
         </div>
+
         <div className="w-full max-w-7xl px-4 pt-20">
           {loading ? (
             <div className="flex justify-center">
               <Loader />
             </div>
-          ) : Array.isArray(products) && products.length > 0 ? (
+          ) : filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product, index) => (
+              {filteredProducts.map((product) => (
                 <div
-                  key={index}
+                  key={product.id}
                   className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105"
                 >
-                  <figure className="px-4 pt-4">
+                  <figure className="px-4 pt-4 cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
                     <img
                       src={product.img}
                       alt={product.name}
@@ -187,9 +206,25 @@ function Products() {
                   <div className="card-body">
                     <h2 className="card-title text-white">{product.name}</h2>
                     <p className="text-gray-400">{product.description}</p>
-                    <div className="card-actions justify-end">
-                      <button className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105">
-                        Buy Now
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {product.tags?.map((tag, i) => (
+                        <span 
+                          key={i}
+                          className="badge badge-outline border-blue-900/30 text-blue-400"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="card-actions justify-between items-center mt-4">
+                      <div className="text-lg font-bold text-purple-400">
+                        €{product.price.toFixed(2)}
+                      </div>
+                      <button 
+                        className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+                        onClick={() => handleAddToCart(product.id)}
+                      >
+                        Aggiungi al carrello
                       </button>
                     </div>
                   </div>
@@ -197,7 +232,11 @@ function Products() {
               ))}
             </div>
           ) : (
-            <h2 className="text-white text-center">{products?.data}</h2>
+            <div className="text-center py-12">
+              <p className="text-xl text-gray-400 font-semibold">
+                Nessun prodotto trovato con i filtri selezionati
+              </p>
+            </div>
           )}
         </div>
       </div>
