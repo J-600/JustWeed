@@ -9,7 +9,16 @@ const stripePromise = loadStripe("pk_test_51Qqap7J0BPVuq51Y7Bp15pmKU75gD8W6jjBXl
 function Weeder() {
   const stripe = useStripe();
   const elements = useElements();
+  const [newAddress, setNewAddress] = useState({
+      name: '',
+      street: '',
+      city: '',
+      zip: '',
+    });
   const navigate = useNavigate();
+  const [isCheckingCap, setIsCheckingCap] = useState(false);
+  const [capError, setCapError] = useState("");
+  const [cities, setCities] = useState([]);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -22,6 +31,46 @@ function Weeder() {
     city: "",
     province: ""
   });
+
+  useEffect(() => {
+      const verifyCap = async () => {
+        if (formData.postalCode.length === 5 && !isNaN(formData.postalCode)) {
+          setIsCheckingCap(true);
+          setCapError("");
+          try {
+            const response = await fetch(`https://api.zippopotam.us/it/${formData.postalCode}`);
+  
+            if (!response.ok) {
+              setCapError("CAP non valido");
+              setCities([]);
+              return;
+            }
+  
+            const data = await response.json();
+            const citiesList = data.places.map(place => place['place name']);
+            setCities(citiesList);
+  
+            if (citiesList.length === 1) {
+              setNewAddress(prev => ({
+                ...prev,
+                city: citiesList[0],
+              }));
+            }
+          } catch (error) {
+            setCapError("Errore nella verifica del CAP");
+            setCities([]);
+          } finally {
+            setIsCheckingCap(false);
+          }
+        }
+      };
+  
+      const debounceTimer = setTimeout(() => {
+        verifyCap();
+      }, 500);
+  
+      return () => clearTimeout(debounceTimer);
+    }, [formData.postalCode]);
 
   const [cardError, setCardError] = useState(null);
   const [loading, setLoading] = useState(false);
