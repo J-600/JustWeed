@@ -4,7 +4,6 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import TopBar from "../../navbar/topbar";
 import Loader from "../../loader/loader";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 const stripePromise = loadStripe("pk_test_51Qqap7J0BPVuq51Y7Bp15pmKU75gD8W6jjBXlXZLWzSbRQjnUGOrDp0cbR6LVWmFDmYl88OiKuSYnbubSMbvmGBB00iqVsYVpf");
 
 function Weeder() {
@@ -28,8 +27,10 @@ function Weeder() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
+
+  
+
   useEffect(() => {
-    // Inizializza Stripe
     if (!stripe) {
       const script = document.createElement("script");
       script.src = "https://js.stripe.com/v3/";
@@ -112,7 +113,7 @@ function Weeder() {
         "::placeholder": {
           color: "#93c5fd"
         },
-        backgroundColor: "#2A3444"
+        backgroundColor: "#1E2633"
       },
       invalid: {
         color: "#f87171",
@@ -131,7 +132,7 @@ function Weeder() {
       <TopBar />
       
       <div className="flex-1 p-6 md:p-12 overflow-y-auto">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="bg-[#1E2633] rounded-2xl border border-blue-900/30 shadow-2xl p-8 space-y-8">
             <div className="text-center">
               <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-2">
@@ -141,7 +142,6 @@ function Weeder() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Sezione Informazioni Personali */}
               <div className="space-y-6">
                 <h3 className="text-xl font-semibold text-blue-400 border-b border-blue-900/30 pb-2">
                   Informazioni Personali

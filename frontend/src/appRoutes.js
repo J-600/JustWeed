@@ -8,20 +8,27 @@ import AccountInfo from './components/pages/account-info/account-info';
 import Purchase from './components/pages/purchase/purchase';
 import Weeder from './components/pages/weeder/weeder'
 import App from './App';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
+
+const stripePromise = loadStripe("pk_test_51Qqap7J0BPVuq51Y7Bp15pmKU75gD8W6jjBXlXZLWzSbRQjnUGOrDp0cbR6LVWmFDmYl88OiKuSYnbubSMbvmGBB00iqVsYVpf");
 function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/products" element={<Products />} />
-      <Route path="/signup" element={<Signup />}/>
-      <Route path='/confirm' element={<Confirm/>}/>
-      <Route path='/forgotpassword' element={<ForgotPassword/>}/>
-      <Route path='/newpassword' element={<NewPassword/>}/>
-      <Route path='/account-info' element={<AccountInfo/>}/>
-      <Route path='/purchase' element={<Purchase/>}/>
-      <Route path='/become-weeder' element={<Weeder/>}/>
-    </Routes>
+    <Elements stripe={stripePromise}>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path='/confirm' element={<Confirm />} />
+        <Route path='/forgotpassword' element={<ForgotPassword />} />
+        <Route path='/newpassword' element={<NewPassword />} />
+        <Route path='/account-info' element={<AccountInfo />} />
+        <Route path='/purchase' element={<Purchase />} />
+        <Route path='/become-weeder' element={<Weeder />} />
+      </Routes>
+    </Elements>
+
   );
 }
 
