@@ -6,6 +6,7 @@ import ForgotPassword from './components/pages/forgotPassword/forgotPassword';
 import NewPassword from './components/pages/newpassword/newpassword';
 import AccountInfo from './components/pages/account-info/account-info';
 import Purchase from './components/pages/purchase/purchase';
+import Weeder from './components/pages/weeder/weeder'
 import App from './App';
 
 function AppRoutes() {
@@ -19,6 +20,7 @@ function AppRoutes() {
       <Route path='/newpassword' element={<NewPassword/>}/>
       <Route path='/account-info' element={<AccountInfo/>}/>
       <Route path='/purchase' element={<Purchase/>}/>
+      <Route path='/become-weeder' element={<Weeder/>}/>
     </Routes>
   );
 }
