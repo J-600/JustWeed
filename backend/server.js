@@ -237,6 +237,14 @@ app.get("/confirm", (req, res) => {
   }
 });
 
+app.get("/logout", (req,res) =>{
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+      req.session.destroy();
+  }
+})
+
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 

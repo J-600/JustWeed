@@ -12,6 +12,23 @@ export default function Topbar() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+
+  const logOut = async () => {
+    try{
+      const res = await fetch("http://localhost:3000/logout", {
+        credentials:"include"
+      })
+      console.log(res)
+      const data = await res.json()
+      console.log(data)
+      if (!res.ok)
+        throw new Error(res)
+      } catch (error){
+        console.log(error.message)
+      }
+
+  }
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -35,7 +52,7 @@ export default function Topbar() {
       <div className="w-full bg-[#1E2633] shadow-lg border-b border-blue-900/30 p-4 flex items-center justify-between rounded-b-3xl">
         <div className="relative group">
           <button
-            onClick={() => navigate("/")}
+            onClick={logOut}
             className="p-2 rounded-full hover:bg-red-500/10 transition-all duration-300 transform hover:rotate-180"
           >
             <FaSignOutAlt className="text-2xl text-red-400 hover:text-red-300 transition-colors duration-300" />
