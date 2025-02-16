@@ -10,11 +10,11 @@ function Weeder() {
   const stripe = useStripe();
   const elements = useElements();
   const [newAddress, setNewAddress] = useState({
-      name: '',
-      street: '',
-      city: '',
-      zip: '',
-    });
+    name: '',
+    street: '',
+    city: '',
+    zip: '',
+  });
   const navigate = useNavigate();
   const [isCheckingCap, setIsCheckingCap] = useState(false);
   const [capError, setCapError] = useState("");
@@ -33,51 +33,51 @@ function Weeder() {
   });
 
   useEffect(() => {
-      const verifyCap = async () => {
-        if (formData.postalCode.length === 5 && !isNaN(formData.postalCode)) {
-          setIsCheckingCap(true);
-          setCapError("");
-          try {
-            const response = await fetch(`https://api.zippopotam.us/it/${formData.postalCode}`);
-  
-            if (!response.ok) {
-              setCapError("CAP non valido");
-              setCities([]);
-              return;
-            }
-  
-            const data = await response.json();
-            const citiesList = data.places.map(place => place['place name']);
-            setCities(citiesList);
-  
-            if (citiesList.length === 1) {
-              setNewAddress(prev => ({
-                ...prev,
-                city: citiesList[0],
-              }));
-            }
-          } catch (error) {
-            setCapError("Errore nella verifica del CAP");
+    const verifyCap = async () => {
+      if (formData.postalCode.length === 5 && !isNaN(formData.postalCode)) {
+        setIsCheckingCap(true);
+        setCapError("");
+        try {
+          const response = await fetch(`https://api.zippopotam.us/it/${formData.postalCode}`);
+
+          if (!response.ok) {
+            setCapError("CAP non valido");
             setCities([]);
-          } finally {
-            setIsCheckingCap(false);
+            return;
           }
+
+          const data = await response.json();
+          const citiesList = data.places.map(place => place['place name']);
+          setCities(citiesList);
+
+          if (citiesList.length === 1) {
+            setNewAddress(prev => ({
+              ...prev,
+              city: citiesList[0],
+            }));
+          }
+        } catch (error) {
+          setCapError("Errore nella verifica del CAP");
+          setCities([]);
+        } finally {
+          setIsCheckingCap(false);
         }
-      };
-  
-      const debounceTimer = setTimeout(() => {
-        verifyCap();
-      }, 500);
-  
-      return () => clearTimeout(debounceTimer);
-    }, [formData.postalCode]);
+      }
+    };
+
+    const debounceTimer = setTimeout(() => {
+      verifyCap();
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [formData.postalCode]);
 
   const [cardError, setCardError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
 
-  
+
 
   useEffect(() => {
     if (!stripe) {
@@ -95,13 +95,12 @@ function Weeder() {
 
   const validateForm = () => {
     const newErrors = {};
-    // Validazione campi base
     if (!formData.firstName) newErrors.firstName = "Campo obbligatorio";
     if (!formData.lastName) newErrors.lastName = "Campo obbligatorio";
     if (!formData.vatNumber.match(/^\d{11}$/)) newErrors.vatNumber = "Partita IVA non valida";
     if (!formData.postalCode.match(/^\d{5}$/)) newErrors.postalCode = "CAP non valido";
     if (formData.description.length < 100) newErrors.description = "Descrizione troppo breve (min 100 caratteri)";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -111,7 +110,7 @@ function Weeder() {
     if (!validateForm() || !stripe || !elements) return;
 
     setLoading(true);
-    
+
     try {
       // Creazione PaymentMethod Stripe
       const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
@@ -179,9 +178,9 @@ function Weeder() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
       <TopBar />
-      
+
       <div className="flex-1 p-6 md:p-12 overflow-y-auto">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
           <div className="bg-[#1E2633] rounded-2xl border border-blue-900/30 shadow-2xl p-8 space-y-8">
             <div className="text-center">
               <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-2">
@@ -191,87 +190,90 @@ function Weeder() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-blue-400 border-b border-blue-900/30 pb-2">
-                  Informazioni Personali
-                </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-blue-400 mb-2">Nome</label>
-                    <input
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${
-                        errors.firstName ? "border-red-500" : "border-blue-900/30"
-                      } focus:ring-2 focus:ring-blue-500 transition-all`}
-                    />
-                    {errors.firstName && <p className="text-red-400 text-sm mt-2">{errors.firstName}</p>}
-                  </div>
+              <div className="flex flex-row gap-6">
+                <div className="space-y-6 bg-[#2C3E50] rounded-lg border border-blue-900/30 gap-6 p-4 w-full">
+                  <h3 className="text-xl font-semibold text-blue-400 border-b border-blue-900/30 pb-2">
+                    Informazioni Personali
+                  </h3>
 
-                  <div>
-                    <label className="block text-sm font-medium text-blue-400 mb-2">Cognome</label>
-                    <input
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${
-                        errors.lastName ? "border-red-500" : "border-blue-900/30"
-                      } focus:ring-2 focus:ring-blue-500 transition-all`}
-                    />
-                    {errors.lastName && <p className="text-red-400 text-sm mt-2">{errors.lastName}</p>}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-blue-400 mb-2">Nome</label>
+                      <input
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${errors.firstName ? "border-red-500" : "border-blue-900/30"
+                          } focus:ring-2 focus:ring-blue-500 transition-all`}
+                      />
+                      {errors.firstName && <p className="text-red-400 text-sm mt-2">{errors.firstName}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-blue-400 mb-2">Cognome</label>
+                      <input
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${errors.lastName ? "border-red-500" : "border-blue-900/30"
+                          } focus:ring-2 focus:ring-blue-500 transition-all`}
+                      />
+                      {errors.lastName && <p className="text-red-400 text-sm mt-2">{errors.lastName}</p>}
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-[#2C3E50] rounded-lg border border-blue-900/30 gap-6 p-4 flex flex-col md:flex-row w-full">
+                  <div className="space-y-6">
+                    <h3 className="text-xl font-semibold text-blue-400 border-b border-blue-900/30 pb-2">
+                      Dati Aziendali
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-blue-400 mb-2">Partita IVA</label>
+                        <input
+                          name="vatNumber"
+                          value={formData.vatNumber}
+                          onChange={handleChange}
+                          placeholder="12345678901"
+                          className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${errors.vatNumber ? "border-red-500" : "border-blue-900/30"
+                            } focus:ring-2 focus:ring-blue-500 transition-all`}
+                        />
+                        {errors.vatNumber && <p className="text-red-400 text-sm mt-2">{errors.vatNumber}</p>}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-blue-400 mb-2">Ragione Sociale</label>
+                        <input
+                          name="companyName"
+                          value={formData.companyName}
+                          onChange={handleChange}
+                          className="w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border border-blue-900/30 focus:ring-2 focus:ring-blue-500 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-blue-400 mb-2">Descrizione Attività</label>
+                      <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                        rows="4"
+                        className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${errors.description ? "border-red-500" : "border-blue-900/30"
+                          } focus:ring-2 focus:ring-blue-500 transition-all`}
+                        placeholder="Descrivi la tua attività in dettaglio..."
+                      />
+                      {errors.description && <p className="text-red-400 text-sm mt-2">{errors.description}</p>}
+                    </div>
                   </div>
                 </div>
               </div>
+
 
               {/* Sezione Aziendale */}
-              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-blue-400 border-b border-blue-900/30 pb-2">
-                  Dati Aziendali
-                </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-blue-400 mb-2">Partita IVA</label>
-                    <input
-                      name="vatNumber"
-                      value={formData.vatNumber}
-                      onChange={handleChange}
-                      placeholder="12345678901"
-                      className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${
-                        errors.vatNumber ? "border-red-500" : "border-blue-900/30"
-                      } focus:ring-2 focus:ring-blue-500 transition-all`}
-                    />
-                    {errors.vatNumber && <p className="text-red-400 text-sm mt-2">{errors.vatNumber}</p>}
-                  </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-blue-400 mb-2">Ragione Sociale</label>
-                    <input
-                      name="companyName"
-                      value={formData.companyName}
-                      onChange={handleChange}
-                      className="w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border border-blue-900/30 focus:ring-2 focus:ring-blue-500 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-blue-400 mb-2">Descrizione Attività</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows="4"
-                    className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${
-                      errors.description ? "border-red-500" : "border-blue-900/30"
-                    } focus:ring-2 focus:ring-blue-500 transition-all`}
-                    placeholder="Descrivi la tua attività in dettaglio..."
-                  />
-                  {errors.description && <p className="text-red-400 text-sm mt-2">{errors.description}</p>}
-                </div>
-              </div>
 
               {/* Sezione Indirizzo */}
               <div className="space-y-6">
@@ -297,9 +299,8 @@ function Weeder() {
                       value={formData.postalCode}
                       onChange={handleChange}
                       placeholder="12345"
-                      className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${
-                        errors.postalCode ? "border-red-500" : "border-blue-900/30"
-                      } focus:ring-2 focus:ring-blue-500 transition-all`}
+                      className={`w-full bg-[#2A3444] rounded-lg px-4 py-3 text-white border ${errors.postalCode ? "border-red-500" : "border-blue-900/30"
+                        } focus:ring-2 focus:ring-blue-500 transition-all`}
                     />
                     {errors.postalCode && <p className="text-red-400 text-sm mt-2">{errors.postalCode}</p>}
                   </div>
