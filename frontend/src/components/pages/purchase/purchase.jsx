@@ -157,8 +157,8 @@ function Purchase() {
                                                 <button
                                                     onClick={() => setSortOrder("recenti")}
                                                     className={`w-full text-left px-3 py-2 rounded-md ${sortOrder === "recenti"
-                                                            ? 'bg-purple-500/20 text-purple-400'
-                                                            : 'hover:bg-blue-900/20 text-gray-300'
+                                                        ? 'bg-purple-500/20 text-purple-400'
+                                                        : 'hover:bg-blue-900/20 text-gray-300'
                                                         }`}
                                                 >
                                                     Più recenti
@@ -166,8 +166,8 @@ function Purchase() {
                                                 <button
                                                     onClick={() => setSortOrder("vecchi")}
                                                     className={`w-full text-left px-3 py-2 rounded-md ${sortOrder === "vecchi"
-                                                            ? 'bg-purple-500/20 text-purple-400'
-                                                            : 'hover:bg-blue-900/20 text-gray-300'
+                                                        ? 'bg-purple-500/20 text-purple-400'
+                                                        : 'hover:bg-blue-900/20 text-gray-300'
                                                         }`}
                                                 >
                                                     Più vecchi
@@ -235,13 +235,13 @@ function Purchase() {
                         </div>
 
                         {loading ? (
-                            <div className="flex justify-center py-12">
+                            <div className="flex justify-center p-12">
                                 <Loader />
                             </div>
                         ) : Object.keys(filteredPurchases).length > 0 ? (
                             <div className="space-y-8">
                                 {Object.keys(filteredPurchases).map((date) => (
-                                    <div key={date} className="bg-[#1E2633] rounded-xl border border-blue-900/30 p-6 shadow-lg">
+                                    <div key={date} className="bg-[#1E2633] rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
                                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                                             <h2 className="text-3xl font-bold text-blue-400 mb-2 md:mb-0">
                                                 Ordini del {new Date(date).toLocaleDateString()}
@@ -257,7 +257,7 @@ function Purchase() {
 
                                         <div className="space-y-6">
                                             {filteredPurchases[date].map((item) => (
-                                                <div key={item.order_id} className="flex flex-col md:flex-row gap-6 p-4 bg-[#2C3E50] rounded-lg border border-blue-900/30">
+                                                <div key={item.order_id} className="flex flex-col h-auto md:flex-row md:gap-6 gap-1 p-4 bg-[#2C3E50] rounded-lg border border-blue-900/30">
                                                     <img
                                                         src={item.img}
                                                         alt={item.product_name}
@@ -276,8 +276,10 @@ function Purchase() {
                                                                 <p className="text-gray-300">
                                                                     Consegna prevista:{" "}
                                                                     <span className="text-white">
-                                                                        {new Date(item.deliveryDate).toLocaleDateString()}
+                                                                        {isNaN(new Date(item.deliveryDate).getTime()) ? "Nessuna data prevista" : new Date(item.deliveryDate).toLocaleDateString()}
                                                                     </span>
+
+
                                                                 </p>
                                                             )}
                                                         </div>
