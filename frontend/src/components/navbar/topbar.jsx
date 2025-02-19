@@ -16,13 +16,12 @@ export default function Topbar() {
   const logOut = async () => {
     try{
       const res = await fetch("http://localhost:3000/logout", {
+        method: "GET",
         credentials:"include"
       })
-      console.log(res)
-      const data = await res.json()
-      console.log(data)
       if (!res.ok)
         throw new Error(res)
+      navigate("/")
       } catch (error){
         console.log(error.message)
       }

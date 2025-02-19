@@ -242,6 +242,7 @@ app.get("/logout", (req,res) =>{
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
       req.session.destroy();
+      res.json("logout")
   }
 })
 
