@@ -170,7 +170,7 @@ export default function Topbar() {
                    shadow-lg hover:shadow-[0_5px_30px_-5px_rgba(99,102,241,0.3)] relative overflow-hidden
                    before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-400/20 before:to-purple-500/20 
                    before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300"
-              onClick={() => navigate("/become-weeder")}
+              onClick={() => navigate("/preWeeder")}
             >
               <span className="relative z-10">Diventa uno Weeder</span>
             </button>

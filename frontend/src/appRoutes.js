@@ -7,6 +7,7 @@ import NewPassword from './components/pages/newpassword/newpassword';
 import AccountInfo from './components/pages/account-info/account-info';
 import Purchase from './components/pages/purchase/purchase';
 import Weeder from './components/pages/weeder/weeder'
+import PreWeeder from './components/pages/pre-weeder/preWeeder';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -25,6 +26,7 @@ function AppRoutes() {
         <Route path='/newpassword' element={<NewPassword />} />
         <Route path='/account-info' element={<AccountInfo />} />
         <Route path='/purchase' element={<Purchase />} />
+        <Route path='/preWeeder' element={<PreWeeder />} />
         <Route path='/become-weeder' element={<Weeder />} />
       </Routes>
     </Elements>
