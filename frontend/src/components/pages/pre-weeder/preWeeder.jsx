@@ -23,8 +23,8 @@ function PreWeeder() {
                             Ciao! Se stai cercando nuove opportunità di collaborazione nel mondo dei prodotti legali, JustWeed è il partner ideale per te. Diventando nostro collaboratore, avrai l'opportunità di entrare a far parte di un settore in crescita, con un prodotto sicuro e legale, che risponde a una domanda sempre più alta. Offriamo un supporto completo per aiutarti a iniziare la tua attività, con un sistema di vendita semplice e vantaggioso. Con JustWeed, potrai accedere a una rete consolidata, a margini competitivi e a risorse per la tua crescita professionale. Se sei pronto a entrare nel mercato con noi, unisciti a JustWeed e inizia a vendere subito!
                         </p>
                         <button
-                            className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
-                            onClick={() => navigate("/weeder")}
+                            className="btn btn-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
+                            onClick={() => navigate("/become-weeder")}
                         >
                             Diventa uno Weeder
                         </button>
