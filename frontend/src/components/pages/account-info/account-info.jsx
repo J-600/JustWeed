@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Globe, FileDigit, ArrowLeft, Pencil, Lock, ChevronDown, Plus, Calendar } from "lucide-react";
+import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Pencil, ChevronDown, Plus, Calendar } from "lucide-react";
 import TopBar from "../../navbar/topbarLogin";
 import Loader from "../../loader/loader";
 import CryptoJS from 'crypto-js';
