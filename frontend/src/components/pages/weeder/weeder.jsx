@@ -5,6 +5,26 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import TopBar from "../../navbar/topbar";
 import Loader from "../../loader/loader";
 
+
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      color: '#fff',
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      '::placeholder': {
+        color: '#aab7c4'
+      }
+    },
+    invalid: {
+      color: '#fa755a',
+      iconColor: '#fa755a'
+    }
+  },
+  hidePostalCode: true
+};
+
 function Weeder() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
@@ -13,9 +33,11 @@ function Weeder() {
       <div className="flex-1 p-4 md:p-8 overflow-y-auto">
         <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 w-full max-w-none md:w-full md:mx-auto">
           <div className="card-body space-y-6 px-4 md:px-6">
-            <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl text-center font-bold mt-4">
-              Become a Weeder
-            </h1>
+            <div className="flex justify-center">
+              <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl text-center font-bold mt-4">
+                Become a Weeder
+              </h1>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
               <div className="rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
                 <h1 className="card-title text-2xl text-blue-200 justify-center pb-6">Dati personali</h1>
@@ -61,15 +83,19 @@ function Weeder() {
                   </label>
                   <label className="input input-bordered flex items-center gap-2 col-span-2">
 
-                  <Building2 className="w-4 h-4 opacity-70"/>
-                  <input type="text" className="grow" placeholder="Città *" required />
-                </label>
+                    <Building2 className="w-4 h-4 opacity-70" />
+                    <input type="text" className="grow" placeholder="Città *" required />
+                  </label>
                 </div>
-                
-
-
-
-
+              </div>
+              <div className="rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
+                <h1 className="card-title text-2xl text-blue-200 justify-center pb-6">Metodo di fatturazione</h1>
+                <div className="grid xl:grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-2 grid-cols-1">
+                {/* <label className="block text-sm font-medium text-blue-400 mb-4">Carta di Credito</label> */}
+                        <div className="p-4 bg-[#1E2633] rounded-lg border border-blue-900/30 col-span-2">
+                          <CardElement options={CARD_ELEMENT_OPTIONS} />
+                        </div>  
+                </div>
               </div>
             </div>
           </div>
