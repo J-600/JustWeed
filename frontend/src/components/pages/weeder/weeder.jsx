@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Pencil, ChevronDown, Plus, Calendar } from "lucide-react";
+import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Pencil, ChevronDown, Plus, Calendar, FileText } from "lucide-react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import TopBar from "../../navbar/topbar";
+
 import Loader from "../../loader/loader";
 
 
@@ -64,6 +65,10 @@ function Weeder() {
                         d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
                     </svg>
                     <input type="text" className="grow" placeholder="Second name * " required />
+                  </label>
+                  <label className="input input-bordered flex items-center gap-2 col-span-2">
+                  <FileText className=" h-4 w-4 opacity-70"/>
+                  <input type="text" className="grow" placeholder="Partita iva* " required />
                   </label>
                   <textarea className="textarea textarea-bordered col-span-2" rows="1" placeholder="Bio"></textarea>
                 </div>
