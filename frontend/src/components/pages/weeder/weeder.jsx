@@ -67,21 +67,9 @@ function Weeder() {
                     </svg>
                     <input type="text" className="grow" placeholder="Second name * " required />
                   </label>
-                  <label className="input input-bordered flex items-center gap-2">
+                  <label className="input input-bordered flex items-center gap-2 col-span-2">
                     <IdCard className=" h-4 w-4 opacity-70" />
                     <input type="text" className="grow" placeholder="Codice Fiscale* " required />
-                  </label>
-                  <label className="input input-bordered flex items-center gap-2">
-                    <FileText className=" h-4 w-4 opacity-70" />
-                    <input type="text" className="grow" placeholder="Partita iva* " required />
-                  </label>
-                  <label className="textarea textarea-bordered col-span-2 flex items-center gap-2 w-full">
-                    <Pencil className="h-4 w-4 opacity-70" />
-                    <textarea
-                      className="w-full grow border-none focus:outline-none p-2"
-                      rows="1"
-                      placeholder="Bio"
-                    />
                   </label>
                 </div>
 
@@ -114,6 +102,36 @@ function Weeder() {
                   </div>
                 </div>
               </div>
+              <div className="rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
+                <h1 className="card-title text-2xl text-blue-200 justify-center pb-6">Dati aziendali</h1>
+                <div className="grid xl:grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-2 grid-cols-1">
+                  <label className="input input-bordered flex items-center gap-2 col-span-2">
+                    <FileText className=" h-4 w-4 opacity-70" />
+                    <input type="text" className="grow" placeholder="Partita iva* " required />
+                  </label>
+                  <label className="textarea textarea-bordered col-span-2 flex items-center gap-2 w-full">
+                    <Pencil className="h-4 w-4 opacity-70" />
+                    <textarea
+                      className="w-full grow border-none focus:outline-none p-2 bg-transparent"
+                      rows="1"
+                      placeholder="Bio"
+                    />
+                  </label>
+                </div>
+
+              </div>
+              
+            </div>
+            <div className="p-2 flex items-center justify-center">
+            <button
+              className="w-[50%] bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold
+                   hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02]
+                   shadow-lg hover:shadow-[0_5px_30px_-5px_rgba(99,102,241,0.3)] relative overflow-hidden
+                   before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-400/20 before:to-purple-500/20 
+                   before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300"
+            >
+              <span className="relative z-10">Diventa uno Weeder</span>
+            </button>
             </div>
           </div>
         </div>
