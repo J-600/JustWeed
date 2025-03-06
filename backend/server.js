@@ -237,12 +237,12 @@ app.get("/confirm", (req, res) => {
   }
 });
 
-app.get("/logout", (req,res) =>{
+app.get("/logout", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
-      req.session.destroy();
-      res.json("logout")
+    req.session.destroy();
+    res.json("logout")
   }
 })
 
@@ -373,6 +373,31 @@ app.post("/updateData", (req, res) => {
     });
 });
 
+
+app.get("/product", (req, res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const {id} = req.query;
+    fetch("http://localhost/JustWeed/backend/includes/view-single-product.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `id=${id}`
+    })
+    .then(data => {
+      if (data.message && data.response === 200) {
+        res.json(data.data);
+      } else if (!data.message) {
+        res.json(data);
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
+  }
+})
+
 app.get("/products", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
@@ -450,26 +475,26 @@ app.post("/add-address", (req, res) => {
   }
 })
 
-app.get("/view-tags" , (req,res) => {
+app.get("/view-tags", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
     fetch("http://localhost/justweed/backend/includes/view-tags.php")
-    .then(response => response.json())
-    .then(data =>{
-      console.log(data)
-      if (data.response === 200 && data.message){
-        res.json(data.data)
-      }else if (data.response === 500) {
-        res.status(500).json("errore nel db");
-      } else {
-        res.status(201).json(data.data)
-      }
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        if (data.response === 200 && data.message) {
+          res.json(data.data)
+        } else if (data.response === 500) {
+          res.status(500).json("errore nel db");
+        } else {
+          res.status(201).json(data.data)
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+      });
   }
 })
 
@@ -477,31 +502,31 @@ app.get("/view-purchase", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
-  fetch("http://localhost/justweed/backend/includes/view-purchase.php", {
-    method: "POST",
-    headers: { "Content-type": "application/x-www-form-urlencoded" },
-    body: `email=${req.session.email}`
-  })
-    .then(response => response.json())
-    .then(data => {
-
-      if (data.response === 200 && data.message){
-        let res_temp = {}
-        data.data.forEach(x => {
-          !res_temp[x["date"]] ? res_temp[x["date"]] = [x] : res_temp[x["date"]].push(x)
-        });
-        console.log(res_temp)
-        res.json(res_temp)
-      } else if (data.response === 500) {
-        res.status(500).json("errore nel db");
-      } else {
-        res.json(data.data)
-      }
+    fetch("http://localhost/justweed/backend/includes/view-purchase.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `email=${req.session.email}`
     })
-    .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    });
+      .then(response => response.json())
+      .then(data => {
+
+        if (data.response === 200 && data.message) {
+          let res_temp = {}
+          data.data.forEach(x => {
+            !res_temp[x["date"]] ? res_temp[x["date"]] = [x] : res_temp[x["date"]].push(x)
+          });
+          console.log(res_temp)
+          res.json(res_temp)
+        } else if (data.response === 500) {
+          res.status(500).json("errore nel db");
+        } else {
+          res.json(data.data)
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+      });
   }
 })
 

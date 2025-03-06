@@ -1,37 +1,34 @@
 <?php
 
-try{
+try {
     if ($_SERVER["REQUEST_METHOD"] != "POST") {
         throw new Exception("Non è una richiesta POST");
     }
 
     require_once "dbh.inc.php";
 
-    $table = "users_jw";
-    $email = $_POST["email"];
+    $table = "products_jw";
+    $id = $_POST["id"];
 
-    $sql = "SELECT u.email, u.username, u.registered_at
-            FROM $table u
-            WHERE u.email = :email AND u.verified = 'T'";
-
+    $sql = "SELECT * FROM $table WHERE id = :id LIMIT 1";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":email", $email);
+    $stmt->bindParam(":id",  $id);
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($result)){
-        throw new Exception("utente non registrato");
+    if (empty($result)) {
+        throw new Exception("Non sono presenti prodotti");
+    } else {
+        $result["img"] = "data:image/png;base64," . base64_encode($row["img"]);
+        $response = [
+            "response" => 200,
+            "message" => true,
+            "data" => $result
+        ];
+        echo json_encode($response);
     }
-
-    $response = [
-        "response" => 200,
-        "message" => True,
-        "data" => $result
-    ];
-
-    echo json_encode($response);
 
 } catch (PDOException $e) {
     $response = [
@@ -45,7 +42,7 @@ try{
         "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
-        
+
     ];
     echo json_encode($response);
 }

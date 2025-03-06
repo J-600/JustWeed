@@ -1444,7 +1444,9 @@ function AccountInfo() {
           credentials: "include",
         });
         const data = await res.json();
+        // console.log(data) 
         if(!res.ok){
+          // console.log(res)
           navigate("/")
           return
       }
