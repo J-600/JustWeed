@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Pencil, ChevronDown, Plus, Calendar, FileText, IdCard } from "lucide-react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-
 import TopBar from "../../navbar/topbar";
-
 import Loader from "../../loader/loader";
-
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
@@ -16,7 +13,8 @@ const CARD_ELEMENT_OPTIONS = {
       fontSmoothing: 'antialiased',
       fontSize: '16px',
       '::placeholder': {
-        color: '#aab7c4'
+        color: '#aab7c4',
+        opacity: '0.8'
       }
     },
     invalid: {
@@ -33,111 +31,109 @@ function Weeder() {
       <TopBar />
 
       <div className="flex-1 p-4 md:p-8 overflow-y-auto">
-        <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 w-full max-w-none md:w-full md:mx-auto">
-          <div className="card-body space-y-6 px-4 md:px-6">
-            <div className="flex justify-center">
-              <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl text-center font-bold mt-4">
-                Become a Weeder
-              </h1>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
-              <div className="rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
-                <h1 className="card-title text-2xl text-blue-200 justify-center pb-6">Dati personali</h1>
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="text-center">
+            <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 
+              text-4xl md:text-5xl font-bold tracking-tight animate-gradient">
+              Diventa Weeder
+            </h1>
+            <p className="mt-3 text-blue-300/90 text-lg max-w-xl mx-auto">
+              Completa il form per entrare a far parte della nostra community professionale
+            </p>
+          </div>
 
-                <div className="grid xl:grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-2 grid-cols-1">
-                  <label className="input input-bordered flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      className="h-4 w-4 opacity-70">
-                      <path
-                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-                    </svg>
-                    <input type="text" className="grow" placeholder="First name * " required />
-                  </label>
-                  <label className="input input-bordered flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      className="h-4 w-4 opacity-70">
-                      <path
-                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-                    </svg>
-                    <input type="text" className="grow" placeholder="Second name * " required />
-                  </label>
-                  <label className="input input-bordered flex items-center gap-2 col-span-2">
-                    <IdCard className=" h-4 w-4 opacity-70" />
-                    <input type="text" className="grow" placeholder="Codice Fiscale* " required />
-                  </label>
-                </div>
-
-              </div>
-              <div className="rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
-                <h1 className="card-title text-2xl text-blue-200 justify-center pb-6">Indirizzo di fatturazione</h1>
-                <div className="grid xl:grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-2 grid-cols-1">
-                  <label className="input input-bordered flex items-center gap-2">
-                    <MapPin className="w-4 h-4 opacity-70" />
-                    <input type="text" className="grow" placeholder="Indirizzo *" required />
-                  </label>
-
-                  <label className="input input-bordered flex items-center gap-2">
-                    <Hash className="w-4 h-4 opacity-70" />
-                    <input type="text" className="grow" placeholder="Cap *" required />
-                  </label>
-                  <label className="input input-bordered flex items-center gap-2 col-span-2">
-
-                    <Building2 className="w-4 h-4 opacity-70" />
-                    <input type="text" className="grow" placeholder="Città *" required />
-                  </label>
+          <div className="space-y-6">
+            {/* Sezione Dati Personali */}
+            <SectionCard title="Dati personali" icon={<User className="w-5 h-5" />}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField icon={<IdCard />} placeholder="Nome *" required />
+                <InputField icon={<IdCard />} placeholder="Cognome *" required />
+                <div className="md:col-span-2">
+                  <InputField icon={<FileText />} placeholder="Codice Fiscale *" required />
                 </div>
               </div>
-              <div className="rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
-                <h1 className="card-title text-2xl text-blue-200 justify-center pb-6">Metodo di fatturazione</h1>
-                <div className="grid xl:grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-2 grid-cols-1">
-                  {/* <label className="block text-sm font-medium text-blue-400 mb-4">Carta di Credito</label> */}
-                  <div className="p-4 bg-[#1E2633] rounded-lg border border-blue-900/30 col-span-2">
-                    <CardElement options={CARD_ELEMENT_OPTIONS} />
-                  </div>
-                </div>
-              </div>
-              <div className="rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
-                <h1 className="card-title text-2xl text-blue-200 justify-center pb-6">Dati aziendali</h1>
-                <div className="grid xl:grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-2 grid-cols-1">
-                  <label className="input input-bordered flex items-center gap-2 col-span-2">
-                    <FileText className=" h-4 w-4 opacity-70" />
-                    <input type="text" className="grow" placeholder="Partita iva* " required />
-                  </label>
-                  <label className="textarea textarea-bordered col-span-2 flex items-center gap-2 w-full">
-                    <Pencil className="h-4 w-4 opacity-70" />
-                    <textarea
-                      className="w-full grow border-none focus:outline-none p-2 bg-transparent"
-                      rows="1"
-                      placeholder="Bio"
-                    />
-                  </label>
-                </div>
+            </SectionCard>
 
+            {/* Sezione Indirizzo */}
+            <SectionCard title="Indirizzo di fatturazione" icon={<MapPin className="w-5 h-5" />}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <InputField icon={<MapPin />} placeholder="Indirizzo *" required />
+                <InputField icon={<Hash />} placeholder="CAP *" required />
+                <div className="md:col-span-2">
+                  <InputField icon={<Building2 />} placeholder="Città *" required />
+                </div>
               </div>
-              
-            </div>
-            <div className="p-2 flex items-center justify-center">
-            <button
-              className="w-[50%] bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold
-                   hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02]
-                   shadow-lg hover:shadow-[0_5px_30px_-5px_rgba(99,102,241,0.3)] relative overflow-hidden
-                   before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-400/20 before:to-purple-500/20 
-                   before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300"
-            >
-              <span className="relative z-10">Diventa uno Weeder</span>
+            </SectionCard>
+
+            {/* Sezione Pagamento */}
+            <SectionCard title="Metodo di pagamento" icon={<CreditCard className="w-5 h-5" />}>
+              <div className="p-4 bg-[#1E2633] rounded-lg border border-blue-900/30 transition-colors 
+                hover:border-blue-600/50">
+                <CardElement options={CARD_ELEMENT_OPTIONS} />
+              </div>
+            </SectionCard>
+
+            {/* Sezione Azienda */}
+            <SectionCard title="Dati aziendali" icon={<Building2 className="w-5 h-5" />}>
+              <div className="space-y-4">
+                <InputField icon={<FileText />} placeholder="Partita IVA *" required />
+                <div className="relative">
+                  <textarea
+                    className="w-full bg-[#1E2633] border border-blue-900/30 rounded-lg px-4 py-3 pl-11
+                      text-blue-100 placeholder-blue-400/70 focus:outline-none focus:ring-2 
+                      focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                    rows="3"
+                    placeholder="Descrizione attività..."
+                  />
+                  <Pencil className="absolute left-3 top-3.5 w-5 h-5 text-blue-400/70" />
+                </div>
+              </div>
+            </SectionCard>
+
+            {/* Pulsante Submit */}
+            <button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4
+              rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transform transition-all 
+              duration-300 hover:scale-[1.02] active:scale-95 shadow-xl hover:shadow-blue-500/20
+              flex items-center justify-center space-x-2 group">
+              <span>Completa Registrazione</span>
+              <ChevronDown className="w-5 h-5 transform group-hover:translate-y-0.5 transition-transform" />
             </button>
-            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+// Componente riutilizzabile per le sezioni
+const SectionCard = ({ title, icon, children }) => (
+  <div className="bg-[#1E2633] rounded-xl border border-blue-900/30 p-6 shadow-xl hover:shadow-blue-900/10 
+    transition-shadow">
+    <div className="flex items-center space-x-3 mb-6">
+      <div className="p-2 bg-blue-900/20 rounded-lg text-blue-400">
+        {icon}
+      </div>
+      <h2 className="text-xl font-semibold text-blue-200">{title}</h2>
+    </div>
+    {children}
+  </div>
+);
+
+// Componente riutilizzabile per gli input
+const InputField = ({ icon, placeholder, required = false, ...props }) => (
+  <div className="relative">
+    <input
+      className="w-full bg-[#1E2633] border border-blue-900/30 rounded-lg px-4 py-3 pl-11
+        text-blue-100 placeholder-blue-400/70 focus:outline-none focus:ring-2 
+        focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+      placeholder={placeholder + (required ? ' *' : '')}
+      required={required}
+      {...props}
+    />
+    <div className="absolute left-3 top-3.5 text-blue-400/70">
+      {icon}
+    </div>
+  </div>
+);
 
 export default Weeder;
