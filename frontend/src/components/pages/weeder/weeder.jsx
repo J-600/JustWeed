@@ -43,7 +43,6 @@ function Weeder() {
           </div>
 
           <div className="space-y-6">
-            {/* Sezione Dati Personali */}
             <SectionCard title="Dati personali" icon={<User className="w-5 h-5" />}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField icon={<IdCard />} placeholder="Nome *" required />
@@ -54,7 +53,6 @@ function Weeder() {
               </div>
             </SectionCard>
 
-            {/* Sezione Indirizzo */}
             <SectionCard title="Indirizzo di fatturazione" icon={<MapPin className="w-5 h-5" />}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField icon={<MapPin />} placeholder="Indirizzo *" required />
@@ -65,7 +63,6 @@ function Weeder() {
               </div>
             </SectionCard>
 
-            {/* Sezione Pagamento */}
             <SectionCard title="Metodo di pagamento" icon={<CreditCard className="w-5 h-5" />}>
               <div className="p-4 bg-[#1E2633] rounded-lg border border-blue-900/30 transition-colors 
                 hover:border-blue-600/50">
@@ -73,7 +70,6 @@ function Weeder() {
               </div>
             </SectionCard>
 
-            {/* Sezione Azienda */}
             <SectionCard title="Dati aziendali" icon={<Building2 className="w-5 h-5" />}>
               <div className="space-y-4">
                 <InputField icon={<FileText />} placeholder="Partita IVA *" required />
@@ -90,7 +86,6 @@ function Weeder() {
               </div>
             </SectionCard>
 
-            {/* Pulsante Submit */}
             <button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4
               rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transform transition-all 
               duration-300 hover:scale-[1.02] active:scale-95 shadow-xl hover:shadow-blue-500/20

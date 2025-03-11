@@ -196,7 +196,7 @@ function Products() {
                   key={product.id}
                   className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105"
                 >
-                  <figure className="px-4 pt-4 cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
+                  <figure className="px-4 pt-4 cursor-pointer" onClick={() => navigate(`/product?id=${product.id}`)}>
                     <img
                       src={product.img}
                       alt={product.name}
