@@ -7,6 +7,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import TopBar from "../../navbar/topbar";
 
 function productPage() {
+    
 
 }
 

@@ -374,17 +374,19 @@ app.post("/updateData", (req, res) => {
 });
 
 
-app.get("/product", (req, res) => {
+app.post("/product", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
-    const {id} = req.query;
+    const {id} = req.body;
     fetch("http://localhost/JustWeed/backend/includes/view-single-product.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
       body: `id=${id}`
     })
+    .then(response => response.json())
     .then(data => {
+      console.log(data)
       if (data.message && data.response === 200) {
         res.json(data.data);
       } else if (!data.message) {

@@ -8,12 +8,15 @@ try {
     require_once "dbh.inc.php";
 
     $table = "products_jw";
+    $table_usr = "users_jw";
     $id = $_POST["id"];
 
-    $sql = "SELECT * FROM $table WHERE id = :id LIMIT 1";
+    $sql = "SELECT p.id, p.name, p.img, p.description, p.price, p.quantity, p.verified, u.username FROM $table p
+            JOIN $table_usr u ON p.email = u.email
+            WHERE id = :id LIMIT 1";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":id",  $id);
+    $stmt->bindParam(":id", $id);
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -21,7 +24,7 @@ try {
     if (empty($result)) {
         throw new Exception("Non sono presenti prodotti");
     } else {
-        $result["img"] = "data:image/png;base64," . base64_encode($row["img"]);
+        $result[0]["img"] = "data:image/png;base64," . base64_encode($result[0]["img"]);
         $response = [
             "response" => 200,
             "message" => true,
