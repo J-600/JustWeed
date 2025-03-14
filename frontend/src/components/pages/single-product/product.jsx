@@ -47,7 +47,7 @@ function Product() {
                             <div
                                 key={product.id}
                                 className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 ">
-                                <div className="grid lg:grid-cols-3 grid-cols-1">
+                                <div className="grid lg:grid-cols-2 grid-cols-1">
                                     <figure className="px-4 pt-4 pb-4 cursor-pointer">
                                         <img
                                             src={product.img}
@@ -56,11 +56,14 @@ function Product() {
                                         />
                                     </figure>
                                     <div className="card-body">
-                                        <h1 className="card-title text-white text-6xl">{product.name}</h1>
-                                        <p> venduto da: {product.username}</p>
+                                        <h1 className="card-title text-white text-6xl ">{product.name}</h1>
+                                        <p className="text-gray-400"> venduto da: {product.username}</p>
                                     </div>
-                                    <div className="card-body">
-                                    <h1 className="card-title text-white text-3xl">€{product.price}</h1>
+                                    <div className="card-body col-span-2 pt-16 ">
+                                        <div className="flex justify-center">
+                                            <h1 className="card-title text-white text-3xl">€{product.price}</h1>
+                                        </div>
+
                                     </div>
                                 </div>
 
