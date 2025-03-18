@@ -477,6 +477,34 @@ app.post("/add-address", (req, res) => {
   }
 })
 
+app.post("/tag", (req, res) =>{
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else{
+    const {id} = req.body;
+    fetch("http://localhost/justweed/backend/includes/view-tag.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `id=${id}`
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        if (data.response === 200 && data.message) {
+          res.json(data.data)
+        } else if (data.response === 500) {
+          res.status(500).json("errore nel db");
+        } else {
+          res.status(201).json(data.data)
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+      });
+  }
+})
+
 app.get("/view-tags", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
