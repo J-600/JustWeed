@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
-import TopBar from './components/navbar/topbarLogin';
 import Loader from './components/loader/loader';
 import CryptoJS from 'crypto-js';
 
@@ -60,6 +59,8 @@ function App() {
       });
 
       const data = await res.json();
+      if (!res.ok)
+        throw new Error()
       console.log(data)
       if (data.email) {
         setResponseMessage("Benvenuto");
@@ -74,8 +75,9 @@ function App() {
         setResponseType('error'); 
       }
     } catch (error) {
-      console.error('Request error:', error);
-      setResponseMessage('Network error. Please try again.');
+      // console.error('Request error:', error);
+      
+      setResponseMessage('Errore di rete');
       setResponseType('error'); 
     }
   };
