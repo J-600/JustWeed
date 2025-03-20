@@ -10,6 +10,7 @@ function Product() {
     const [product, setProduct] = useState([])
     const [comments, setComments] = useState([])
     const [selectRating, setSelectedRating] = useState('')
+    const [recStar, setRecStart] = useState(0.5)
     const [tags, setTags] = useState([])
     const [loading, setLoading] = useState(true);
     useEffect(() => {
@@ -17,7 +18,7 @@ function Product() {
         const fetchProduct = async () => {
             try {
                 const id = params.get("id");
-                const [productRes, tagsRes] = await Promise.all([fetch("http://localhost:3000/product", {
+                const [productRes, tagsRes, commentsRes] = await Promise.all([fetch("http://localhost:3000/product", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -31,7 +32,8 @@ function Product() {
                         id: id
                     }),
                     credentials: "include"
-                })]);
+                }), null//await fetch("http://localhost:3000/comments")
+            ]);
                 if (!productRes.ok || !tagsRes.ok) {
                     // navigate("/");
                     return;
@@ -95,24 +97,28 @@ function Product() {
                                         <div className="flex items-center mb-4 sm:mb-6">
                                             <div className="rating rating-sm rating-half sm:rating-md">
                                                 {[1, 2, 3, 4, 5].map((star) => (
-                                                    <>
+                                                    <React.Fragment key={star}>
                                                         <input
-                                                            key={star}
                                                             type="radio"
                                                             name="rating"
                                                             className="mask mask-star-2 mask-half-1 bg-yellow-400"
+                                                            value={star - 0.5}
+                                                            checked={star - 0.5 === recStar}
                                                             disabled
                                                         />
                                                         <input
-                                                            key={star}
                                                             type="radio"
                                                             name="rating"
                                                             className="mask mask-star-2 mask-half-2 bg-yellow-400"
+                                                            value={star}
+                                                            checked={star === recStar}
                                                             disabled
                                                         />
-                                                    </>
-
+                                                    </React.Fragment>
                                                 ))}
+
+
+
                                             </div>
 
                                             <span className="text-gray-400 text-sm sm:text-base ml-2">(123 recensioni)</span>
@@ -187,7 +193,7 @@ function Product() {
                                                                 type="radio"
                                                                 name="rating"
                                                                 className="mask mask-star-2 mask-half-2 bg-yellow-400"
-                                                                onChange={() => setSelectedRating(star)}
+                                                                onChange={() => setSelectedRating(star + 0.5)}
                                                             />
                                                         </>
 
@@ -229,7 +235,7 @@ function Product() {
                                                             </span>
                                                             <span className="text-gray-400 text-xs sm:text-sm">• {new Date().toLocaleDateString()}</span>
                                                         </div>
-                                                        <span className="text-blue-400 text-xs sm:text-sm">{comment.anon ? ("utente anonimo"):(comment.user)}</span>
+                                                        <span className="text-blue-400 text-xs sm:text-sm">{comment.anon ? ("utente anonimo") : (comment.user)}</span>
                                                     </div>
                                                     <p className="text-gray-300 text-sm sm:text-base">{comment.description}</p>
                                                 </div>
