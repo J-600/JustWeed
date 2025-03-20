@@ -222,16 +222,16 @@ function Product() {
                                                         <div className="flex items-center space-x-2">
                                                             <span className="text-yellow-400 text-base sm:text-lg">
                                                                 {Array.from({ length: 5 }, (_, i) => (
-                                                                    <span key={i} className={i < comment.stelle ? 'text-yellow-400' : 'text-gray-600'}>
+                                                                    <span key={i} className={i < comment.star ? 'text-yellow-400' : 'text-gray-600'}>
                                                                         ★
                                                                     </span>
                                                                 ))}
                                                             </span>
                                                             <span className="text-gray-400 text-xs sm:text-sm">• {new Date().toLocaleDateString()}</span>
                                                         </div>
-                                                        <span className="text-blue-400 text-xs sm:text-sm">Utente anonimo</span>
+                                                        <span className="text-blue-400 text-xs sm:text-sm">{comment.anon ? ("utente anonimo"):(comment.user)}</span>
                                                     </div>
-                                                    <p className="text-gray-300 text-sm sm:text-base">{comment.commento}</p>
+                                                    <p className="text-gray-300 text-sm sm:text-base">{comment.description}</p>
                                                 </div>
                                             ))
                                         )}
