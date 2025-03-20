@@ -66,7 +66,7 @@ function Product() {
                             <Loader />
                         ) : (
                             <div key={product.id} className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
-                                <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 sm:gap-8">
+                                <div className="grid lg:grid-cols-2 grid-cols-1 p-4 sm:p-6 gap-4 sm:gap-8">
                                     <figure className="px-2 sm:px-4 pt-4 pb-2 cursor-pointer">
                                         <img
                                             src={product.img}
@@ -80,7 +80,7 @@ function Product() {
                                             {product.name}
                                         </h1>
                                         <p className="text-gray-400 text-base sm:text-lg mb-2">Venduto da: {product.username}</p>
-                                        
+
                                         <div className="flex flex-wrap gap-2 mt-2">
                                             {Array.isArray(tags) && tags.length > 0 && tags.map((tag, i) => (
                                                 <span
@@ -91,21 +91,42 @@ function Product() {
                                                 </span>
                                             ))}
                                         </div>
-    
+
                                         <div className="flex items-center mb-4 sm:mb-6">
-                                            <span className="text-yellow-400 text-xl sm:text-2xl">★★★★☆</span>
+                                            <div className="rating rating-sm rating-half sm:rating-md">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <>
+                                                        <input
+                                                            key={star}
+                                                            type="radio"
+                                                            name="rating"
+                                                            className="mask mask-star-2 mask-half-1 bg-yellow-400"
+                                                            disabled
+                                                        />
+                                                        <input
+                                                            key={star}
+                                                            type="radio"
+                                                            name="rating"
+                                                            className="mask mask-star-2 mask-half-2 bg-yellow-400"
+                                                            disabled
+                                                        />
+                                                    </>
+
+                                                ))}
+                                            </div>
+
                                             <span className="text-gray-400 text-sm sm:text-base ml-2">(123 recensioni)</span>
                                         </div>
-                                        
+
                                         <p className="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6">
                                             {product.description || "Descrizione del prodotto non disponibile."}
                                         </p>
-                                        
+
                                         <div className="flex items-center mb-4 sm:mb-6">
                                             <span className="text-white text-3xl sm:text-4xl font-bold">€{product.price}</span>
                                             <span className="text-gray-400 text-sm sm:text-lg ml-2">(IVA inclusa)</span>
                                         </div>
-                                        
+
                                         <div className="flex flex-col space-y-3 sm:space-y-4">
                                             <button
                                                 type="submit"
@@ -140,9 +161,9 @@ function Product() {
                                 </div>
                             </div>
                         )}
-                        
+
                         <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
-                            <div className="card-body space-y-4 p-2 sm:p-4">
+                            <div className="card-body space-y-4 pt-4 sm:pt-8">
                                 <div className="space-y-6 sm:space-y-8">
                                     <h2 className="text-2xl sm:text-3xl sm:text-left text-center font-bold text-white mb-4 sm:mb-6">Recensioni dei clienti</h2>
 
@@ -151,19 +172,29 @@ function Product() {
                                         <form className="space-y-3 sm:space-y-4">
                                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                                 <span className="text-gray-400 text-sm sm:text-base">Valutazione:</span>
-                                                <div className="rating rating-sm sm:rating-md">
+                                                <div className="rating rating-sm rating-half sm:rating-md">
                                                     {[1, 2, 3, 4, 5].map((star) => (
-                                                        <input 
-                                                            key={star}
-                                                            type="radio" 
-                                                            name="rating" 
-                                                            className="mask mask-star-2 bg-yellow-400"
-                                                            onChange={() => setSelectedRating(star)}
-                                                        />
+                                                        <>
+                                                            <input
+                                                                key={star}
+                                                                type="radio"
+                                                                name="rating"
+                                                                className="mask mask-star-2 mask-half-1 bg-yellow-400"
+                                                                onChange={() => setSelectedRating(star)}
+                                                            />
+                                                            <input
+                                                                key={star}
+                                                                type="radio"
+                                                                name="rating"
+                                                                className="mask mask-star-2 mask-half-2 bg-yellow-400"
+                                                                onChange={() => setSelectedRating(star)}
+                                                            />
+                                                        </>
+
                                                     ))}
                                                 </div>
                                             </div>
-                                            <textarea 
+                                            <textarea
                                                 className="textarea w-full text-sm sm:text-base bg-[#1E2633] border border-blue-900/30 text-white"
                                                 placeholder="Condividi la tua esperienza..."
                                                 rows="3"
@@ -176,13 +207,13 @@ function Product() {
                                             </button>
                                         </form>
                                     </div>
-    
+
                                     <div className="space-y-4 sm:space-y-6">
                                         {comments.length === 0 ? (
                                             <div className="bg-[#2A3447] p-4 rounded-xl sm:rounded-2xl border border-blue-900/30">
-                                            <div className="w-full text-center py-4 sm:py-6">
-                                                <p className="text-gray-400 text-base sm:text-lg">Nessuna recensione ancora...</p>
-                                            </div>
+                                                <div className="w-full text-center py-4 sm:py-6">
+                                                    <p className="text-gray-400 text-base sm:text-lg">Nessuna recensione ancora...</p>
+                                                </div>
                                             </div>
                                         ) : (
                                             comments.map((comment, index) => (
