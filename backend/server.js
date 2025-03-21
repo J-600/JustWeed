@@ -556,6 +556,23 @@ app.post("/comments", (req, res) => {
   }
 })
 
+app.post("/add-comment", (req, res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const {id, user, comment, star } = req.body;
+    fetch ("http://localhost/justweed/backend/includes/insert-comment.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `product=${id}&comment=${comment}&user=${user ? res.session.username : "anon"}&start=${star}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      
+    })
+  }
+})
+
 app.get("/view-purchase", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });

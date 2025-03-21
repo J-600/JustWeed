@@ -9,8 +9,10 @@ function Product() {
     const params = new URLSearchParams(location.search);
     const [product, setProduct] = useState([])
     const [comments, setComments] = useState([])
-    const [selectRating, setSelectedRating] = useState('')
+    const [selectRating, setSelectedRating] = useState(5)
+    const [selectComment, setSelectComment ] = useState('');
     const [recStar, setRecStart] = useState(0.5)
+    const [isAnonymous, setIsAnonymous] = useState(false);
     const [tags, setTags] = useState([])
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -42,7 +44,7 @@ function Product() {
                     }),
                     credentials: "include"
                 })
-            ]);
+                ]);
                 if (!productRes.ok || !tagsRes.ok || !commentsRes.ok) {
                     navigate("/");
                     return;
@@ -53,9 +55,9 @@ function Product() {
                 const tagsData = await tagsRes.json();
                 const commentsData = await commentsRes.json();
 
-                console.log(productData[0])
-                console.log(tagsData)
-                console.log(commentsData)
+                // console.log(productData[0])
+                // console.log(tagsData)
+                // console.log(commentsData)
                 setProduct(productData[0])
                 setComments(commentsData)
                 setTags(tagsData)
@@ -69,6 +71,39 @@ function Product() {
         fetchProduct();
 
     }, [])
+
+    const handleAddComment = async (e) => {
+        e.preventDefault();
+        console.log(selectRating, selectComment, isAnonymous);
+        
+        // try {
+        //     const response = await fetch("http://localhost:3000/add-comment", {
+        //         method: "POST",
+        //         headers: { 'Content-Type': 'application/json' },
+        //         body: JSON.stringify({
+        //             product_id: params.get("id"),
+        //             rating: selectRating,
+        //             comment: selectComment,
+        //             anonymous: isAnonymous
+        //         }),
+        //         credentials: "include"
+        //     });
+    
+        //     if (response.ok) {
+        //         // Ricarica i commenti
+        //         const commentsRes = await fetch("http://localhost:3000/comments", {
+        //             method: "POST",
+        //             headers: { 'Content-Type': 'application/json' },
+        //             body: JSON.stringify({ id: params.get("id") }),
+        //             credentials: "include"
+        //         });
+        //         const commentsData = await commentsRes.json();
+        //         setComments(commentsData);
+        //     }
+        // } catch (error) {
+        //     console.error("Errore durante l'invio del commento:", error);
+        // }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
@@ -187,39 +222,55 @@ function Product() {
 
                                     <div className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                         <h3 className="text-lg sm:text-xl text-white mb-3 sm:mb-4">Scrivi una recensione</h3>
-                                        <form className="space-y-3 sm:space-y-4">
+                                        <form onSubmit={handleAddComment} className="space-y-3 sm:space-y-4">
                                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                                 <span className="text-gray-400 text-sm sm:text-base">Valutazione:</span>
                                                 <div className="rating rating-sm rating-half sm:rating-md">
                                                     {[1, 2, 3, 4, 5].map((star) => (
-                                                        <>
+                                                        <React.Fragment>
                                                             <input
-                                                                key={10 +star}
+                                                                key={10 + star}
                                                                 type="radio"
                                                                 name="rating"
                                                                 className="mask mask-star-2 mask-half-1 bg-yellow-400"
-                                                                onChange={() => setSelectedRating(star)}
+                                                                onChange={() => setSelectedRating(star - 0.5)}
                                                             />
                                                             <input
-                                                                key={10 +star+0.5}
+                                                                key={10 + star + 0.5}
                                                                 type="radio"
                                                                 name="rating"
                                                                 className="mask mask-star-2 mask-half-2 bg-yellow-400"
-                                                                onChange={() => setSelectedRating(star + 0.5)}
+                                                                onChange={() => setSelectedRating(star)}
                                                             />
-                                                        </>
-
+                                                        </React.Fragment>
                                                     ))}
                                                 </div>
                                             </div>
                                             <textarea
-                                                className="textarea w-full text-sm sm:text-base bg-[#1E2633] border border-blue-900/30 text-white"
+                                                required
+                                                className="textarea w-full text-sm sm:text-base bg-[#1E2633] border border-blue-900/30 text-white mb-4"
                                                 placeholder="Condividi la tua esperienza..."
-                                                rows="3"
-                                            ></textarea>
+                                                onChange={(e) => setSelectComment(e.target.value)}
+                                                rows="3"/>
+
+                                            <div className="flex items-center justify-end space-x-3">
+                                                <label className="text-gray-300 text-sm sm:text-base cursor-pointer">
+                                                    Invia come anonimo
+                                                </label>
+                                                <input
+                                                    type="checkbox"
+                                                    className="toggle toggle-md checked:[--tglbg:theme(colors.blue.500)] 
+                                                                checked:bg-gradient-to-r from-blue-500 to-purple-600
+                                                                border-blue-900/30 bg-[#1E2633]"
+                                                    onChange={(e) => setIsAnonymous(e.target.checked)}
+                                                />
+                                            </div>
+
                                             <button
                                                 type="submit"
-                                                className="btn btn-sm sm:btn-md bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02]"
+                                                className="btn btn-sm sm:btn-md bg-gradient-to-r from-blue-500 to-purple-600 
+                                                            text-white border-none hover:from-blue-600 hover:to-purple-700 
+                                                            transform transition-all duration-300 hover:scale-[1.02]"
                                             >
                                                 Invia recensione
                                             </button>

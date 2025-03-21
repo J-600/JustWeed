@@ -100,7 +100,6 @@ function Weeder() {
   );
 }
 
-// Componente riutilizzabile per le sezioni
 const SectionCard = ({ title, icon, children }) => (
   <div className="bg-[#1E2633] rounded-xl border border-blue-900/30 p-6 shadow-xl hover:shadow-blue-900/10 
     transition-shadow">
@@ -114,7 +113,6 @@ const SectionCard = ({ title, icon, children }) => (
   </div>
 );
 
-// Componente riutilizzabile per gli input
 const InputField = ({ icon, placeholder, required = false, ...props }) => (
   <div className="relative">
     <input
