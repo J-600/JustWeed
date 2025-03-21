@@ -15,8 +15,6 @@ try{
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if (empty($result))
-        throw new Exception([]);
 
     $response = [
         "response" => 200,

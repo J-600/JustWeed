@@ -528,8 +528,8 @@ app.get("/view-tags", (req, res) => {
   }
 })
 
-app.post("/view-comments", (req,res) => {
-  console.log("asd")
+app.post("/comments", (req, res) => {
+  // console.log("asd")
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
@@ -541,7 +541,7 @@ app.post("/view-comments", (req,res) => {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data)
+      console.log(data) 
       if (data.response === 200){
         res.json(data.data)
       } else {
@@ -549,9 +549,10 @@ app.post("/view-comments", (req,res) => {
       }
     })
     .catch(error => {
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
+      console.error("Error during fetch:", error);
+      res.status(500).json({ error: "Errore interno del server", details: error.message });
     });
+    
   }
 })
 

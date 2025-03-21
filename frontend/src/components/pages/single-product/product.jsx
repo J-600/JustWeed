@@ -27,14 +27,14 @@ function Product() {
                         id: id
                     }),
                     credentials: "include"
-                }), await fetch("http://localhost:3000/tag", {
+                }), fetch("http://localhost:3000/tag", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         id: id
                     }),
                     credentials: "include"
-                }), await fetch("http://localhost:3000/view-comments", {
+                }), fetch("http://localhost:3000/comments", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -194,14 +194,14 @@ function Product() {
                                                     {[1, 2, 3, 4, 5].map((star) => (
                                                         <>
                                                             <input
-                                                                key={star}
+                                                                key={10 +star}
                                                                 type="radio"
                                                                 name="rating"
                                                                 className="mask mask-star-2 mask-half-1 bg-yellow-400"
                                                                 onChange={() => setSelectedRating(star)}
                                                             />
                                                             <input
-                                                                key={star}
+                                                                key={10 +star+0.5}
                                                                 type="radio"
                                                                 name="rating"
                                                                 className="mask mask-star-2 mask-half-2 bg-yellow-400"
