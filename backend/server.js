@@ -528,6 +528,18 @@ app.get("/view-tags", (req, res) => {
   }
 })
 
+app.post("/view-comments", (req,res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const {id} = req.body;
+    fetch("http://localhost/justweed/view-comments.php", {
+      method: "POST",
+      
+    })
+  }
+})
+
 app.get("/view-purchase", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
