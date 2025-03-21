@@ -529,17 +529,19 @@ app.get("/view-tags", (req, res) => {
 })
 
 app.post("/view-comments", (req,res) => {
+  console.log("asd")
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
     const {id} = req.body;
-    fetch("http://localhost/justweed/view-comments.php", {
+    fetch("http://localhost/justweed/backend/includes/view-comments.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
       body: `id=${id}`
     })
     .then(response => response.json())
     .then(data => {
+      console.log(data)
       if (data.response === 200){
         res.json(data.data)
       } else {

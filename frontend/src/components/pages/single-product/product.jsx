@@ -44,7 +44,7 @@ function Product() {
                 })
             ]);
                 if (!productRes.ok || !tagsRes.ok || !commentsRes.ok) {
-                    // navigate("/");
+                    navigate("/");
                     return;
                 }
 
@@ -55,7 +55,7 @@ function Product() {
 
                 console.log(productData[0])
                 console.log(tagsData)
-                console.log(commentsRes)
+                console.log(commentsData)
                 setProduct(productData[0])
                 setComments(commentsData)
                 setTags(tagsData)
