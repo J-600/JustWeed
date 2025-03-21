@@ -24,7 +24,7 @@ try{
         "data" => $result
     ];
 
-
+    echo json_encode($response);
 
 } catch (PDOException $e) {
     $response = [

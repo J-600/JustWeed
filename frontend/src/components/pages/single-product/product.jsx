@@ -13,6 +13,8 @@ function Product() {
     const [recStar, setRecStart] = useState(0.5)
     const [tags, setTags] = useState([])
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
     useEffect(() => {
 
         const fetchProduct = async () => {
@@ -32,9 +34,16 @@ function Product() {
                         id: id
                     }),
                     credentials: "include"
-                }), null//await fetch("http://localhost:3000/comments")
+                }), await fetch("http://localhost:3000/view-comments", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: id
+                    }),
+                    credentials: "include"
+                })
             ]);
-                if (!productRes.ok || !tagsRes.ok) {
+                if (!productRes.ok || !tagsRes.ok || !commentsRes.ok) {
                     // navigate("/");
                     return;
                 }
@@ -42,10 +51,13 @@ function Product() {
                 const productData = await productRes.json();
 
                 const tagsData = await tagsRes.json();
+                const commentsData = await commentsRes.json();
 
                 console.log(productData[0])
                 console.log(tagsData)
+                console.log(commentsRes)
                 setProduct(productData[0])
+                setComments(commentsData)
                 setTags(tagsData)
             }
             catch (error) {

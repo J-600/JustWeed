@@ -535,8 +535,21 @@ app.post("/view-comments", (req,res) => {
     const {id} = req.body;
     fetch("http://localhost/justweed/view-comments.php", {
       method: "POST",
-      
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `id=${id}`
     })
+    .then(response => response.json())
+    .then(data => {
+      if (data.response === 200){
+        res.json(data.data)
+      } else {
+        res.status(500).json("errore nel db");
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
   }
 })
 
