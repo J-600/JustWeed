@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaBars, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaShoppingCart, FaUser, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function Topbar() {
+  const [cartItems, setCartItems] = useState([])
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
   const userButtonRef = useRef(null);
@@ -14,17 +15,17 @@ export default function Topbar() {
 
 
   const logOut = async () => {
-    try{
+    try {
       const res = await fetch("http://localhost:3000/logout", {
         method: "GET",
-        credentials:"include"
+        credentials: "include"
       })
       if (!res.ok)
         throw new Error(res)
       navigate("/")
-      } catch (error){
-        console.log(error.message)
-      }
+    } catch (error) {
+      console.log(error.message)
+    }
 
   }
 
@@ -56,30 +57,55 @@ export default function Topbar() {
           >
             <FaSignOutAlt className="text-2xl text-red-400 hover:text-red-300 transition-colors duration-300" />
           </button>
-          <div className="absolute left-full top-1/2 -translate-y-1/2 mr-2 px-2 py-1 bg-[#2A3444] text-red-400 text-sm rounded-lg border border-red-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-[#2A3444] text-red-400 text-sm rounded-lg border border-red-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
             Logout
-            <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-2 h-2 bg-[#2A3444] border-l border-b border-red-900/30 transform rotate-45" />
+            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#2A3444] border-l border-t border-red-900/30 transform rotate-45" />
           </div>
         </div>
-        <div
-          className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient cursor-pointer transform transition-all duration-500 hover:scale-105 hover:from-blue-500 hover:to-purple-600"
-          onClick={() => navigate("/products")}
-        >
-          JustWeed
-        </div>
-        <div className="relative group flex justify-end">
-          <button
-            ref={userButtonRef}
-            onClick={toggleSidebar}
-            className="p-2 rounded-full hover:bg-blue-500/10 transition-colors duration-300"
+
+        <div className="flex-1 flex justify-center">
+          <div
+            className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient cursor-pointer transform transition-all duration-500 hover:scale-105 hover:from-blue-500 hover:to-purple-600"
+            onClick={() => navigate("/products")}
           >
-            <FaUser
-              className={`text-2xl ${isSidebarOpen ? "text-purple-400" : "text-blue-400"} hover:text-purple-300 transition-colors duration-300`}
-            />
-          </button>
-          <div className="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-1.5 bg-[#2A3444] text-blue-400 text-sm rounded-lg border border-blue-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
-            Profilo
-            <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2 h-2 bg-[#2A3444] border-r border-b border-blue-900/30 transform rotate-45" />
+            JustWeed
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="relative group">
+            <button
+              onClick={() => navigate("/cart")}
+              className="p-2 rounded-full hover:bg-blue-500/10 transition-colors duration-300 relative"
+            >
+              <FaShoppingCart
+                className={`text-2xl ${isSidebarOpen ? "text-purple-400" : "text-blue-400"} hover:text-purple-300 transition-colors duration-300`}
+              />
+              {cartItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 animate-bounce">
+                  {cartItems.length}
+                </span>
+              )}
+            </button>
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-[#2A3444] text-blue-400 text-sm rounded-lg border border-blue-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+              Carrello
+              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#2A3444] border-l border-t border-blue-900/30 transform rotate-45" />
+            </div>
+          </div>
+
+          <div className="relative group">
+            <button
+              ref={userButtonRef}
+              onClick={toggleSidebar}
+              className="p-2 rounded-full hover:bg-blue-500/10 transition-colors duration-300"
+            >
+              <FaUser
+                className={`text-2xl ${isSidebarOpen ? "text-purple-400" : "text-blue-400"} hover:text-purple-300 transition-colors duration-300`}
+              />
+            </button>
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-[#2A3444] text-blue-400 text-sm rounded-lg border border-blue-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+              Profilo
+              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#2A3444] border-l border-t border-blue-900/30 transform rotate-45" />
+            </div>
           </div>
         </div>
       </div>

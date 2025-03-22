@@ -374,6 +374,26 @@ app.post("/updateData", (req, res) => {
     });
 });
 
+app.post("/insert-cart", (req,res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const { product, qnt } =  req.body;
+    fetch("http://localhost/Justweed/backend/includes/insert-cart.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `id=${product}&email=${req.session.email}&qnt=${qnt}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.response === 200){
+        res.json(data.data);
+      } else {
+        res.status(500).json("errore")
+      }
+    })
+  }
+})
 
 app.post("/product", (req, res) => {
   if (!req.session.username) {
