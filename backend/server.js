@@ -530,7 +530,6 @@ app.get("/view-tags", (req, res) => {
 })
 
 app.post("/comments", (req, res) => {
-  // console.log("asd")
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
@@ -565,7 +564,6 @@ app.post("/add-comment", (req, res) => {
     if(!req.body)
       throw new Error("undefined req body")
     const {id, user, comment, star } = req.body;
-    // console.log(req.body)
     fetch ("http://localhost/justweed/backend/includes/insert-comment.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },

@@ -6,12 +6,12 @@ try{
 
     require_once "dbh.inc.php";
 
-    $id = $_POST["id"];
-    $table = "comments_jw";
+    $user = $_POST["user"];
+    $table = "cart_jw";
 
-    $sql = "SELECT * FROM $table WHERE product = :id ORDER BY date DESC";
+    $sql = "SELECT * FROM $table WHERE user = :user";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":id", $id);
+    $stmt->bindParam(":user", $user);
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
