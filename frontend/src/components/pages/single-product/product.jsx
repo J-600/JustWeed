@@ -14,12 +14,19 @@ function Product() {
     const [errorMessage, setErrorMessage] = useState("");
     const [selectRating, setSelectedRating] = useState(5)
     const [selectComment, setSelectComment] = useState('');
-    const [recStar, setRecStart] = useState(0.5)
+    const [recStar, setRecStar] = useState(0.5)
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [tags, setTags] = useState([])
     const [loading, setLoading] = useState(true);
     const [loadingComments, setLoadingComments] = useState(true);
     const navigate = useNavigate();
+
+    function updateRating() {
+        const somma = comments.reduce((acc, commento) => acc + commento.star, 0);
+        const media = somma / comments.length;
+        const mediaArrotondata = Math.round(media * 2) / 2;
+        setRecStar(mediaArrotondata);
+    }
 
     useEffect(() => {
 
@@ -59,12 +66,13 @@ function Product() {
                 const tagsData = await tagsRes.json();
                 const commentsData = await commentsRes.json();
 
-                // console.log(productData[0])
-                // console.log(tagsData)
-                // console.log(commentsData)
+
                 setProduct(productData[0])
                 setComments(commentsData)
                 setTags(tagsData)
+                updateRating()
+
+
             }
             catch (error) {
                 console.error("Errore durante la richiesta:", error);
@@ -110,6 +118,7 @@ function Product() {
                 const commentsData = await commentsRes.json();
                 setComments(commentsData);
                 setLoadingComments(false)
+                updateRating()
             }
         } catch (error) {
             console.error("Errore durante l'invio del commento:", error);
@@ -180,7 +189,17 @@ function Product() {
 
                                             </div>
 
-                                            <span className="text-gray-400 text-sm sm:text-base ml-2">(123 recensioni)</span>
+                                            <span className="text-gray-400 text-sm sm:text-base ml-2">{
+                                                comments.length === 0 ? (
+                                                    <p>Nessun commento</p>
+                                                ) : comments.length === 1 && comments[0].description === "" ? (
+                                                    <p>Non ci sono recensioni</p>
+                                                ) : comments.length === 1 ? (
+                                                    <p> ({comments.length} recensione)</p>
+                                                ) : (
+                                                    <p> ({comments.length} recensioni)</p>
+                                                )
+                                            }</span>
                                         </div>
 
                                         <p className="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6">
@@ -307,40 +326,41 @@ function Product() {
                                     </div>
 
                                     <div className="space-y-4 sm:space-y-6">
-                                        {comments.length === 0 ? (
-                                            <div className="bg-[#2A3447] p-4 rounded-xl sm:rounded-2xl border border-blue-900/30">
-                                                <div className="w-full text-center py-4 sm:py-6">
-                                                    <p className="text-gray-400 text-base sm:text-lg">Nessuna recensione ancora...</p>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            comments.map((comment, index) => (
-                                                <div key={index} className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
-                                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-3 gap-2">
-                                                        <div className="flex items-center space-x-2">
-                                                            <span className="text-yellow-400 text-base sm:text-lg">
-                                                                {Array.from({ length: 5 }, (_, i) => {
-                                                                    const fullStars = Math.floor(comment.star);
-                                                                    const hasHalfStar = comment.star % 1 >= 0.5;
-
-                                                                    return (
-                                                                        <span key={i} className="relative inline-block">
-                                                                            <span className="text-gray-600">★</span>
-                                                                            <span className={`absolute left-0 top-0 overflow-hidden ${i < fullStars ? 'w-full' : hasHalfStar && i === fullStars ? 'w-1/2' : 'w-0'}`}>
-                                                                                <span className="text-yellow-400">★</span>
-                                                                            </span>
-                                                                        </span>
-                                                                    );
-                                                                })}
-                                                            </span>
-                                                            <span className="text-gray-400 text-xs sm:text-sm">• {new Date().toLocaleDateString()}</span>
-                                                        </div>
-                                                        <span className="text-blue-400 text-xs sm:text-sm">{comment.user}</span>
+                                        {loadingComments ? (<Loader />) : comments.length === 0 ?
+                                            (
+                                                <div className="bg-[#2A3447] p-4 rounded-xl sm:rounded-2xl border border-blue-900/30">
+                                                    <div className="w-full text-center py-4 sm:py-6">
+                                                        <p className="text-gray-400 text-base sm:text-lg">Nessuna recensione ancora...</p>
                                                     </div>
-                                                    <p className="text-gray-300 text-sm sm:text-base">{comment.description}</p>
                                                 </div>
-                                            ))
-                                        )}
+                                            ) : (
+                                                comments.map((comment, index) => (
+                                                    <div key={index} className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
+                                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-3 gap-2">
+                                                            <div className="flex items-center space-x-2">
+                                                                <span className="text-yellow-400 text-base sm:text-lg">
+                                                                    {Array.from({ length: 5 }, (_, i) => {
+                                                                        const fullStars = Math.floor(comment.star);
+                                                                        const hasHalfStar = comment.star % 1 >= 0.5;
+
+                                                                        return (
+                                                                            <span key={i} className="relative inline-block">
+                                                                                <span className="text-gray-600">★</span>
+                                                                                <span className={`absolute left-0 top-0 overflow-hidden ${i < fullStars ? 'w-full' : hasHalfStar && i === fullStars ? 'w-1/2' : 'w-0'}`}>
+                                                                                    <span className="text-yellow-400">★</span>
+                                                                                </span>
+                                                                            </span>
+                                                                        );
+                                                                    })}
+                                                                </span>
+                                                                <span className="text-gray-400 text-xs sm:text-sm">• {new Date(comment.date).toLocaleDateString()}</span>
+                                                            </div>
+                                                            <span className="text-blue-400 text-xs sm:text-sm">{comment.user}</span>
+                                                        </div>
+                                                        <p className="text-gray-300 text-sm sm:text-base">{comment.description}</p>
+                                                    </div>
+                                                ))
+                                            )}
                                     </div>
                                 </div>
                             </div>

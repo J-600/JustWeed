@@ -9,7 +9,7 @@ try{
     $id = $_POST["id"] ?? 15;
     $table = "comments_jw";
 
-    $sql = "SELECT * FROM $table WHERE product = :id";
+    $sql = "SELECT * FROM $table WHERE product = :id ORDER BY date DESC";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":id", $id);
     $stmt->execute();
