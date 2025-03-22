@@ -3,18 +3,22 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AlertCircle, ArrowRight } from 'lucide-react';
 import TopBar from "../../navbar/topbar";
 import Loader from "../../loader/loader";
+// import { set } from "mongoose";
 
 function Product() {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const [product, setProduct] = useState([])
     const [comments, setComments] = useState([])
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [selectRating, setSelectedRating] = useState(5)
-    const [selectComment, setSelectComment ] = useState('');
+    const [selectComment, setSelectComment] = useState('');
     const [recStar, setRecStart] = useState(0.5)
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [tags, setTags] = useState([])
     const [loading, setLoading] = useState(true);
+    const [loadingComments, setLoadingComments] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -65,6 +69,7 @@ function Product() {
             catch (error) {
                 console.error("Errore durante la richiesta:", error);
             } finally {
+                setLoadingComments(false)
                 setLoading(false)
             }
         }
@@ -75,34 +80,41 @@ function Product() {
     const handleAddComment = async (e) => {
         e.preventDefault();
         console.log(selectRating, selectComment, isAnonymous);
-        
-        // try {
-        //     const response = await fetch("http://localhost:3000/add-comment", {
-        //         method: "POST",
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({
-        //             product_id: params.get("id"),
-        //             rating: selectRating,
-        //             comment: selectComment,
-        //             anonymous: isAnonymous
-        //         }),
-        //         credentials: "include"
-        //     });
-    
-        //     if (response.ok) {
-        //         // Ricarica i commenti
-        //         const commentsRes = await fetch("http://localhost:3000/comments", {
-        //             method: "POST",
-        //             headers: { 'Content-Type': 'application/json' },
-        //             body: JSON.stringify({ id: params.get("id") }),
-        //             credentials: "include"
-        //         });
-        //         const commentsData = await commentsRes.json();
-        //         setComments(commentsData);
-        //     }
-        // } catch (error) {
-        //     console.error("Errore durante l'invio del commento:", error);
-        // }
+
+        try {
+            const response = await fetch("http://localhost:3000/add-comment", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: params.get("id"),
+                    user: isAnonymous,
+                    comment: selectComment,
+                    star: selectRating
+                }),
+                credentials: "include"
+            });
+
+
+            if (response.ok) {
+                const data = await response.json()
+                setErrorMessage("");
+                setSuccessMessage(data);
+                setTimeout(() => setSuccessMessage(""), 3000);
+                setLoadingComments(true)
+                const commentsRes = await fetch("http://localhost:3000/comments", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: params.get("id") }),
+                    credentials: "include"
+                });
+                const commentsData = await commentsRes.json();
+                setComments(commentsData);
+                setLoadingComments(false)
+            }
+        } catch (error) {
+            console.error("Errore durante l'invio del commento:", error);
+            setErrorMessage(error.message);
+        }
     };
 
     return (
@@ -219,6 +231,23 @@ function Product() {
                             <div className="card-body space-y-4 pt-4 sm:pt-8">
                                 <div className="space-y-6 sm:space-y-8">
                                     <h2 className="text-2xl sm:text-3xl sm:text-left text-center font-bold text-white mb-4 sm:mb-6">Recensioni dei clienti</h2>
+                                    {successMessage && (
+                                        <div className="alert alert-success shadow-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>{successMessage}</span>
+                                        </div>
+                                    )}
+
+                                    {errorMessage && (
+                                        <div className="alert alert-error shadow-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>{errorMessage}</span>
+                                        </div>
+                                    )}
 
                                     <div className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                         <h3 className="text-lg sm:text-xl text-white mb-3 sm:mb-4">Scrivi una recensione</h3>
@@ -251,7 +280,7 @@ function Product() {
                                                 className="textarea w-full text-sm sm:text-base bg-[#1E2633] border border-blue-900/30 text-white mb-4"
                                                 placeholder="Condividi la tua esperienza..."
                                                 onChange={(e) => setSelectComment(e.target.value)}
-                                                rows="3"/>
+                                                rows="3" />
 
                                             <div className="flex items-center justify-end space-x-3">
                                                 <label className="text-gray-300 text-sm sm:text-base cursor-pointer">
@@ -290,15 +319,23 @@ function Product() {
                                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-3 gap-2">
                                                         <div className="flex items-center space-x-2">
                                                             <span className="text-yellow-400 text-base sm:text-lg">
-                                                                {Array.from({ length: 5 }, (_, i) => (
-                                                                    <span key={i} className={i < comment.star ? 'text-yellow-400' : 'text-gray-600'}>
-                                                                        ★
-                                                                    </span>
-                                                                ))}
+                                                                {Array.from({ length: 5 }, (_, i) => {
+                                                                    const fullStars = Math.floor(comment.star);
+                                                                    const hasHalfStar = comment.star % 1 >= 0.5;
+
+                                                                    return (
+                                                                        <span key={i} className="relative inline-block">
+                                                                            <span className="text-gray-600">★</span>
+                                                                            <span className={`absolute left-0 top-0 overflow-hidden ${i < fullStars ? 'w-full' : hasHalfStar && i === fullStars ? 'w-1/2' : 'w-0'}`}>
+                                                                                <span className="text-yellow-400">★</span>
+                                                                            </span>
+                                                                        </span>
+                                                                    );
+                                                                })}
                                                             </span>
                                                             <span className="text-gray-400 text-xs sm:text-sm">• {new Date().toLocaleDateString()}</span>
                                                         </div>
-                                                        <span className="text-blue-400 text-xs sm:text-sm">{comment.anon ? ("utente anonimo") : (comment.user)}</span>
+                                                        <span className="text-blue-400 text-xs sm:text-sm">{comment.user}</span>
                                                     </div>
                                                     <p className="text-gray-300 text-sm sm:text-base">{comment.description}</p>
                                                 </div>

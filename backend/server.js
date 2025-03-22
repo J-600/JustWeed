@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const creditCardType = require('credit-card-type');
 const session = require('express-session');
 const { console } = require('inspector');
+const { error } = require('console');
 
 const STRIPE_SECRET_KEY = 'sk_test_51Qqap7J0BPVuq51Y0ydAG9kn97Q39HQ2WAP4N0J1s794JiNzwIYj2PoorgFr6A4ZJdvwbMUTwTERatnoFOUf2ltd00A6Q3laNG';
 const stripe = require('stripe')(STRIPE_SECRET_KEY);
@@ -557,19 +558,32 @@ app.post("/comments", (req, res) => {
 })
 
 app.post("/add-comment", (req, res) => {
+  console.log("Dati ricevuti dal frontend:", req.body);
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
+    if(!req.body)
+      throw new Error("undefined req body")
     const {id, user, comment, star } = req.body;
+    // console.log(req.body)
     fetch ("http://localhost/justweed/backend/includes/insert-comment.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
-      body: `product=${id}&comment=${comment}&user=${user ? res.session.username : "anon"}&start=${star}`
-    })
+      body: `product=${id}&comment=${comment}&user=${user ?"anon": req.session.username }&star=${star}`
+    }) 
     .then(response => response.json())
     .then(data => {
+      if (data.response === 200){
+        res.json("Commento aggiunto correttamente")
+      } else {
+        res.status(400).json("error")
+      }
       
     })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "En error occurred" });
+    });
   }
 })
 
