@@ -563,11 +563,11 @@ app.post("/add-comment", (req, res) => {
   } else {
     if(!req.body)
       throw new Error("undefined req body")
-    const {id, user, comment, star } = req.body;
+    const {id, title, user, comment, star } = req.body;
     fetch ("http://localhost/justweed/backend/includes/insert-comment.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
-      body: `product=${id}&comment=${comment}&user=${user ?"anon": req.session.username }&star=${star}`
+      body: `product=${id}&comment=${comment}&user=${user ?"anonimo": req.session.username }&title=${title}&star=${star}`
     }) 
     .then(response => response.json())
     .then(data => {

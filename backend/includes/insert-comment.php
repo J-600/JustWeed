@@ -9,11 +9,13 @@ try{
     $comment = $_POST["comment"];
     $star = $_POST["star"];
     $user = $_POST["user"];
+    $title = $_POST["title"];
     $product = $_POST["product"];
     $table = "comments_jw";
 
-    $sql = "INSERT INTO $table (description, star, user, product) VALUES (:description, :star, :user, :product)";
+    $sql = "INSERT INTO $table (title, description, star, user, product) VALUES (:title, :description, :star, :user, :product)";
     $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(":title", $title);
     $stmt->bindParam(":description", $comment);
     $stmt->bindParam(":star", $star);
     $stmt->bindParam(":user", $user);

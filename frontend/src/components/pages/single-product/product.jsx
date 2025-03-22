@@ -10,6 +10,7 @@ function Product() {
     const params = new URLSearchParams(location.search);
     const [product, setProduct] = useState([])
     const [comments, setComments] = useState([])
+    const [reviewTitle, setReviewTitle] = useState([])
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [selectRating, setSelectedRating] = useState(5)
@@ -95,6 +96,7 @@ function Product() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     id: params.get("id"),
+                    title: reviewTitle,
                     user: isAnonymous,
                     comment: selectComment,
                     star: selectRating
@@ -107,6 +109,8 @@ function Product() {
                 const data = await response.json()
                 setErrorMessage("");
                 setSuccessMessage(data);
+                setSelectComment("");
+                setReviewTitle("");
                 setTimeout(() => setSuccessMessage(""), 3000);
                 setLoadingComments(true)
                 const commentsRes = await fetch("http://localhost:3000/comments", {
@@ -271,6 +275,7 @@ function Product() {
                                     <div className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                         <h3 className="text-lg sm:text-xl text-white mb-3 sm:mb-4">Scrivi una recensione</h3>
                                         <form onSubmit={handleAddComment} className="space-y-3 sm:space-y-4">
+
                                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                                 <span className="text-gray-400 text-sm sm:text-base">Valutazione:</span>
                                                 <div className="rating rating-sm rating-half sm:rating-md">
@@ -294,12 +299,27 @@ function Product() {
                                                     ))}
                                                 </div>
                                             </div>
+                                            <div className="form-control">
+                                                <label className="label">
+                                                    <span className="text-gray-400 text-sm sm:text-base">Recensione: </span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    placeholder="Aggiungi un titolo..."
+                                                    className="input input-bordered w-full bg-[#1E2633] border border-blue-900/30 text-white focus:border-blue-500"
+                                                    value={reviewTitle}
+                                                    onChange={(e) => setReviewTitle(e.target.value)}
+                                                />
+                                            </div>
                                             <textarea
                                                 required
                                                 className="textarea w-full text-sm sm:text-base bg-[#1E2633] border border-blue-900/30 text-white mb-4"
                                                 placeholder="Condividi la tua esperienza..."
+                                                value={selectComment}
                                                 onChange={(e) => setSelectComment(e.target.value)}
                                                 rows="3" />
+
 
                                             <div className="flex items-center justify-end space-x-3">
                                                 <label className="text-gray-300 text-sm sm:text-base cursor-pointer">
@@ -357,7 +377,10 @@ function Product() {
                                                             </div>
                                                             <span className="text-blue-400 text-xs sm:text-sm">{comment.user}</span>
                                                         </div>
-                                                        <p className="text-gray-300 text-sm sm:text-base">{comment.description}</p>
+                                                        <div className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
+                                                            <h4 className="text-lg font-bold text-white mb-2">{comment.title}</h4>
+                                                            <p className="text-gray-300">{comment.description}</p>
+                                                        </div>
                                                     </div>
                                                 ))
                                             )}
