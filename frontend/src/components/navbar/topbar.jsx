@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { FaShoppingCart, FaUser, FaSignOutAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function Topbar() {
+export default function Topbar({ onUploadCart }) {
   const [cartItems, setCartItems] = useState([])
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
@@ -12,6 +12,8 @@ export default function Topbar() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+  
 
 
   const logOut = async () => {
@@ -29,6 +31,28 @@ export default function Topbar() {
 
   }
 
+  const uploadCart = useCallback( async ()=> {
+    try{
+      const res = await fetch ("http://localhost:3000/view-cart",{
+        credentials: "include"
+      })
+
+      const data = await res.json()
+
+      if (!res.ok){
+        return
+      }
+      setCartItems(data)
+
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+)
+
+
+
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -40,6 +64,11 @@ export default function Topbar() {
         setIsSidebarOpen(false);
       }
     };
+    
+
+    
+
+    uploadCart()
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {

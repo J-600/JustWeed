@@ -5,7 +5,10 @@ import Loader from "../../loader/loader";
 
 function Products() {
   const location = useLocation();
+  const [uploadCartFunction, setUploadCartFunction] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [selectedTags, setSelectedTags] = useState(new Set());
@@ -67,20 +70,87 @@ function Products() {
     const matchesName = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesMinPrice = minPrice ? product.price >= parseFloat(minPrice) : true;
     const matchesMaxPrice = maxPrice ? product.price <= parseFloat(maxPrice) : true;
-    const matchesTags = selectedTags.size === 0 || 
+    const matchesTags = selectedTags.size === 0 ||
       product.tags.some(tag => selectedTags.has(tag));
 
     return matchesName && matchesMinPrice && matchesMaxPrice && matchesTags;
   });
 
-  const handleAddToCart = (productId) => {
-    console.log("Aggiunto al carrello:", productId);
+  const handleAddToCart = async (productId) => {
+    try{
+      const res = await fetch("http://localhost:3000/insert-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          product: productId,
+          qnt: 1
+        }),
+        credentials: "include"
+      })
+      const data = await res.json();
+      console.log(data,res)
+      if (res.status !== 200) {
+        setErrorMessage("prodotto non aggiunto");
+        return;
+      }
+
+      
+
+      setSuccessMessage(data);
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setErrorMessage("");
+    }
+    catch (error) {
+      console.error("Errore durante la richiesta:", error);
+      setErrorMessage("An error occurred. Please try again.");
+      setTimeout(() => setErrorMessage(""), 3000);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
-      <TopBar username={username} email={email} />
-      <div className="flex-grow flex flex-col items-center p-6 pt-[6em]">
+      <TopBar />
+      {successMessage && (
+        <div className="sticky top-[2em] z-50 mt-[2em] flex justify-center">
+          <div role="alert" className=" flex items-center alert alert-success w-1/2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 shrink-0 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{successMessage}</span>
+          </div>
+        </div>
+      )}
+      {errorMessage && (
+        <div className="sticky top-[2em] z-50 mt-[2em] flex justify-center">
+          <div role="alert" className=" flex items-center alert alert-error w-1/2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="stroke-current shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>{errorMessage}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="flex-grow flex flex-col items-center p-6 pt-[3em]">
+
         <div className="relative group max-w-2xl mx-auto w-full">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 animate-gradient" />
 
@@ -145,7 +215,7 @@ function Products() {
                   </div>
                 </div>
 
-            
+
                 {availableTags.length > 0 && (
                   <div className="border-t border-blue-900/30 pt-4">
                     <h3 className="text-sm font-semibold text-blue-400 mb-2">Filtra per tag</h3>
@@ -208,7 +278,7 @@ function Products() {
                     <p className="text-gray-400">{product.description}</p>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {product.tags?.map((tag, i) => (
-                        <span 
+                        <span
                           key={i}
                           className="badge badge-outline border-blue-900/30 text-blue-400"
                         >
@@ -220,7 +290,7 @@ function Products() {
                       <div className="text-lg font-bold text-purple-400">
                         €{product.price.toFixed(2)}
                       </div>
-                      <button 
+                      <button
                         className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
                         onClick={() => handleAddToCart(product.id)}
                       >

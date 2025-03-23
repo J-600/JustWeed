@@ -374,6 +374,26 @@ app.post("/updateData", (req, res) => {
     });
 });
 
+app.get("/view-cart", (req,res) =>{
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    fetch("http://localhost/Justweed/backend/includes/view-cart.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body:`user=${req.session.email}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.response === 200){
+        res.json(data.data)
+      } else {
+        res.status(500).json("error")
+      }
+    })
+  }
+} )
+
 app.post("/insert-cart", (req,res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
@@ -382,14 +402,14 @@ app.post("/insert-cart", (req,res) => {
     fetch("http://localhost/Justweed/backend/includes/insert-cart.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
-      body: `id=${product}&email=${req.session.email}&qnt=${qnt}`
+      body: `id=${product}&email=${req.session.email}&qnt=${qnt ?? 1}`
     })
     .then(response => response.json())
     .then(data => {
       if (data.response === 200){
         res.json(data.data);
       } else {
-        res.status(500).json("errore")
+        res.status(500).json(data.data)
       }
     })
   }
@@ -759,11 +779,8 @@ app.post('/verify-card', async (req, res) => {
       confirm: true,
       usage: 'off_session',
       payment_method_types: ['card'],
-      // Add your customer ID here if you have one
-      // customer: 'cus_xxx',
     });
 
-    // Check the status of the SetupIntent
     switch (setupIntent.status) {
       case 'succeeded':
         return res.json({ success: true });
@@ -780,7 +797,6 @@ app.post('/verify-card', async (req, res) => {
   } catch (error) {
     console.error("Stripe Error:", error);
 
-    // Handle specific Stripe errors
     if (error.type === 'StripeCardError') {
       return res.status(400).json({
         message: error.message || 'Carta non valida'
