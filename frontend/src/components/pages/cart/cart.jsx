@@ -1,33 +1,45 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TopBar from "../../navbar/topbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, X, Plus, Minus } from "lucide-react";
+import Loader from "../../loader/loader";
 
 const CartPage = () => {
   const [inputError, setInputError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Nome Prodotto 1",
-      price: 129.99,
-      quantity: 2,
-      img: "https://via.placeholder.com/150",
-      seller: "Venditore 1"
-    },
-    {
-      id: 2,
-      name: "Nome Prodotto 2",
-      price: 89.99,
-      quantity: 1,
-      img: "https://via.placeholder.com/150",
-      seller: "Venditore 2"
+  const [cartItems, setCartItems] = useState([]);
+
+  const fetchCart = async () =>{
+    try{
+      const res = await fetch("http://localhost:3000/view-cart", {
+        credentials: "include"
+      })
+  
+      if(!res.ok)
+      { 
+        navigate("/")
+        return
+      }
+  
+      const data = await res.json()
+      setCartItems(data)
     }
-  ]);
+      catch (error) {
+      console.error("Errore durante la richiesta:", error);
+      } finally {
+        setLoading(false)
+      }
+  }
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+  
 
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  // Funzioni per gestire le quantità
   const handleRemoveItem = (itemId) => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
@@ -81,9 +93,13 @@ const CartPage = () => {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-6">
-              {cartItems.length === 0 ? (
-                <div className="card bg-[#1E2633] border border-blue-900/30">
+            {loading ? (
+              <div className="col-span-3">
+                <Loader  />
+              </div>
+            ) : cartItems.length === 0 ? (
+              <div className="lg:col-span-3 flex justify-center">
+                <div className="card bg-[#1E2633] border border-blue-900/30 w-full">
                   <div className="card-body items-center text-center py-16">
                     <h2 className="text-2xl text-gray-400 mb-4">Il tuo carrello è vuoto</h2>
                     <Link
@@ -94,83 +110,89 @@ const CartPage = () => {
                     </Link>
                   </div>
                 </div>
-              ) : (
-                cartItems.map((item) => (
-                  <div key={item.id} className="card bg-[#1E2633] border border-blue-900/30 group">
-                    <div className="card-body">
-                      <div className="flex flex-col sm:flex-row gap-6">
-                        <div className="relative w-full sm:w-48 flex-shrink-0">
-                          <img
-                            src={item.img}
-                            alt={item.name}
-                            className="w-full h-32 sm:h-48 object-cover rounded-xl border border-blue-900/30"
-                          />
-                        </div>
-
-                        <div className="flex-1">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="text-xl text-white font-semibold hover:text-blue-400 transition-colors">
-                                <Link to={`/product?id=${item.id}`}>{item.name}</Link>
-                              </h3>
-                              <p className="text-gray-400 text-sm mt-1">Venduto da: {item.seller}</p>
-                            </div>
-                            <button
-                              onClick={() => handleRemoveItem(item.id)}
-                              className="text-gray-400 hover:text-red-500 p-1.5 rounded-full hover:bg-red-500/10 transition-colors"
-                            >
-                              <X size={20} />
-                            </button>
+              </div>
+            ) : (
+              <div className="lg:col-span-2 space-y-6">
+                {
+                  cartItems.map((item) => (
+                    <div key={item.id} className="card bg-[#1E2633] border border-blue-900/30 group">
+                      <div className="card-body">
+                        <div className="flex flex-col sm:flex-row gap-6">
+                          <div className="relative w-full sm:w-48 flex-shrink-0">
+                            <img
+                              src={item.img}
+                              alt={item.name}
+                              className="w-full h-32 sm:h-48 object-cover rounded-xl border border-blue-900/30"
+                            />
                           </div>
-
-                          <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div className="flex items-center gap-2">
+    
+                          <div className="flex-1">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h3 className="text-xl text-white font-semibold hover:text-blue-400 transition-colors">
+                                  <Link to={`/product?id=${item.id}`}>{item.name}</Link>
+                                </h3>
+                                <p className="text-gray-400 text-sm mt-1">Venduto da: {item.seller}</p>
+                              </div>
                               <button
-                                onClick={() => handleDecrement(item.id)}
-                                className="btn btn-sm btn-square bg-[#2A3447] border border-blue-900/30 text-white hover:bg-blue-500 disabled:opacity-50"
-                                disabled={item.quantity === 1}
+                                onClick={() => handleRemoveItem(item.id)}
+                                className="text-gray-400 hover:text-red-500 p-1.5 rounded-full hover:bg-red-500/10 transition-colors"
                               >
-                                <Minus size={16} />
-                              </button>
-                              <input
-                                type="text"
-                                value={item.quantity}
-                                onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') {
-                                    e.preventDefault();
-                                    setInputError(true); 
-                                  }
-                                }}
-                                min="1"
-                                className="input input-sm w-20 text-center bg-[#2A3447] border border-blue-900/30 text-white focus:border-blue-500"
-                              />
-                              <button
-                                onClick={() => handleIncrement(item.id)}
-                                className="btn btn-sm btn-square bg-[#2A3447] border border-blue-900/30 text-white hover:bg-blue-500"
-                              >
-                                <Plus size={16} />
+                                <X size={20} />
                               </button>
                             </div>
-
-                            <div className="text-right">
-                              <p className="text-2xl font-bold text-white">
-                                €{(item.price * item.quantity).toFixed(2)}
-                              </p>
-                              {item.quantity > 1 && (
-                                <p className="text-sm text-gray-400 mt-1">
-                                  {item.quantity} × €{item.price.toFixed(2)}
+    
+                            <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => handleDecrement(item.id)}
+                                  className="btn btn-sm btn-square bg-[#2A3447] border border-blue-900/30 text-white hover:bg-blue-500 disabled:opacity-50"
+                                  disabled={item.quantity === 1}
+                                >
+                                  <Minus size={16} />
+                                </button>
+                                <input
+                                  type="text"
+                                  value={item.quantity}
+                                  onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Tab') {
+                                      e.preventDefault();
+                                      setInputError(true);
+                                    }
+                                  }}
+                                  min="1"
+                                  className="input input-sm w-20 text-center bg-[#2A3447] border border-blue-900/30 text-white focus:border-blue-500"
+                                />
+                                <button
+                                  onClick={() => handleIncrement(item.id)}
+                                  className="btn btn-sm btn-square bg-[#2A3447] border border-blue-900/30 text-white hover:bg-blue-500"
+                                >
+                                  <Plus size={16} />
+                                </button>
+                              </div>
+    
+                              <div className="text-right">
+                                <p className="text-2xl font-bold text-white">
+                                  €{(item.price * item.quantity).toFixed(2)}
                                 </p>
-                              )}
+                                {item.quantity > 1 && (
+                                  <p className="text-sm text-gray-400 mt-1">
+                                    {item.quantity} × €{item.price.toFixed(2)}
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))
-              )}
-            </div>
+                  ))
+                }
+                </div>
+              
+            )}
+
 
             {cartItems.length > 0 && (
               <div className="card bg-[#1E2633] border border-blue-900/30 h-fit lg:sticky lg:top-20">

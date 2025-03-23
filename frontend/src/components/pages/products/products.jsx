@@ -19,6 +19,10 @@ function Products() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const triggerUploadCart = () => {
+    window.dispatchEvent(new Event("triggerUploadCart"));
+  };
+
   useEffect(() => {
     const fetchProductsAndTags = async () => {
       try {
@@ -88,7 +92,7 @@ function Products() {
         credentials: "include"
       })
       const data = await res.json();
-      console.log(data,res)
+      // console.log(data,res)
       if (res.status !== 200) {
         setErrorMessage("prodotto non aggiunto");
         return;
@@ -99,6 +103,8 @@ function Products() {
       setSuccessMessage(data);
       setTimeout(() => setSuccessMessage(""), 3000);
       setErrorMessage("");
+
+      triggerUploadCart()
     }
     catch (error) {
       console.error("Errore durante la richiesta:", error);
@@ -266,7 +272,7 @@ function Products() {
                   key={product.id}
                   className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105"
                 >
-                  <figure className="px-4 pt-4 cursor-pointer" onClick={() => navigate(`/product?id=${product.id}`)}>
+                  <figure className="px-4 pt-4 cursor-pointer" onClick={() => navigate(`/products/${product.id}`)}>
                     <img
                       src={product.img}
                       alt={product.name}

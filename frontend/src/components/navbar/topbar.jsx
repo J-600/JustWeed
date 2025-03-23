@@ -13,7 +13,7 @@ export default function Topbar({ onUploadCart }) {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  
+
 
 
   const logOut = async () => {
@@ -31,15 +31,15 @@ export default function Topbar({ onUploadCart }) {
 
   }
 
-  const uploadCart = useCallback( async ()=> {
-    try{
-      const res = await fetch ("http://localhost:3000/view-cart",{
+  const uploadCart = useCallback(async () => {
+    try {
+      const res = await fetch("http://localhost:3000/view-cart", {
         credentials: "include"
       })
 
       const data = await res.json()
 
-      if (!res.ok){
+      if (!res.ok) {
         return
       }
       setCartItems(data)
@@ -48,10 +48,20 @@ export default function Topbar({ onUploadCart }) {
       console.log(error.message)
     }
   }
-)
+  )
 
 
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      uploadCart();
+    };
 
+    window.addEventListener("triggerUploadCart", handleCartUpdate);
+
+    return () => {
+      window.removeEventListener("triggerUploadCart", handleCartUpdate);
+    };
+  }, [uploadCart]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -64,9 +74,6 @@ export default function Topbar({ onUploadCart }) {
         setIsSidebarOpen(false);
       }
     };
-    
-
-    
 
     uploadCart()
 

@@ -30,7 +30,7 @@ function AppRoutes() {
         <Route path='/purchase' element={<Purchase />} />
         <Route path='/preWeeder' element={<PreWeeder />} />
         <Route path='/become-weeder' element={<Weeder />} />
-        <Route path='/product' element={<Product/>}/>
+        <Route path='/products/:id' element={<Product/>}/>
         <Route path='/cart' element={<CartPage/>}/>
       </Routes>
     </Elements>

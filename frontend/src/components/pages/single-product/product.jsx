@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AlertCircle, ArrowRight } from 'lucide-react';
 import TopBar from "../../navbar/topbar";
 import Loader from "../../loader/loader";
 // import { set } from "mongoose";
 
 function Product() {
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
+    // const location = useLocation();
+    // const params = new URLSearchParams(location.search);
+    const { id } = useParams()
     const [product, setProduct] = useState([])
     const [comments, setComments] = useState([])
     const [reviewTitle, setReviewTitle] = useState([])
@@ -33,7 +34,7 @@ function Product() {
 
         const fetchProduct = async () => {
             try {
-                const id = params.get("id");
+                // const id = params.get("id");
                 const [productRes, tagsRes, commentsRes] = await Promise.all([fetch("http://localhost:3000/product", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
@@ -95,7 +96,7 @@ function Product() {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id: params.get("id"),
+                    id: id,
                     title: reviewTitle,
                     user: isAnonymous,
                     comment: selectComment,
@@ -116,7 +117,7 @@ function Product() {
                 const commentsRes = await fetch("http://localhost:3000/comments", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: params.get("id") }),
+                    body: JSON.stringify({ id: id }),
                     credentials: "include"
                 });
                 const commentsData = await commentsRes.json();
