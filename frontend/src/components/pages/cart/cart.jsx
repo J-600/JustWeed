@@ -44,10 +44,15 @@ const CartPage = () => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
 
-  const handleIncrement = (itemId) => {
+  const handleIncrement = async(itemId) => {
     setCartItems(prevItems => prevItems.map(item =>
       item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
     ));
+
+    const res = await fetch("http://localhost:3000/update-cart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    })
   };
 
   const handleDecrement = (itemId) => {

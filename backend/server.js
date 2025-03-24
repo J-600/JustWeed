@@ -415,6 +415,28 @@ app.post("/insert-cart", (req,res) => {
   }
 })
 
+app.post("/update-cart", (req,res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    const { id, qnt, del } = req.body;
+
+    fetch("http://localhost/Justweed/backend/includes/insert-cart.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `id=${id}&user=${req.session.email}&qnt=${qnt}&del=${del}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.response === 200){
+        res.json();
+      } else {
+        res.status(data.response).json(data.data);
+      }
+    })
+  }
+})
+
 app.post("/product", (req, res) => {
   if (!req.session.username) {
     return res.status(401).json({ error: "Utente non autenticato" });
