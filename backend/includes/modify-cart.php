@@ -9,22 +9,25 @@ try {
 
     $qnt = $_POST["qnt"];
     $user = $_POST["user"];
-    $del = $_POST["del"];
+    $del = $_POST["del"] ;
     $id = $_POST["id"];
     $table = "cart_jw";
 
-    if ($del){
+    if ($del == 0){
         $sql = "DELETE FROM $table WHERE product = :id AND user = :user";
         $stmt = $pdo->prepare($sql);
     }
     else {
         $sql = "UPDATE $table SET qnt = :qnt WHERE product = :id AND user= :user";
         $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":qnt", $qnt);
     }
-
     $stmt->bindParam(":id", $id);
-    $stmt->bindParam(":qnt", $qnt);
     $stmt->bindParam(":user", $user);
+
+    $stmt->execute();
+
+    
 
     $response = [
         "response" => 200,

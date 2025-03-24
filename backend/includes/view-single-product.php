@@ -21,17 +21,16 @@ try {
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($result)) {
-        throw new Exception("Non sono presenti prodotti");
-    } else {
+    if (!empty($result)) {
         $result[0]["img"] = "data:image/png;base64," . base64_encode($result[0]["img"]);
-        $response = [
-            "response" => 200,
-            "message" => true,
-            "data" => $result
-        ];
-        echo json_encode($response);
     }
+        
+    $response = [
+        "response" => 200,
+        "message" => true,
+        "data" => $result
+    ];
+    echo json_encode($response);
 
 } catch (PDOException $e) {
     $response = [
@@ -42,7 +41,7 @@ try {
     echo json_encode($response);
 } catch (Exception $e) {
     $response = [
-        "response" => 200,
+        "response" => 500,
         "message" => false,
         "data" => $e->getMessage()
 

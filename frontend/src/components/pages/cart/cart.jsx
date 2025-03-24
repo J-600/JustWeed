@@ -7,69 +7,161 @@ import Loader from "../../loader/loader";
 const CartPage = () => {
   const [inputError, setInputError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const [cartItems, setCartItems] = useState([]);
 
-  const fetchCart = async () =>{
-    try{
+  const fetchCart = async () => {
+    try {
       const res = await fetch("http://localhost:3000/view-cart", {
         credentials: "include"
       })
-  
-      if(!res.ok)
-      { 
+
+      if (!res.ok) {
         navigate("/")
         return
       }
-  
+
       const data = await res.json()
       setCartItems(data)
     }
-      catch (error) {
+    catch (error) {
       console.error("Errore durante la richiesta:", error);
-      } finally {
-        setLoading(false)
-      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
     fetchCart();
   }, []);
-  
+
 
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  const handleRemoveItem = (itemId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+  const handleRemoveItem = async(itemId) => {
+
+    try {
+      const res = await fetch("http://localhost:3000/update-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: itemId,
+          qnt: 0,
+          del: 0
+        }),
+        credentials: "include"
+      })
+
+      if (!res.ok)
+        throw new Error("Errore nella modifica")
+
+      const data = await res.json();
+      console.log(data)
+
+      setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
+
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+    
   };
 
-  const handleIncrement = async(itemId) => {
-    setCartItems(prevItems => prevItems.map(item =>
-      item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
-    ));
+  const handleIncrement = async (itemId) => {
+    try {
+      const itemCart = cartItems.find(item => item.id === itemId);
+      const qnt = itemCart.quantity + 1
 
-    const res = await fetch("http://localhost:3000/update-cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    })
+      const res = await fetch("http://localhost:3000/update-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: itemId,
+          qnt: qnt,
+          del: 1
+        }),
+        credentials: "include"
+      })
+
+      if (!res.ok)
+        throw new Error("Errore nella modifica")
+
+      const data = await res.json();
+      console.log(data)
+
+      setCartItems(prevItems => prevItems.map(item =>
+        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+      ));
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
-  const handleDecrement = (itemId) => {
-    setCartItems(prevItems => prevItems.map(item =>
-      item.id === itemId ? { ...item, quantity: Math.max(1, item.quantity - 1) } : item
-    ));
+  const handleDecrement = async (itemId) => {
+
+    try {
+      const itemCart = cartItems.find(item => item.id === itemId);
+      const qnt = itemCart.quantity - 1
+
+      const res = await fetch("http://localhost:3000/update-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: itemId,
+          qnt: qnt,
+          del: 1
+        }),
+        credentials: "include"
+      })
+
+      if (!res.ok)
+        throw new Error("Errore nella modifica")
+
+      const data = await res.json();
+      console.log(data)
+
+      setCartItems(prevItems => prevItems.map(item =>
+        item.id === itemId ? { ...item, quantity: Math.max(1, item.quantity - 1) } : item
+      ));
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+    
   };
 
-  const handleQuantityChange = (itemId, newValue) => {
+  const handleQuantityChange = async(itemId, newValue) => {
     const numericValue = newValue.replace(/[^0-9]/g, '');
     const quantity = Math.max(1, Number(numericValue));
 
     if (!isNaN(quantity)) {
-      setCartItems(prevItems => prevItems.map(item =>
-        item.id === itemId ? { ...item, quantity } : item
-      ));
-      setInputError(false);
+      try {
+        const res = await fetch("http://localhost:3000/update-cart", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: itemId,
+            qnt: quantity,
+            del: 1
+          }),
+          credentials: "include"
+        })
+  
+        if (!res.ok)
+          throw new Error("Errore nella modifica")
+  
+        const data = await res.json();
+        console.log(data)
+  
+        setCartItems(prevItems => prevItems.map(item =>
+          item.id === itemId ? { ...item, quantity } : item
+        ));
+        
+      } catch (error) {
+        setErrorMessage(error.message);
+      } finally {
+        setInputError(false);
+      }
     } else {
       setInputError(true);
     }
@@ -80,8 +172,18 @@ const CartPage = () => {
       <TopBar />
 
       <div className="w-full px-4 sm:px-8 pt-20 pb-14">
+
         <div className="max-w-7xl mx-auto">
+          {errorMessage && (
+            <div className="alert alert-error shadow-lg mb-8">
+              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{errorMessage}</span>
+            </div>
+          )}
           <div className="flex items-end justify-between mb-8 pb-4 border-b border-blue-900/30">
+
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
               Carrello
               <ShoppingCart className="inline-block ml-2 mb-2 w-8 h-8 text-purple-500" />
@@ -100,7 +202,7 @@ const CartPage = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             {loading ? (
               <div className="col-span-3">
-                <Loader  />
+                <Loader />
               </div>
             ) : cartItems.length === 0 ? (
               <div className="lg:col-span-3 flex justify-center">
@@ -130,7 +232,7 @@ const CartPage = () => {
                               className="w-full h-32 sm:h-48 object-cover rounded-xl border border-blue-900/30"
                             />
                           </div>
-    
+
                           <div className="flex-1">
                             <div className="flex justify-between items-start">
                               <div>
@@ -146,7 +248,7 @@ const CartPage = () => {
                                 <X size={20} />
                               </button>
                             </div>
-    
+
                             <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                               <div className="flex items-center gap-2">
                                 <button
@@ -176,7 +278,7 @@ const CartPage = () => {
                                   <Plus size={16} />
                                 </button>
                               </div>
-    
+
                               <div className="text-right">
                                 <p className="text-2xl font-bold text-white">
                                   €{(item.price * item.quantity).toFixed(2)}
@@ -194,8 +296,8 @@ const CartPage = () => {
                     </div>
                   ))
                 }
-                </div>
-              
+              </div>
+
             )}
 
 

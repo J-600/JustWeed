@@ -420,16 +420,16 @@ app.post("/update-cart", (req,res) => {
     return res.status(401).json({ error: "Utente non autenticato" });
   } else {
     const { id, qnt, del } = req.body;
-
-    fetch("http://localhost/Justweed/backend/includes/insert-cart.php", {
+    // console.log(qnt)
+    fetch("http://localhost/Justweed/backend/includes/modify-cart.php", {
       method: "POST",
       headers: { "Content-type": "application/x-www-form-urlencoded" },
-      body: `id=${id}&user=${req.session.email}&qnt=${qnt}&del=${del}`
+      body: `id=${id}&user=${req.session.email}&qnt=${qnt}&del=${del ?? 1}`
     })
     .then(response => response.json())
     .then(data => {
       if(data.response === 200){
-        res.json();
+        res.json(data.data);
       } else {
         res.status(data.response).json(data.data);
       }
@@ -450,8 +450,8 @@ app.post("/product", (req, res) => {
     .then(response => response.json())
     .then(data => {
       console.log(data)
-      if (data.message && data.response === 200) {
-        res.json(data.data);
+      if (data.response === 200) {
+        res.json(data.data[0]);
       } else if (!data.message) {
         res.json(data);
       }
