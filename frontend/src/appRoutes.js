@@ -20,6 +20,7 @@ import Partnership from './components/pages/partnership/partnership';
 import CertificazioniPage from './components/pages/certificazioni/certificazionipage';
 import PrivacyPolicyPage from './components/pages/privacypolicy/privacypolicy';
 import TerminiPage from './components/pages/termini/termini';
+import CookiePage from './components/pages/cookie/cookiepage';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -52,6 +53,7 @@ function AppRoutes() {
         <Route path='/about/certificazioni' element={<CertificazioniPage/>}/>
         <Route path='/about/privacy' element={<PrivacyPolicyPage/>}/>
         <Route path='/about/termini' element={<TerminiPage/>}/>
+        <Route path='/about/cookie' element={<CookiePage/>}/>
       </Routes>
     </Elements>
 

@@ -51,7 +51,7 @@ export default function Footer() {
                         <ul className="space-y-2">
                             <li><a href="/about/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
                             <li><a href="/about/termini" className="text-gray-400 hover:text-white transition-colors">Termini di servizio</a></li>
-                            <li><a href="/cookie" className="text-gray-400 hover:text-white transition-colors">Preferenze cookie</a></li>
+                            <li><a href="/about/cookie" className="text-gray-400 hover:text-white transition-colors">Preferenze cookie</a></li>
                         </ul>
                     </div>
 
@@ -74,7 +74,7 @@ export default function Footer() {
                 <div className="border-t border-blue-900/30 pt-8">
                     <div className="text-center text-gray-400">
                         <p>© 2025 JustWeed. Tutti i diritti riservati |
-                            <a href="/termini" className="hover:text-white ml-2">Termini e Condizioni</a>
+                            <a href="/about/termini" className="hover:text-white ml-2">Termini e Condizioni</a>
                         </p>
                         <p className="mt-2 text-sm">P.IVA 01234567890 | Registro Imprese Milano</p>
                     </div>
