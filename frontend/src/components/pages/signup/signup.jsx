@@ -50,7 +50,6 @@ function Signup() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col items-center justify-center p-4">
-            {/* <TopBar></TopBar> */}
             <div className="flex-grow flex items-center justify-center w-full">
                 <div className="card w-full max-w-md bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
                     <div className="card-body space-y-6 p-8">

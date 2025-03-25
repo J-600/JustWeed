@@ -12,6 +12,12 @@ import Product from './components/pages/single-product/product';
 import AboutPage from './components/pages/aboutpage/aboutpage';
 import CollaboratoriPage from './components/pages/collaboratoriPage/collaboratoripage';
 import CartPage from './components/pages/cart/cart';
+import BlogPage from './components/pages/blog/blogpage';
+import Contatti from './components/pages/contatti/contatti';
+import Sostenibilita from './components/pages/sostenibilità/sostenibilitapage';
+import FootPrintPage from './components/pages/footprint/footprintPage';
+import Partnership from './components/pages/partnership/partnership';
+import CertificazioniPage from './components/pages/certificazioni/certificazionipage';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -36,6 +42,12 @@ function AppRoutes() {
         <Route path='/cart' element={<CartPage/>}/>
         <Route path='/about' element={<AboutPage/>}/>
         <Route path='/about/collaboratori' element={<CollaboratoriPage/>}/>
+        <Route path='/about/blog' element={<BlogPage/>}/>
+        <Route path='/about/contatti' element={<Contatti/>}/>
+        <Route path='/about/sostenibilita' element={<Sostenibilita/>}/>
+        <Route path='/about/footprint' element={<FootPrintPage/>}/>
+        <Route path='/about/partnership' element={<Partnership/>}/>
+        <Route path='/about/certificazioni' element={<CertificazioniPage/>}/>
       </Routes>
     </Elements>
 
