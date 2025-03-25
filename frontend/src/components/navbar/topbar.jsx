@@ -223,7 +223,7 @@ export default function Topbar({ onUploadCart }) {
                 </span>
               </div>
               <div
-  onClick={() => navigate("/aboutus")}
+  onClick={() => navigate("/about")}
   className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-[#2A3444] cursor-pointer transition-all duration-300"
 >
   <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">

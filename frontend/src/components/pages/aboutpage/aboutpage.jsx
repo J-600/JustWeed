@@ -1,5 +1,6 @@
 import { Leaf, Users, Shield, Truck, Heart, Instagram, Linkedin, Twitter } from 'lucide-react';
 import TopBar from "../../navbar/topbar";
+import Footer from "../../navbar/footer";
 import { useState } from 'react';
 
 const AboutPage = () => {
@@ -28,9 +29,9 @@ const AboutPage = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
-            <TopBar id="start" />
+            <TopBar />
 
-            <div className="w-full px-4 sm:px-8 pt-20 pb-14">
+            <div id='start' className="w-full px-4 sm:px-8 pt-20 pb-14">
                 <div className="max-w-7xl mx-auto">
                     <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
                         <div className="card-body space-y-8 py-12">
@@ -56,11 +57,21 @@ const AboutPage = () => {
                                     {members.map((item) => (
                                         <div key={item} className="card bg-[#2A3447] border border-blue-900/30 hover:border-purple-500/50 transition-all group">
                                             <div className="card-body items-center text-center">
-                                                <div className="avatar mb-4">
-                                                    <div className="w-24 rounded-full border-2 border-blue-500/30">
-                                                        <img src={item.img} alt="Team member" />
+                                                {item.img ? (
+                                                    <div className="avatar mb-4">
+                                                        <div className="w-24 rounded-full border-2 border-blue-500/30">
+                                                            {<img src={item.img} alt="Team member" />}
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                ) :
+                                                    (
+                                                    <div className="avatar mb-4 placeholder">
+                                                        <div className="bg-blue-900/30 text-blue-400 rounded-full w-24 border-2 border-blue-500/30">
+                                                            <span className='text-4xl'>{item.nome.split(' ').map(n => n[0]).join('') +  item.cognome.split(' ').map(n => n[0]).join('')}</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+
                                                 <h3 className="text-xl font-bold text-white mb-1">{item.nome + " " + item.cognome}</h3>
                                                 <p className="text-blue-400 mb-4">{item.ruolo}</p>
                                                 <div className="flex gap-3 justify-center">
@@ -142,67 +153,7 @@ const AboutPage = () => {
                     </div>
                 </div>
             </div>
-            <div className="border-t border-blue-900/30 py-12 mt-auto bg-[#1E2633]">
-                <div className="max-w-6xl mx-auto px-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-                        {/* Sezione Azienda */}
-                        <div>
-                            <h3 className="text-white font-semibold mb-4">Azienda</h3>
-                            <ul className="space-y-2">
-                                <li><a href="#start" className="text-gray-400 hover:text-white transition-colors">Chi siamo</a></li>
-                                <li><a href="/collaboratori" className="text-gray-400 hover:text-white transition-colors">Collaboratori</a></li>
-                                <li><a href="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-                                <li><a href="/contatti" className="text-gray-400 hover:text-white transition-colors">Contatti</a></li>
-                            </ul>
-                        </div>
-
-                        {/* Sezione Impatto */}
-                        <div>
-                            <h3 className="text-white font-semibold mb-4">Impatto</h3>
-                            <ul className="space-y-2">
-                                <li><a href="/impatto-ambientale" className="text-gray-400 hover:text-white transition-colors">Report sostenibilità</a></li>
-                                <li><a href="/carbon-footprint" className="text-gray-400 hover:text-white transition-colors">Impronta ecologica</a></li>
-                                <li><a href="/partnership" className="text-gray-400 hover:text-white transition-colors">Partnership green</a></li>
-                                <li><a href="/certificazioni" className="text-gray-400 hover:text-white transition-colors">Certificazioni</a></li>
-                            </ul>
-                        </div>
-
-                        {/* Sezione Legal */}
-                        <div>
-                            <h3 className="text-white font-semibold mb-4">Legal</h3>
-                            <ul className="space-y-2">
-                                <li><a href="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                                <li><a href="/termini" className="text-gray-400 hover:text-white transition-colors">Termini di servizio</a></li>
-                                <li><a href="/cookie" className="text-gray-400 hover:text-white transition-colors">Preferenze cookie</a></li>
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 className="text-white font-semibold mb-4">Seguici</h3>
-                            <div className="flex gap-2">
-                                {socialLinks.map(({ Icon, href, color, hoverColor }) => (
-                                    <a
-                                        key={href}
-                                        href={href}
-                                        className={`btn btn-square btn-sm border border-blue-900/30 bg-[#1E2633] ${color} hover:${hoverColor} hover:text-white`}
-                                    >
-                                        <Icon stroke="currentColor" size={18} />
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="border-t border-blue-900/30 pt-8">
-                        <div className="text-center text-gray-400">
-                            <p>© 2023 JustWeed. Tutti i diritti riservati |
-                                <a href="/termini" className="hover:text-white ml-2">Termini e Condizioni</a>
-                            </p>
-                            <p className="mt-2 text-sm">P.IVA 01234567890 | Registro Imprese Milano</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Footer />
         </div>
     );
 };
