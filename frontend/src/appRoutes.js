@@ -9,6 +9,7 @@ import Purchase from './components/pages/purchase/purchase';
 import Weeder from './components/pages/weeder/weeder'
 import PreWeeder from './components/pages/pre-weeder/preWeeder';
 import Product from './components/pages/single-product/product';
+import AboutPage from './components/pages/aboutpage/aboutpage';
 import CartPage from './components/pages/cart/cart';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
@@ -32,6 +33,7 @@ function AppRoutes() {
         <Route path='/become-weeder' element={<Weeder />} />
         <Route path='/products/:id' element={<Product/>}/>
         <Route path='/cart' element={<CartPage/>}/>
+        <Route path='/aboutus' element={<AboutPage/>}/>
       </Routes>
     </Elements>
 

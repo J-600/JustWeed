@@ -190,7 +190,7 @@ export default function Topbar({ onUploadCart }) {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
-                    className="h-5 w-5 text-blue-400"
+                    className="h-5 w-5 text-purple-400"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
@@ -222,6 +222,30 @@ export default function Topbar({ onUploadCart }) {
                   Acquisti Recenti
                 </span>
               </div>
+              <div
+  onClick={() => navigate("/aboutus")}
+  className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-[#2A3444] cursor-pointer transition-all duration-300"
+>
+  <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className="h-5 w-5 text-purple-400"
+    >
+      {/* <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> */}
+
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg> 
+  </div>
+  <span className="text-white group-hover:text-purple-400 transition-colors duration-300">
+    About us
+  </span>
+</div>
             </nav>
           </div>
 

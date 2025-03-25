@@ -12,6 +12,8 @@ function Product() {
     const [product, setProduct] = useState([])
     const [comments, setComments] = useState([])
     const [reviewTitle, setReviewTitle] = useState([])
+    const [cartSuccess, setCartSuccess] = useState("");
+    const [cartError, setCartError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [selectRating, setSelectedRating] = useState(5)
@@ -23,12 +25,50 @@ function Product() {
     const [loadingComments, setLoadingComments] = useState(true);
     const navigate = useNavigate();
 
-    function updateRating() {
+    function updateRating(comments) {
         const somma = comments.reduce((acc, commento) => acc + commento.star, 0);
         const media = somma / comments.length;
         const mediaArrotondata = Math.round(media * 2) / 2;
         setRecStar(mediaArrotondata);
     }
+    const triggerUploadCart = () => {
+        window.dispatchEvent(new Event("triggerUploadCart"));
+    };
+
+
+    const handleAddToCart = async (productId) => {
+        try {
+            const res = await fetch("http://localhost:3000/insert-cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    product: productId,
+                    qnt: 1
+                }),
+                credentials: "include"
+            })
+            const data = await res.json();
+            // console.log(data,res)
+            if (res.status !== 200) {
+                setCartError("prodotto non aggiunto");
+                return;
+            }
+
+
+
+            setCartSuccess(data);
+            setTimeout(() => setCartSuccess(""), 3000);
+            setCartError("");
+
+            triggerUploadCart()
+        }
+        catch (error) {
+            console.error("Errore durante la richiesta:", error);
+            setCartError("An error occurred. Please try again.");
+            setTimeout(() => setCartError(""), 3000);
+        }
+    };
+
 
     useEffect(() => {
 
@@ -72,7 +112,7 @@ function Product() {
                 setProduct(productData)
                 setComments(commentsData)
                 setTags(tagsData)
-                updateRating()
+                updateRating(commentsData)
 
 
             }
@@ -123,7 +163,7 @@ function Product() {
                 const commentsData = await commentsRes.json();
                 setComments(commentsData);
                 setLoadingComments(false)
-                updateRating()
+                updateRating(commentsData)
             }
 
         } catch (error) {
@@ -138,6 +178,23 @@ function Product() {
             <div className="w-full px-2 sm:px-4 pt-20 pb-14">
                 <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
                     <div className="card-body space-y-4">
+                        {cartSuccess && (
+                            <div className="alert alert-success shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>{cartSuccess}</span>
+                            </div>
+                        )}
+
+                        {cartError && (
+                            <div className="alert alert-error shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>{cartError}</span>
+                            </div>
+                        )}
                         {loading ? (
                             <Loader />
                         ) : product.length === 0 ? (
@@ -213,7 +270,7 @@ function Product() {
                                                             <input
                                                                 type="radio"
                                                                 name="rating"
-                                                                className="mask mask-star-2 mask-half-1 bg-yellow-400"
+                                                                className="mask mask-star-2 mask-half-1 bg-yellow-400 cursor-default"
                                                                 value={star - 0.5}
                                                                 checked={star - 0.5 === recStar}
                                                                 disabled
@@ -221,7 +278,7 @@ function Product() {
                                                             <input
                                                                 type="radio"
                                                                 name="rating"
-                                                                className="mask mask-star-2 mask-half-2 bg-yellow-400"
+                                                                className="mask mask-star-2 mask-half-2 bg-yellow-400 cursor-default"
                                                                 value={star}
                                                                 checked={star === recStar}
                                                                 disabled
@@ -264,6 +321,7 @@ function Product() {
                                                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-2" />
                                                 </button>
                                                 <button
+                                                    onClick={() => handleAddToCart(product.id)}
                                                     type="button"
                                                     className="btn btn-outline w-full text-sm sm:text-base text-white border-blue-500 hover:bg-blue-500 hover:text-white transform transition-all duration-300 hover:scale-[1.02]"
                                                 >
@@ -404,6 +462,7 @@ function Product() {
                                                             <div key={index} className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-3 gap-2">
                                                                     <div className="flex items-center space-x-2">
+                                                                        <span className="pl-2 sm:pl-3 text-white text-sm font-bold sm:text-lg">{comment.user} </span>
                                                                         <span className="text-yellow-400 text-base sm:text-lg">
                                                                             {Array.from({ length: 5 }, (_, i) => {
                                                                                 const fullStars = Math.floor(comment.star);
@@ -421,7 +480,7 @@ function Product() {
                                                                         </span>
                                                                         <span className="text-gray-400 text-xs sm:text-sm">• {new Date(comment.date).toLocaleDateString()}</span>
                                                                     </div>
-                                                                    <span className="text-blue-400 text-xs sm:text-sm">{comment.user}</span>
+
                                                                 </div>
                                                                 <div className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                                                     <h4 className="text-lg font-bold text-white mb-2">{comment.title}</h4>

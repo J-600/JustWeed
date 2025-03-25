@@ -226,18 +226,21 @@ const CartPage = () => {
                       <div className="card-body">
                         <div className="flex flex-col sm:flex-row gap-6">
                           <div className="relative w-full sm:w-48 flex-shrink-0">
+                            <Link to={"/products/"+ item.id}>
                             <img
                               src={item.img}
                               alt={item.name}
-                              className="w-full h-32 sm:h-48 object-cover rounded-xl border border-blue-900/30"
+                              className="w-full h-32 sm:h-48 object-cover rounded-xl border border-blue-900/30 hover:scale-[1.02] transition-transform duration-300"
                             />
-                          </div>
+                          
+                            </Link>
+                            </div>
 
                           <div className="flex-1">
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="text-xl text-white font-semibold hover:text-blue-400 transition-colors">
-                                  <Link to={`/product?id=${item.id}`}>{item.name}</Link>
+                                  <Link to={"/products/" + item.id}>{item.name}</Link>
                                 </h3>
                                 <p className="text-gray-400 text-sm mt-1">Venduto da: {item.seller}</p>
                               </div>
@@ -315,14 +318,11 @@ const CartPage = () => {
                       <span className="text-gray-400">Spedizione:</span>
                       <span className="text-white">€0.00</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-400">Tasse:</span>
-                      <span className="text-white">€{(total * 0.22).toFixed(2)}</span>
-                    </div>
-                    <div className="divider my-4 border-blue-900/30"></div>
+                      <div className="h-px w-full rounded-full bg-blue-900/50 my-4"></div>
+
                     <div className="flex justify-between text-xl font-bold">
                       <span className="text-white">Totale:</span>
-                      <span className="text-white">€{(total * 1.22).toFixed(2)}</span>
+                      <span className="text-white">€{(total).toFixed(2)}</span>
                     </div>
 
                     <button className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 mt-6">
