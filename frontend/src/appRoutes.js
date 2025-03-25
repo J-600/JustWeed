@@ -18,6 +18,8 @@ import Sostenibilita from './components/pages/sostenibilità/sostenibilitapage';
 import FootPrintPage from './components/pages/footprint/footprintPage';
 import Partnership from './components/pages/partnership/partnership';
 import CertificazioniPage from './components/pages/certificazioni/certificazionipage';
+import PrivacyPolicyPage from './components/pages/privacypolicy/privacypolicy';
+import TerminiPage from './components/pages/termini/termini';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -48,6 +50,8 @@ function AppRoutes() {
         <Route path='/about/footprint' element={<FootPrintPage/>}/>
         <Route path='/about/partnership' element={<Partnership/>}/>
         <Route path='/about/certificazioni' element={<CertificazioniPage/>}/>
+        <Route path='/about/privacy' element={<PrivacyPolicyPage/>}/>
+        <Route path='/about/termini' element={<TerminiPage/>}/>
       </Routes>
     </Elements>
 
