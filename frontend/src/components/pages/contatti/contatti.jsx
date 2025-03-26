@@ -92,19 +92,19 @@ const Contatti = () => {
 
         <div className="tabs tabs-boxed bg-[#1E2633] border border-blue-900/30 max-w-md mx-auto mb-12">
           <button 
-            className={`tab flex-1 ${activeTab === 'scrivici' ? 'tab-active bg-gradient-to-r from-blue-500/20 to-purple-500/20' : ''}`}
+            className={`tab text-gray-500 flex-1 ${activeTab === 'scrivici' ? 'tab-active bg-gradient-to-r from-blue-500/20 to-purple-500/20' : ''}`}
             onClick={() => setActiveTab("scrivici")}
           >
             Scrivici
           </button> 
           <button 
-            className={`tab flex-1 ${activeTab === 'uffici' ? 'tab-active bg-gradient-to-r from-blue-500/20 to-purple-500/20' : ''}`}
+            className={`tab text-gray-500 flex-1 ${activeTab === 'uffici' ? 'tab-active bg-gradient-to-r from-blue-500/20 to-purple-500/20' : ''}`}
             onClick={() => setActiveTab("uffici")}
           >
             Uffici
           </button>
           <button 
-            className={`tab flex-1 ${activeTab === 'faq' ? 'tab-active bg-gradient-to-r from-blue-500/20 to-purple-500/20' : ''}`}
+            className={`tab text-gray-500 flex-1 ${activeTab === 'faq' ? 'tab-active bg-gradient-to-r from-blue-500/20 to-purple-500/20' : ''}`}
             onClick={() => setActiveTab("faq")}
           >
             FAQ

@@ -75,7 +75,7 @@ const CookiePage = () => {
                 <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                   Essenziali
                 </span>
-                <span className="badge badge-sm bg-blue-900/20 text-blue-400">Obbligatori</span>
+                <span className="badge badge-sm bg-blue-900/20 text-blue-400 p-2.5">Obbligatori</span>
               </div>
               <div className="collapse-content">
                 <div className="text-gray-300 space-y-4">

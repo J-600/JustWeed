@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Pencil, ChevronDown, Plus, Calendar, FileText, IdCard } from "lucide-react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -26,6 +26,16 @@ const CARD_ELEMENT_OPTIONS = {
 };
 
 function Weeder() {
+
+  const [name, setName] = useState("")
+  const [cognome, setCognome] = useState("")
+  const [cf, setCf] = useState("")
+  const [address, setAddress] = useState("")
+  const [cap, setCap] = useState("")
+  const [city, setCity] = useState("")
+  const [pIva, setPIva] = useState("")
+  const [descrizione, setDescrizione] = useState("")
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
       <TopBar />
@@ -45,20 +55,20 @@ function Weeder() {
           <div className="space-y-6">
             <SectionCard title="Dati personali" icon={<User className="w-5 h-5" />}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField icon={<IdCard />} placeholder="Nome *" required />
-                <InputField icon={<IdCard />} placeholder="Cognome *" required />
+                <InputField icon={<IdCard />} value={name} setValue={setName} placeholder="Nome *" required />
+                <InputField icon={<IdCard />} value={cognome} setValue={setCognome} placeholder="Cognome *" required />
                 <div className="md:col-span-2">
-                  <InputField icon={<FileText />} placeholder="Codice Fiscale *" required />
+                  <InputField icon={<FileText />} value={cf} setValue={setCf} placeholder="Codice Fiscale *" required />
                 </div>
               </div>
             </SectionCard>
 
             <SectionCard title="Indirizzo di fatturazione" icon={<MapPin className="w-5 h-5" />}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField icon={<MapPin />} placeholder="Indirizzo *" required />
-                <InputField icon={<Hash />} placeholder="CAP *" required />
+                <InputField icon={<MapPin />} value={address} setValue={setAddress} placeholder="Indirizzo *" required />
+                <InputField icon={<Hash />} value={cap} setValue={setCap} placeholder="CAP *" required />
                 <div className="md:col-span-2">
-                  <InputField icon={<Building2 />} placeholder="Città *" required />
+                  <InputField icon={<Building2 />} value={city} setValue={setCity} placeholder="Città *" required />
                 </div>
               </div>
             </SectionCard>
@@ -72,13 +82,15 @@ function Weeder() {
 
             <SectionCard title="Dati aziendali" icon={<Building2 className="w-5 h-5" />}>
               <div className="space-y-4">
-                <InputField icon={<FileText />} placeholder="Partita IVA *" required />
+                <InputField icon={<FileText />} value={pIva} setValue={setPIva} placeholder="Partita IVA *" required />
                 <div className="relative">
                   <textarea
                     className="w-full bg-[#1E2633] border border-blue-900/30 rounded-lg px-4 py-3 pl-11
                       text-blue-100 placeholder-blue-400/70 focus:outline-none focus:ring-2 
                       focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                     rows="3"
+                    value={descrizione}
+                    setValue={setDescrizione}
                     placeholder="Descrizione attività..."
                   />
                   <Pencil className="absolute left-3 top-3.5 w-5 h-5 text-blue-400/70" />
@@ -113,13 +125,15 @@ const SectionCard = ({ title, icon, children }) => (
   </div>
 );
 
-const InputField = ({ icon, placeholder, required = false, ...props }) => (
+const InputField = ({ icon, placeholder, required = false, value, setValue, ...props }) => (
   <div className="relative">
     <input
       className="w-full bg-[#1E2633] border border-blue-900/30 rounded-lg px-4 py-3 pl-11
         text-blue-100 placeholder-blue-400/70 focus:outline-none focus:ring-2 
         focus:ring-blue-500/50 focus:border-blue-500 transition-all"
       placeholder={placeholder + (required ? ' *' : '')}
+      value={value}
+      onChange={ (e) => setValue(e.target.value)}
       required={required}
       {...props}
     />
