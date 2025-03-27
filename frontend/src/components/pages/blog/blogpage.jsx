@@ -3,7 +3,6 @@ import { useState, useMemo, useCallback } from "react";
 import TopBar from "../../navbar/topbar";
 import Footer from "../../navbar/footer";
 
-// Sposta i dati costanti fuori dal componente
 const CATEGORIES = [
   {
     "name": "Normativa",
@@ -175,7 +174,6 @@ const BlogPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("Tutti");
   const [featuredPostExpanded, setFeaturedPostExpanded] = useState(false);
 
-  // Ottimizzazione: useMemo per evitare ricalcoli non necessari
   const filteredPosts = useMemo(() => {
     return POSTS.filter(post => {
       const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -188,7 +186,6 @@ const BlogPage = () => {
   const featuredPosts = useMemo(() => filteredPosts.filter(post => post.featured), [filteredPosts]);
   const regularPosts = useMemo(() => filteredPosts.filter(post => !post.featured), [filteredPosts]);
 
-  // Ottimizzazione: useCallback per funzioni handler
   const handleSearchChange = useCallback((e) => setSearchTerm(e.target.value), []);
   const handleCategoryChange = useCallback((e) => setSelectedCategory(e.target.value), []);
   const toggleFeaturedPost = useCallback(() => setFeaturedPostExpanded(prev => !prev), []);
@@ -285,7 +282,6 @@ const BlogPage = () => {
   );
 };
 
-// Componenti separati per migliorare la performance
 const FeaturedPost = ({ post, isExpanded, onToggle, categoryColor }) => (
   <div className="bg-[#1E2633] rounded-xl border border-blue-900/30 mb-8 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
     <div className="flex flex-col lg:flex-row">

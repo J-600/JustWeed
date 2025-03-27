@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Pencil, ChevronDown, Plus, Calendar, FileText, IdCard } from "lucide-react";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+// import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Elements, CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import TopBar from "../../navbar/topbar";
 import Loader from "../../loader/loader";
 
@@ -27,6 +28,8 @@ const CARD_ELEMENT_OPTIONS = {
 
 function Weeder() {
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [name, setName] = useState("")
   const [cognome, setCognome] = useState("")
   const [cf, setCf] = useState("")
@@ -35,6 +38,38 @@ function Weeder() {
   const [city, setCity] = useState("")
   const [pIva, setPIva] = useState("")
   const [descrizione, setDescrizione] = useState("")
+
+  const handleSubmit = async(e) => {
+
+    try {
+      e.preventDefault();
+      if (!stripe || !elements) return;
+      setErrorMessage('');
+
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        setErrorMessage("Errore nel caricamento del modulo di pagamento.");
+        return;
+      }
+
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+        billing_details: { name: cardholderName },
+      });
+
+      if (error) throw new Error(error.message);
+      if (!paymentMethod) throw new Error("Errore nella creazione del metodo di pagamento");
+
+      
+
+      console.log("a", name, cognome, cf, address, cap, city, pIva, descrizione)
+    } catch (err) {
+      setErrorMessage(err.message || 'Si è verificato un errore durante la verifica');
+    }
+  }
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
@@ -90,7 +125,7 @@ function Weeder() {
                       focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                     rows="3"
                     value={descrizione}
-                    setValue={setDescrizione}
+                    onChange={(e) => setDescrizione(e.target.value)}
                     placeholder="Descrizione attività..."
                   />
                   <Pencil className="absolute left-3 top-3.5 w-5 h-5 text-blue-400/70" />
@@ -98,10 +133,11 @@ function Weeder() {
               </div>
             </SectionCard>
 
-            <button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4
+            <button onClick={handleSubmit} className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4
               rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transform transition-all 
               duration-300 hover:scale-[1.02] active:scale-95 shadow-xl hover:shadow-blue-500/20
-              flex items-center justify-center space-x-2 group">
+              flex items-center justify-center space-x-2 group"
+            >
               <span>Completa Registrazione</span>
               <ChevronDown className="w-5 h-5 transform group-hover:translate-y-0.5 transition-transform" />
             </button>
@@ -133,7 +169,7 @@ const InputField = ({ icon, placeholder, required = false, value, setValue, ...p
         focus:ring-blue-500/50 focus:border-blue-500 transition-all"
       placeholder={placeholder + (required ? ' *' : '')}
       value={value}
-      onChange={ (e) => setValue(e.target.value)}
+      onChange={(e) => setValue(e.target.value)}
       required={required}
       {...props}
     />
