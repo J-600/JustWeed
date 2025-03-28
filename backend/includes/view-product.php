@@ -13,9 +13,7 @@ try {
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($result)) {
-        throw new Exception("Non sono presenti prodotti");
-    } else {
+    if (!empty($result)) {
         foreach ($result as $key => $row) {
             if (!empty($row["img"])) {
                 $result[$key]["img"] = "data:image/png;base64," . base64_encode($row["img"]);
