@@ -21,6 +21,7 @@ import CertificazioniPage from './components/pages/certificazioni/certificazioni
 import PrivacyPolicyPage from './components/pages/privacypolicy/privacypolicy';
 import TerminiPage from './components/pages/termini/termini';
 import CookiePage from './components/pages/cookie/cookiepage';
+import NotFoundPage from './components/pages/notfount/notFoundPage';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -54,6 +55,7 @@ function AppRoutes() {
         <Route path='/about/privacy' element={<PrivacyPolicyPage/>}/>
         <Route path='/about/termini' element={<TerminiPage/>}/>
         <Route path='/about/cookie' element={<CookiePage/>}/>
+        <Route path='*' element={<NotFoundPage/>}/>
       </Routes>
     </Elements>
 
