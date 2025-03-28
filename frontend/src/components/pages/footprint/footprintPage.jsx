@@ -15,10 +15,10 @@ const FootPrintPage = () => {
     });
 
     const historicalData = {
-        labels: ['2019', '2020', '2021', '2022', '2023'],
+        labels: ['2021', '2022', '2023', '2024', '2025'],
         datasets: [{
             label: 'Impronta Carbonio (ton CO₂eq)',
-            data: [650, 580, 520, 480, 420],
+            data: [1650, 1480, 320, 260, 80],
             borderColor: '#6366f1',
             backgroundColor: '#4338ca',
             tension: 0.4,
@@ -67,7 +67,7 @@ const FootPrintPage = () => {
                         {
                             icon: <Co2 size={24} className="text-blue-400" />,
                             title: "Carbon Footprint",
-                            value: "420 t",
+                            value: "80 t",
                             description: "CO₂eq annue",
                             chart: <BarChart2 className="text-purple-400" size={36} />
                         },
@@ -108,7 +108,7 @@ const FootPrintPage = () => {
                     <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
                         <Clock className="text-purple-400" size={28} />
                         <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                            Progresso Storico 2019-2023
+                            Progresso Storico 2021-2025
                         </span>
                     </h2>
                     <div className="h-64">

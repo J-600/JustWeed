@@ -30,6 +30,7 @@ function Weeder() {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false)
   const [name, setName] = useState("")
   const [cognome, setCognome] = useState("")
   const [cf, setCf] = useState("")
@@ -38,17 +39,23 @@ function Weeder() {
   const [city, setCity] = useState("")
   const [pIva, setPIva] = useState("")
   const [descrizione, setDescrizione] = useState("")
+  const stripe = useStripe();
+  const elements = useElements();
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
+    const cardholderName = name + " " + cognome
+
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setIsProcessing(true);
+    setErrorMessage('');
 
     try {
-      e.preventDefault();
-      if (!stripe || !elements) return;
-      setErrorMessage('');
-
       const cardElement = elements.getElement(CardElement);
       if (!cardElement) {
         setErrorMessage("Errore nel caricamento del modulo di pagamento.");
+        setIsProcessing(false);
         return;
       }
 
@@ -61,11 +68,46 @@ function Weeder() {
       if (error) throw new Error(error.message);
       if (!paymentMethod) throw new Error("Errore nella creazione del metodo di pagamento");
 
-      
 
-      console.log("a", name, cognome, cf, address, cap, city, pIva, descrizione)
+      const verifyResponse = await fetch('http://localhost:3000/verify-card', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ paymentMethodId: paymentMethod.id })
+      });
+
+      const verifyResult = await verifyResponse.json();
+      if (!verifyResponse.ok) throw new Error(verifyResult.message || 'Errore nella verifica della carta');
+
+      const cardData = {
+        last4: paymentMethod.card.last4,
+        expiry: `${paymentMethod.card.exp_month}/${paymentMethod.card.exp_year}`,
+        name: cardholderName,
+        paymentMethodId: paymentMethod.id,
+        brand: paymentMethod.card.brand
+      };
+
+      const addRes = await fetch("http://localhost:3000/add-card", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          metodoPagamento: cardData.paymentMethodId,
+          numero: cardData.last4,
+          scadenza: cardData.expiry,
+          nome_titolare: cardData.name,
+          circuito: cardData.brand
+        }),
+        credentials: 'include'
+      });
+
+      if (addRes.status !== 200) throw new Error({ error: "Errore nel salvataggio della carta" });
+
+
     } catch (err) {
       setErrorMessage(err.message || 'Si è verificato un errore durante la verifica');
+    }
+    finally {
+      setIsProcessing(false);
     }
   }
 
