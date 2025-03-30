@@ -21,14 +21,13 @@ try {
                 $result[$key]["img"] = null;
             }
         }
-
-        $response = [
-            "response" => 200,
-            "message" => true,
-            "data" => $result
-        ];
-        echo json_encode($response);
     }
+    $response = [
+        "response" => 200,
+        "message" => true,
+        "data" => $result
+    ];
+    echo json_encode($response);
 } catch (PDOException $e) {
     $response = [
         "response" => 500,

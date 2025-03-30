@@ -474,7 +474,7 @@ app.get("/products", (req, res) => {
         if (data.message && data.response === 200) {
           res.json(data.data);
         } else if (!data.message) {
-          res.json(data);
+          res.status(data.response).json(data.data);
         }
       })
       .catch(error => {
@@ -578,10 +578,8 @@ app.get("/view-tags", (req, res) => {
         console.log(data)
         if (data.response === 200 && data.message) {
           res.json(data.data)
-        } else if (data.response === 500) {
-          res.status(500).json("errore nel db");
         } else {
-          res.status(201).json(data.data)
+          res.status(data.response).json(data.data)
         }
       })
       .catch(error => {

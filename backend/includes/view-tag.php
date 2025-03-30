@@ -17,9 +17,6 @@ try{
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if(empty($result))
-        throw new Exception("Non sono presenti tag");
-
     
     $response = [
         "response" => 200,
@@ -41,7 +38,7 @@ try{
     echo json_encode($response);
 } catch (Exception $e) {
     $response = [
-        "response" => 200,
+        "response" => 500,
         "message" => false,
         "data" => $e->getMessage()
     ];

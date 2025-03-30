@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Menu, Edit, User, CreditCard, MapPin, Trash2, Building2, Hash, Pencil, ChevronDown, Plus, Calendar, FileText, IdCard } from "lucide-react";
+import { User, CreditCard, MapPin, Building2, Hash, Pencil, ChevronDown, FileText, IdCard } from "lucide-react";
 // import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { Elements, CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {  CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import TopBar from "../../navbar/topbar";
-import Loader from "../../loader/loader";
+// import Loader from "../../loader/loader";
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
