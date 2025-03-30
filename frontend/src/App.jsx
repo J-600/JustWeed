@@ -1,233 +1,171 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
-import Loader from './components/loader/loader';
-import CryptoJS from 'crypto-js';
+import {
+  FaLeaf,
+  FaLock,
+  FaFlask,
+  FaShieldAlt,
+  FaUser,
+  FaChevronRight,
+  FaBirthdayCake
+} from 'react-icons/fa';
 
-function App() {
-  const [mail, setMail] = useState('');
-  const [password, setPassword] = useState('');
-  const [responseMessage, setResponseMessage] = useState(null);
-  const [responseType, setResponseType] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+const LandingPage = () => {
+  const [showAgeModal, setShowAgeModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('http://localhost:3000/products', {
-          credentials: 'include',
-        });
-
-        if (res.ok) {
-          const sessionRes = await fetch('http://localhost:3000/session', {
-            credentials: 'include',
-          });
-
-          if (sessionRes.ok) {
-            const sessionData = await sessionRes.json();
-            navigate('/products', {
-              state: {
-                email: sessionData.email,
-                username: sessionData.username
-              }
-            });
-          }
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.log('Not authenticated');
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, [navigate]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
-
-    try {
-      const res = await fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ "username": mail, "password": hashedPassword }),
-        credentials: 'include',
-      });
-
-      const data = await res.json();
-      if (!res.ok)
-        throw new Error()
-      console.log(data)
-      if (data.email) {
-        setResponseMessage("Benvenuto");
-        setResponseType('success');
-        const email = data.email;
-        const username = data.username;
-        setTimeout(() => {
-          navigate('/products', { state: { email, username } });
-        }, 1000);
-      } else {
-        setResponseMessage(data);
-        setResponseType('error'); 
-      }
-    } catch (error) {
-      // console.error('Request error:', error);
-      
-      setResponseMessage('Errore di rete');
-      setResponseType('error'); 
+    if (!localStorage.getItem('ageVerified')) {
+      setShowAgeModal(true);
     }
-  };
+  }, []);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex items-center justify-center">
-        <Loader />
-      </div>
-    );
-  }
+  const handleAgeVerification = useCallback((accepted) => {
+    if (accepted) {
+      setShowAgeModal(false);
+      localStorage.setItem('ageVerified', 'true');
+    } else {
+      window.location.href = 'https://google.com';
+    }
+  }, []);
+
+  const features = [
+    {
+      icon: <FaLeaf className="w-8 h-8" />,
+      title: "Prodotti Certificati",
+      description: "Tutti gli articoli sono testati in laboratorio e conformi alla legge italiana"
+    },
+    {
+      icon: <FaFlask className="w-8 h-8" />,
+      title: "Analisi Dettagliate",
+      description: "Report completi su THC, CBD e composizione per ogni prodotto"
+    },
+    {
+      icon: <FaShieldAlt className="w-8 h-8" />,
+      title: "Acquisto Sicuro",
+      description: "Pagamenti criptati e consegna anonima con tracciamento in tempo reale"
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col items-center justify-center p-4">
-      <div className="flex-grow flex items-center justify-center w-full">
-        <div className="card w-full max-w-md bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
-          <div className="card-body space-y-6 p-8">
-            <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
-              JustWeed
-            </h1>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="form-control">
-                <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    fill="gray"
-                    className="h-4 w-4 opacity-70 ">
-                    <path
-                      d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                    <path
-                      d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                  </svg>
-                  <input
-                    type="text"
-                    className="grow text-white placeholder-gray-400"
-                    placeholder="Username or Email"
-                    value={mail}
-                    onChange={(e) => setMail(e.target.value)}
-                    required
-                  />
-                </label>
-              </div>
-
-              <div className="form-control">
-                <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50] ">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    fill="gray"
-                    className="h-4 w-4 opacity-70"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <input
-                    type={isPasswordVisible ? "text" : "password"}
-                    className="grow text-white placeholder-gray-400"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                    className="btn btn-ghost btn-sm text-gray-400 hover:text-blue-500 transition-colors"
-                  >
-                    {isPasswordVisible ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-5 h-5 text-gray-400 hover:text-blue-500 transition-colors"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-5 h-5 text-gray-400 hover:text-blue-500 transition-colors"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                        <line x1="1" y1="1" x2="23" y2="23" />
-                      </svg>
-                    )}
-                  </button>
-                </label>
-              </div>
-
-              {responseMessage && (
-                <div
-                  className={`alert shadow-lg animate-fade-in ${
-                    responseType === 'success' ? 'alert-success' : 'alert-error'
-                  }`}
-                >
-                  {responseType === 'success' ? (
-                    <CheckCircle className="w-6 h-6" />
-                  ) : (
-                    <AlertCircle className="w-6 h-6" />
-                  )}
-                  <span>{responseMessage}</span>
-                </div>
-              )}
-
-              <div className="form-control">
-                <button
-                  type="submit"
-                  className="btn btn-primary w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
-                >
-                  Login
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </button>
-              </div>
-            </form>
-
-            <div className="flex justify-between text-sm text-gray-400">
-              <a
-                href="/forgotpassword"
-                className="hover:text-blue-500 transition-colors"
+    <div className="min-h-screen bg-base-300 text-base-content">
+      <dialog open={showAgeModal} className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box bg-neutral text-neutral-content">
+          <div className="flex flex-col items-center text-center">
+            <FaBirthdayCake className="w-16 h-16 text-primary mb-4 animate-bounce" />
+            <h3 className="text-2xl font-bold mb-4">Verifica dell'età</h3>
+            <p className="mb-6">
+              Per accedere a Justweed devi avere almeno 21 anni.
+              <br />
+              Confermi di essere maggiorenne?
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => handleAgeVerification(true)}
+                className="btn btn-primary gap-2"
               >
-                Forgot Password?
-              </a>
-              <a
-                href="/signup"
-                className="hover:text-blue-500 transition-colors"
+                Sì, ho più di 21 anni
+                <FaChevronRight />
+              </button>
+              <button
+                onClick={() => handleAgeVerification(false)}
+                className="btn btn-ghost"
               >
-                Create Account
-              </a>
+                Esci
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </dialog>
+
+      <nav className="navbar bg-base-200 border-b border-base-300 sticky top-0 z-50">
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <div className="btn btn-ghost px-2">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-r from-primary to-secondary p-2 rounded-full">
+                  <FaLeaf className="w-6 h-6 text-base-100" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  Justweed
+                </span>
+              </div>
+            </div>
+            <span className="hidden md:inline text-sm opacity-70">
+              • Marketplace legale per cannabis
+            </span>
+          </div>
+        </div>
+        <div className="flex-none gap-2">
+          <button
+            className="btn btn-sm bg-gradient-to-r from-blue-600 to-purple-700 border-none text-white flex items-center gap-2 hover:scale-[1.02] transition-transform"
+            onClick={() => navigate('/login')}
+            aria-label="Accedi al sito"
+          >
+            <FaUser className="w-4 h-4" aria-hidden="true" />
+            Accedi
+          </button>
+        </div>
+      </nav>
+
+      <main>
+        <section className="hero min-h-[80vh] bg-gradient-to-b from-base-200 to-base-300">
+          <div className="hero-content text-center">
+            <div className="max-w-4xl space-y-8">
+              <h1 className="text-5xl md:text-6xl font-bold">
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  Justweed
+                </span>
+              </h1>
+
+              <p className="text-xl opacity-90">
+                Il primo marketplace italiano per cannabis legale. Acquista in modo sicuro e discreto
+                prodotti certificati, con consegna rapida e supporto dedicato.
+              </p>
+
+              <div className="space-y-6">
+                <button
+                  className="btn btn-lg bg-gradient-to-r from-blue-600 to-purple-700 border-none text-white hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 mx-auto"
+                  onClick={() => navigate('/login')}
+                  aria-label="Accedi per visualizzare i prodotti"
+                >
+                  <FaLock className="w-5 h-5" aria-hidden="true" />
+                  Accedi per visualizzare i prodotti
+                </button>
+
+                <div className="flex items-center justify-center gap-2 text-sm opacity-70">
+                  <FaShieldAlt />
+                  <span>Transazioni crittate • Verifica anagrafica • Pagamenti sicuri</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-base-200">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-3 gap-8">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
+                >
+                  <div className="card-body items-center text-center">
+                    <div className="text-primary mb-4">
+                      {feature.icon}
+                    </div>
+                    <h2 className="card-title">{feature.title}</h2>
+                    <p className="opacity-80">{feature.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        
+      </main>
     </div>
   );
-}
+};
 
-export default App;
+export default LandingPage;

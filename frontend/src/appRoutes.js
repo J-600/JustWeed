@@ -22,6 +22,7 @@ import PrivacyPolicyPage from './components/pages/privacypolicy/privacypolicy';
 import TerminiPage from './components/pages/termini/termini';
 import CookiePage from './components/pages/cookie/cookiepage';
 import NotFoundPage from './components/pages/notfount/notFoundPage';
+import Login from './components/pages/login/login';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -33,6 +34,7 @@ function AppRoutes() {
     <Elements stripe={stripePromise}>
       <Routes>
         <Route path="/" element={<App />} />
+        <Route path='/login' element={<Login/>} />
         <Route path="/products" element={<Products />} />
         <Route path="/signup" element={<Signup />} />
         <Route path='/confirm' element={<Confirm />} />
