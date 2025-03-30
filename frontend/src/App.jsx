@@ -8,7 +8,6 @@ import {
 } from 'react-icons/fa';
 import { useInView } from 'react-intersection-observer';
 
-// Constants
 const FEATURES = [
   {
     icon: <FaLeaf className="w-12 h-12" />,
@@ -48,7 +47,6 @@ const TESTIMONIALS = [
   }
 ];
 
-// Original Particle System
 const ParticleSystem = () => {
   const canvasRef = useRef(null);
 
@@ -146,7 +144,6 @@ const ParticleSystem = () => {
   );
 };
 
-// Improved Feature Card
 const FeatureCard = ({ icon, title, description, index }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
@@ -213,7 +210,7 @@ const FeatureCard = ({ icon, title, description, index }) => {
 };
 
 
-// Age Verification Modal
+
 const AgeVerificationModal = ({ onVerify }) => {
   return (
     <motion.dialog
@@ -272,7 +269,6 @@ const AgeVerificationModal = ({ onVerify }) => {
   );
 };
 
-// Main Component
 const LandingPage = () => {
   const [state, setState] = useState({
     showAgeModal: !localStorage.getItem('ageVerified'),
@@ -314,7 +310,6 @@ const LandingPage = () => {
 
     setState(prev => ({ ...prev, isSubscribing: true, subscribeError: '' }));
     
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     setState(prev => ({
@@ -504,7 +499,6 @@ const LandingPage = () => {
   );
 };
 
-// Reusable Components
 const SectionWrapper = ({ title, children, bgColor }) => (
   <section className={`py-16 bg-${bgColor}`}>
     <div className="container mx-auto px-4">
