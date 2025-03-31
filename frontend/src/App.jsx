@@ -4,7 +4,8 @@ import { motion, AnimatePresence, useScroll, useSpring, useAnimation } from 'fra
 import { 
   FaLeaf, FaLock, FaFlask, FaShieldAlt, 
   FaUser, FaChevronRight, FaBirthdayCake, 
-  FaRegEnvelope, FaArrowUp, FaStar
+  FaRegEnvelope, FaArrowUp, FaStar,
+  FaGooglePlay, FaApple, FaEye
 } from 'react-icons/fa';
 import { useInView } from 'react-intersection-observer';
 
@@ -209,8 +210,6 @@ const FeatureCard = ({ icon, title, description, index }) => {
   );
 };
 
-
-
 const AgeVerificationModal = ({ onVerify }) => {
   return (
     <motion.dialog
@@ -266,6 +265,236 @@ const AgeVerificationModal = ({ onVerify }) => {
         </div>
       </div>
     </motion.dialog>
+  );
+};
+
+const StatsSection = () => {
+  const [stats, setStats] = useState({
+    views: 0,
+    users: 0,
+    rating: 0
+  });
+
+  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
+
+  useEffect(() => {
+    if (inView) {
+      // Animazione counter per le views
+      const viewsInterval = setInterval(() => {
+        setStats(prev => ({
+          ...prev,
+          views: prev.views >= 12345 ? 12345 : prev.views + 137
+        }));
+      }, 20);
+
+      // Animazione counter per gli users
+      const usersInterval = setInterval(() => {
+        setStats(prev => ({
+          ...prev,
+          users: prev.users >= 15000 ? 15000 : prev.users + 150
+        }));
+      }, 10);
+
+      // Animazione counter per il rating
+      const ratingInterval = setInterval(() => {
+        setStats(prev => ({
+          ...prev,
+          rating: prev.rating >= 4.9 ? 4.9 : +(prev.rating + 0.1).toFixed(1)
+        }));
+      }, 100);
+
+      return () => {
+        clearInterval(viewsInterval);
+        clearInterval(usersInterval);
+        clearInterval(ratingInterval);
+      };
+    }
+  }, [inView]);
+
+  return (
+    <SectionWrapper title="La Nostra Comunità" bgColor="base-100">
+      <div className="grid md:grid-cols-3 gap-6" ref={ref}>
+        {/* Stat 1 - Utenti Attivi */}
+        <motion.div
+          className="card bg-base-200 overflow-hidden"
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          whileHover={{ y: -5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10" />
+          <div className="card-body relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="avatar placeholder">
+                <div className="bg-gradient-to-r from-primary to-secondary text-primary-content rounded-full w-12 h-12">
+                  <FaUser className="w-6 h-6" />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Utenti Attivi</h3>
+                <div className="flex items-end gap-1">
+                  <span className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    {stats.users >= 15000 ? '15K+' : stats.users.toLocaleString()}
+                  </span>
+                  <span className="text-sm opacity-70">+23% ultimo mese</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="radial-progress text-primary" 
+                   style={{"--value":100,"--size":"3rem","--thickness":"6px"}}>
+                <span className="text-xs">100%</span>
+              </div>
+              <p className="text-xs mt-2 opacity-70">Soddisfazione clienti</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Stat 2 - Visualizzazioni */}
+        <motion.div
+          className="card bg-base-200 overflow-hidden"
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          whileHover={{ y: -5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-accent/10" />
+          <div className="card-body relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="avatar placeholder">
+                <div className="bg-gradient-to-r from-secondary to-accent text-secondary-content rounded-full w-12 h-12">
+                  <FaEye className="w-6 h-6" />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Visualizzazioni</h3>
+                <div className="flex items-end gap-1">
+                  <span className="text-3xl font-bold bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
+                    {stats.views.toLocaleString()}
+                  </span>
+                  <span className="text-sm opacity-70">+45% ultimo mese</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="radial-progress text-secondary" 
+                   style={{"--value":85,"--size":"3rem","--thickness":"6px"}}>
+                <span className="text-xs">85%</span>
+              </div>
+              <p className="text-xs mt-2 opacity-70">Tasso di crescita</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Stat 3 - Valutazioni */}
+        <motion.div
+          className="card bg-base-200 overflow-hidden"
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          whileHover={{ y: -5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-primary/10" />
+          <div className="card-body relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="avatar placeholder">
+                <div className="bg-gradient-to-r from-accent to-primary text-accent-content rounded-full w-12 h-12">
+                  <FaStar className="w-6 h-6" />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Valutazioni</h3>
+                <div className="flex items-end gap-1">
+                  <span className="text-3xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                    {stats.rating}
+                  </span>
+                  <span className="text-sm opacity-70">/5 su 340+ recensioni</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="rating rating-md">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <input
+                    key={star}
+                    type="radio"
+                    name="rating-2"
+                    className={`mask mask-star-2 ${star <= Math.round(stats.rating) ? 'bg-accent' : 'bg-accent/20'}`}
+                    checked={star === Math.round(stats.rating)}
+                    readOnly
+                  />
+                ))}
+              </div>
+              <p className="text-xs mt-2 opacity-70">Media delle valutazioni</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </SectionWrapper>
+  );
+};
+
+const AppDownloadSection = () => {
+  const { ref, inView } = useInView({ threshold: 0.1 });
+
+  return (
+    <SectionWrapper title="Scarica l'App" bgColor="base-200">
+      <div className="flex flex-col md:flex-row items-center gap-12" ref={ref}>
+        <motion.div
+          className="flex-1"
+          initial={{ opacity: 0, x: -50 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="space-y-6">
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Esperienza Mobile Premium
+            </h3>
+            <p className="text-lg opacity-90">
+              Acquista in modo ancora più semplice e veloce con la nostra app dedicata. 
+              Ricevi notifiche in tempo reale, sblocca offerte esclusive e gestisci 
+              i tuoi ordini ovunque ti trovi.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="btn btn-lg btn-primary gap-2"
+              >
+                <FaApple className="w-6 h-6" />
+                App Store
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className="btn btn-lg btn-secondary gap-2"
+              >
+                <FaGooglePlay className="w-6 h-6" />
+                Google Play
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="flex-1 relative"
+          initial={{ opacity: 0, x: 50 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <div className="mockup-phone border-primary">
+            <div className="camera"></div> 
+            <div className="display">
+              <div className="artboard artboard-demo phone-1 bg-base-100">
+                <img 
+                  src="/screenshots/app-preview.jpg" 
+                  alt="Anteprima app" 
+                  className="rounded-lg object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </SectionWrapper>
   );
 };
 
@@ -431,6 +660,8 @@ const LandingPage = () => {
           </div>
         </SectionWrapper>
 
+        <StatsSection />
+
         <SectionWrapper title="Cosa dicono di noi" bgColor="base-100">
           <div className="grid md:grid-cols-3 gap-8">
             {TESTIMONIALS.map((testimonial) => (
@@ -438,6 +669,8 @@ const LandingPage = () => {
             ))}
           </div>
         </SectionWrapper>
+
+        <AppDownloadSection />
 
         <SectionWrapper title="Rimani Aggiornato" bgColor="base-200">
           <form onSubmit={handleSubscribe} className="max-w-2xl mx-auto space-y-4">
