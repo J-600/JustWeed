@@ -206,7 +206,7 @@ function Signup() {
 
                         <div className="flex justify-center text-sm text-gray-400">
                             <a
-                                href="/"
+                                href="/login"
                                 className="hover:text-blue-500 transition-colors"
                             >
                                 Already have an account? Login

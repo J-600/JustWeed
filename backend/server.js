@@ -1240,12 +1240,12 @@ app.use((req, res, next) => {
 app.get("/session", (req, res) => {
   if (!req.session.username || !req.session.email) {
     return res.status(401).json({ error: "Utente non autenticato" });
+  } else {
+    res.json({
+      username: req.session.username,
+      email: req.session.email
+    });
   }
-
-  res.json({
-    username: req.session.username,
-    email: req.session.email
-  });
 });
 
 

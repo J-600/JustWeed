@@ -109,7 +109,7 @@ function ForgotPassword() {
             </form>
             <div className="flex justify-center text-sm text-gray-400">
               <a
-                href="/"
+                href="/login"
                 className="hover:text-blue-500 transition-colors"
               >
                 Remembered your password? Login

@@ -17,24 +17,19 @@ function Login() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('http://localhost:3000/products', {
+        const res = await fetch('http://localhost:3000/session', {
           credentials: 'include',
         });
 
         if (res.ok) {
-          const sessionRes = await fetch('http://localhost:3000/session', {
-            credentials: 'include',
+          const res = await res.json();
+          console.log(res.email,res.username,res)
+          navigate('/products', {
+            state: {
+              email: res.email,
+              username: res.username
+            }
           });
-
-          if (sessionRes.ok) {
-            const sessionData = await sessionRes.json();
-            navigate('/products', {
-              state: {
-                email: sessionData.email,
-                username: sessionData.username
-              }
-            });
-          }
         }
         setIsLoading(false);
       } catch (error) {

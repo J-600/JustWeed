@@ -279,7 +279,6 @@ const StatsSection = () => {
 
   useEffect(() => {
     if (inView) {
-      // Animazione counter per le views
       const viewsInterval = setInterval(() => {
         setStats(prev => ({
           ...prev,
@@ -287,7 +286,6 @@ const StatsSection = () => {
         }));
       }, 20);
 
-      // Animazione counter per gli users
       const usersInterval = setInterval(() => {
         setStats(prev => ({
           ...prev,
@@ -295,7 +293,6 @@ const StatsSection = () => {
         }));
       }, 10);
 
-      // Animazione counter per il rating
       const ratingInterval = setInterval(() => {
         setStats(prev => ({
           ...prev,
@@ -314,7 +311,6 @@ const StatsSection = () => {
   return (
     <SectionWrapper title="La Nostra Comunità" bgColor="base-100">
       <div className="grid md:grid-cols-3 gap-6" ref={ref}>
-        {/* Stat 1 - Utenti Attivi */}
         <motion.div
           className="card bg-base-200 overflow-hidden"
           initial={{ opacity: 0, y: 50 }}
@@ -350,7 +346,6 @@ const StatsSection = () => {
           </div>
         </motion.div>
 
-        {/* Stat 2 - Visualizzazioni */}
         <motion.div
           className="card bg-base-200 overflow-hidden"
           initial={{ opacity: 0, y: 50 }}
@@ -386,7 +381,6 @@ const StatsSection = () => {
           </div>
         </motion.div>
 
-        {/* Stat 3 - Valutazioni */}
         <motion.div
           className="card bg-base-200 overflow-hidden"
           initial={{ opacity: 0, y: 50 }}

@@ -41,6 +41,7 @@ function Weeder() {
   const [descrizione, setDescrizione] = useState("")
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     const cardholderName = name + " " + cognome
@@ -103,11 +104,33 @@ function Weeder() {
       if (addRes.status !== 200) throw new Error({ error: "Errore nel salvataggio della carta" });
 
 
+      const addWeeder = await fetch("http://localhost:3000/add-weeder", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          metodoPagamento: cardData.paymentMethodId,
+          name: name,
+          cognome: cognome,
+          city: city,
+          cap: cap,
+          address: address,
+          piva: pIva,
+          cf: cf,
+          descrizione: descrizione
+        }),
+        credentials: "include"
+      })
+
+      if (addWeeder.status !== 200) throw new Error({ error: "Errore nel salvataggio della carta" });
+
+
+
     } catch (err) {
       setErrorMessage(err.message || 'Si è verificato un errore durante la verifica');
     }
     finally {
       setIsProcessing(false);
+      navigate("/seller")
     }
   }
 
