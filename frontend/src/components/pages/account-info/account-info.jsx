@@ -49,7 +49,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
 
     try {
       const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
-      const res = await fetch("http://localhost:3000/updateData", {
+      const res = await fetch("http://localhost:3000/api/user/updateData", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, password: hashedPassword, new_email: editedEmail, new_username: editedUsername, new_password: null }),
@@ -100,7 +100,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
     const newhashedPassword = CryptoJS.SHA256(newPassword).toString(CryptoJS.enc.Hex);
 
     try {
-      const res = await fetch("http://localhost:3000/updateData", {
+      const res = await fetch("http://localhost:3000/api/user/updateData", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email, password: hashedPassword, new_password: newhashedPassword }),
@@ -374,7 +374,7 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
       if (!paymentMethod) throw new Error("Errore nella creazione del metodo di pagamento");
 
 
-      const verifyResponse = await fetch('http://localhost:3000/verify-card', {
+      const verifyResponse = await fetch('http://localhost:3000/api/user/verify-card', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -456,7 +456,7 @@ const PaymentMethods = () => {
   const fetchCardsData = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/cardsdata", {
+      const res = await fetch("http://localhost:3000/api/user/cardsdata", {
         method: "GET",
         credentials: "include",
       });
@@ -480,7 +480,7 @@ const PaymentMethods = () => {
   const handleCardSuccess = async (cardData) => {
     try {
       // console.log(cardData) 
-      const addRes = await fetch("http://localhost:3000/add-card", {
+      const addRes = await fetch("http://localhost:3000/api/user/add-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -547,7 +547,7 @@ const PaymentMethods = () => {
     try {
       // console.log(cardToEdit)
       // console.log(formData)
-      const res = await fetch("http://localhost:3000/update-card", {
+      const res = await fetch("http://localhost:3000/api/user/update-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -573,7 +573,7 @@ const PaymentMethods = () => {
 
   const handleConfirmRemove = async () => {
     try {
-      const res = await fetch("http://localhost:3000/delete-card", {
+      const res = await fetch("http://localhost:3000/api/user/delete-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cardId: cards[removingCardIndex].id }),
@@ -839,7 +839,7 @@ const BillingAddresses = () => {
 
   const fetchAddresses = async () => {
     try {
-      const res = await fetch("http://localhost:3000/addresses", {
+      const res = await fetch("http://localhost:3000/api/user/addresses", {
         credentials: 'include',
       })
 
@@ -958,7 +958,7 @@ const BillingAddresses = () => {
       return;
     }
     try {
-      const res = await fetch("http://localhost:3000/add-address", {
+      const res = await fetch("http://localhost:3000/api/user/add-address", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1000,7 +1000,7 @@ const BillingAddresses = () => {
 
       // console.log(AddressToEdit)
 
-      const res = await fetch("http://localhost:3000/update-address", {
+      const res = await fetch("http://localhost:3000/api/user/update-address", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1032,7 +1032,7 @@ const BillingAddresses = () => {
   const handleRemoveAddress = async () => {
 
     try {
-      const res = await fetch("http://localhost:3000/delete-address", {
+      const res = await fetch("http://localhost:3000/api/user/delete-address", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: AddressToEdit.id }),
@@ -1439,7 +1439,7 @@ function AccountInfo() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:3000/account-info", {
+        const res = await fetch("http://localhost:3000/api/user/account-info", {
           method: "GET",
           credentials: "include",
         });
@@ -1477,7 +1477,7 @@ function AccountInfo() {
     try {
       // console.log(email)
       const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
-      const res = await fetch("http://localhost:3000/delete-user", {
+      const res = await fetch("http://localhost:3000/api/user/delete-user", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, password: hashedPassword }),

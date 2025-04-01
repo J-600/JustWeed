@@ -19,7 +19,7 @@ function Signup() {
         const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
 
         try {
-            const res = await fetch('http://localhost:3000/signup', {
+            const res = await fetch('http://localhost:3000/api/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ "email": mail, "username": username, "password": hashedPassword }),

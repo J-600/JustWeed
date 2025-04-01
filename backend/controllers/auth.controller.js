@@ -1,6 +1,6 @@
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
-const { console } = require('inspector');
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
+import { console } from 'inspector';
 
 const tokenExpirationMap = new Map();
 const tokenMailMap = new Map();

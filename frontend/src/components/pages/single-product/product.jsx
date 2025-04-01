@@ -38,7 +38,7 @@ function Product() {
 
     const handleAddToCart = async (productId) => {
         try {
-            const res = await fetch("http://localhost:3000/insert-cart", {
+            const res = await fetch("http://localhost:3000/api/products/insert-cart", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -74,21 +74,21 @@ function Product() {
 
         const fetchProduct = async () => {
             try {
-                const [productRes, tagsRes, commentsRes] = await Promise.all([fetch("http://localhost:3000/product", {
+                const [productRes, tagsRes, commentsRes] = await Promise.all([fetch("http://localhost:3000/api/products/product", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         id: id
                     }),
                     credentials: "include"
-                }), fetch("http://localhost:3000/tag", {
+                }), fetch("http://localhost:3000/api/products/tag", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         id: id
                     }),
                     credentials: "include"
-                }), fetch("http://localhost:3000/comments", {
+                }), fetch("http://localhost:3000/api/products/comments", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -132,7 +132,7 @@ function Product() {
         console.log(selectRating, selectComment, isAnonymous);
 
         try {
-            const response = await fetch("http://localhost:3000/add-comment", {
+            const response = await fetch("http://localhost:3000/api/products/add-comment", {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -154,7 +154,7 @@ function Product() {
                 setReviewTitle("");
                 setTimeout(() => setSuccessMessage(""), 3000);
                 setLoadingComments(true)
-                const commentsRes = await fetch("http://localhost:3000/comments", {
+                const commentsRes = await fetch("http://localhost:3000/api/products/comments", {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: id }),

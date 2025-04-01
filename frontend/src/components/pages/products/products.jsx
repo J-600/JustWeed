@@ -37,11 +37,11 @@ function Products() {
     const fetchProductsAndTags = async () => {
       try {
         const [productsRes, tagsRes] = await Promise.all([
-          fetch("http://localhost:3000/products", {
+          fetch("http://localhost:3000/api/products/products", {
             method: "GET",
             credentials: "include",
           }),
-          fetch("http://localhost:3000/view-tags", {
+          fetch("http://localhost:3000/api/products/view-tags", {
             method: "GET",
             credentials: "include",
           })
@@ -98,7 +98,7 @@ function Products() {
 
   const handleAddToCart = async (productId) => {
     try {
-      const res = await fetch("http://localhost:3000/insert-cart", {
+      const res = await fetch("http://localhost:3000/api/products/insert-cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

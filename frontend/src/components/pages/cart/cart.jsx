@@ -14,7 +14,7 @@ const CartPage = () => {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch("http://localhost:3000/view-cart", {
+      const res = await fetch("http://localhost:3000/api/products/view-cart", {
         credentials: "include"
       })
 
@@ -43,7 +43,7 @@ const CartPage = () => {
   const handleRemoveItem = async(itemId) => {
 
     try {
-      const res = await fetch("http://localhost:3000/update-cart", {
+      const res = await fetch("http://localhost:3000/api/products/update-cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -73,7 +73,7 @@ const CartPage = () => {
       const itemCart = cartItems.find(item => item.id === itemId);
       const qnt = itemCart.quantity + 1
 
-      const res = await fetch("http://localhost:3000/update-cart", {
+      const res = await fetch("http://localhost:3000/api/products/update-cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -104,7 +104,7 @@ const CartPage = () => {
       const itemCart = cartItems.find(item => item.id === itemId);
       const qnt = itemCart.quantity - 1
 
-      const res = await fetch("http://localhost:3000/update-cart", {
+      const res = await fetch("http://localhost:3000/api/products/update-cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -136,7 +136,7 @@ const CartPage = () => {
 
     if (!isNaN(quantity)) {
       try {
-        const res = await fetch("http://localhost:3000/update-cart", {
+        const res = await fetch("http://localhost:3000/api/products/update-cart", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -330,7 +330,7 @@ const CartPage = () => {
                     </button>
 
                     <Link
-                      to="/"
+                      to="/products"
                       className="btn btn-outline w-full text-white border-blue-500 hover:bg-blue-500 hover:text-white mt-2"
                     >
                       Continua gli acquisti

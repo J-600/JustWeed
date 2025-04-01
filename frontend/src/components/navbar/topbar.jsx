@@ -18,7 +18,7 @@ export default function Topbar({ onUploadCart }) {
 
   const logOut = async () => {
     try {
-      const res = await fetch("http://localhost:3000/logout", {
+      const res = await fetch("http://localhost:3000/api/auth/logout", {
         method: "GET",
         credentials: "include"
       })
@@ -33,7 +33,7 @@ export default function Topbar({ onUploadCart }) {
 
   const uploadCart = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:3000/view-cart", {
+      const res = await fetch("http://localhost:3000/api/products/view-cart", {
         credentials: "include"
       })
 

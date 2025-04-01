@@ -21,7 +21,7 @@ function Confirm() {
       const token = params.get("token");
       let responseData;
       try {
-        const res = await fetch(`http://localhost:3000/confirm?token=${token}`, {
+        const res = await fetch(`http://localhost:3000/api/auth/confirm?token=${token}`, {
           method: "GET",
           credentials: 'include',
         });

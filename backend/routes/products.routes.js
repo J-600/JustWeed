@@ -1,8 +1,22 @@
-const express = require('express');
-import { viewCart, updateProducts, addComment, comments, insertCart, product, products, tag, updateCart, viewPurchase, viewTags } from '../controllers/products.controller';
-import { protectRoute } from '../middleware/protectroute.middleware';
+import express from 'express';
+import { 
+  viewCart, 
+  updateProducts, 
+  addComment, 
+  comments, 
+  insertCart, 
+  product, 
+  products, 
+  tag, 
+  updateCart, 
+  viewPurchase, 
+  viewTags 
+} from '../controllers/products.controller.js';
+
+import { protectRoute } from '../middleware/protectroute.middleware.js';
 
 const router = express.Router();
+
 
 router.post("/insert-cart", protectRoute, insertCart)
 router.post("/update-cart", protectRoute, updateCart)
@@ -15,6 +29,6 @@ router.post("/updateProducts", protectRoute, updateProducts)
 router.get("/view-purchase", protectRoute, viewPurchase)
 router.get("/view-cart", protectRoute, viewCart)
 router.get("/products", protectRoute, products)
-router.get("view-tags",  protectRoute, viewTags)
+router.get("/view-tags",  protectRoute, viewTags)
 
 export default router

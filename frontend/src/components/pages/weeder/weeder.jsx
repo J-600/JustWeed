@@ -70,7 +70,7 @@ function Weeder() {
       if (!paymentMethod) throw new Error("Errore nella creazione del metodo di pagamento");
 
 
-      const verifyResponse = await fetch('http://localhost:3000/verify-card', {
+      const verifyResponse = await fetch('http://localhost:3000/api/user/verify-card', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -88,7 +88,7 @@ function Weeder() {
         brand: paymentMethod.card.brand
       };
 
-      const addRes = await fetch("http://localhost:3000/add-card", {
+      const addRes = await fetch("http://localhost:3000/api/user/add-card", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -104,7 +104,7 @@ function Weeder() {
       if (addRes.status !== 200) throw new Error({ error: "Errore nel salvataggio della carta" });
 
 
-      const addWeeder = await fetch("http://localhost:3000/add-weeder", {
+      const addWeeder = await fetch("http://localhost:3000/api/user/add-weeder", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

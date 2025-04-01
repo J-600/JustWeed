@@ -1,5 +1,4 @@
-const { console } = require('inspector');
-
+// import inspector from 'inspector';
 
 export const viewCart = (req, res) => {
     fetch("http://localhost/Justweed/backend/includes/view-cart.php", {

@@ -1,7 +1,21 @@
-const express = require('express');
+import express from 'express';
+import { 
+  updateAddress, 
+  accountInfo, 
+  addAddress, 
+  addCard, 
+  addresses, 
+  becomeAseller, 
+  cardsdata, 
+  deleteAddress, 
+  deleteCard, 
+  deleteUser, 
+  updateCard, 
+  updateData, 
+  verifyCard 
+} from '../controllers/user.controller.js';
 
-import { updateAddress, accountInfo, addAddress, addCard, addresses, becomeAseller, cardsdata, deleteAddress, deleteCard, deleteUser, updateCard, updateData, verifyCard } from '../controllers/user.controller';
-import { protectRoute } from '../middleware/protectroute.middleware';
+import { protectRoute } from '../middleware/protectroute.middleware.js';
 
 const router = express.Router();
 

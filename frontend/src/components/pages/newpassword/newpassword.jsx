@@ -30,7 +30,7 @@ function NewPassword() {
     const token = params.get('token');
 
     try {
-      const res = await fetch(`http://localhost:3000/newpassword`, {
+      const res = await fetch(`http://localhost:3000/api/auth/newpassword`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, password: hashedPassword }),

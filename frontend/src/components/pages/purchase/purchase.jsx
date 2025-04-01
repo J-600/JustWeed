@@ -53,7 +53,7 @@ function Purchase() {
     useEffect(() => {
         const fetchPurchase = async () => {
             try {
-                const res = await fetch("http://localhost:3000/view-purchase", {
+                const res = await fetch("http://localhost:3000/api/products/view-purchase", {
                     credentials: "include"
                 });
                 const data = await res.json();

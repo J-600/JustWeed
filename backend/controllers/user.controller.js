@@ -1,7 +1,7 @@
-const { console } = require('inspector');
+import Stripe from 'stripe';
 
 const STRIPE_SECRET_KEY = 'sk_test_51Qqap7J0BPVuq51Y0ydAG9kn97Q39HQ2WAP4N0J1s794JiNzwIYj2PoorgFr6A4ZJdvwbMUTwTERatnoFOUf2ltd00A6Q3laNG';
-const stripe = require('stripe')(STRIPE_SECRET_KEY);
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 
 export const updateData = (req, res) => { //post
