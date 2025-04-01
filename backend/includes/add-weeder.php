@@ -6,8 +6,17 @@ try {
     }
 
     require_once "dbh.inc.php";
-    $password = $_POST["password"];
     $email = $_POST["email"];
+    $payment = $_POST["payment"];
+    $nome = $_POST["nome"];
+    $cognome = $_POST["cognome"];
+    $city = $_POST["city"];
+    $cap = $_POST["cap"];
+    $address= $_POST["addess"];
+    $piva = $_POST["piva"];
+    $cf = $_POST["cf"];
+    $descrizione = $_POST["descrizione"];
+
     $table = "users_jw";
 
     $sql = "SELECT COUNT(*) $table WHERE email = :email AND type = 'customer'";

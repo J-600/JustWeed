@@ -343,7 +343,7 @@ export const addWeeder = (req, res) => {
     fetch(path + "/add-weeder", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
-        body: `payment=${metodoPagamento}&nome=${name}&cognome=${cognome}&city=${city}&cap=${cap}&address=${address}&piva=${piva}&cf=${cf}&descrizione=${descrizione}`
+        body: `email=${req.session.email}&payment=${metodoPagamento}&nome=${name}&cognome=${cognome}&city=${city}&cap=${cap}&address=${address}&piva=${piva}&cf=${cf}&descrizione=${descrizione}`
     })
     .then(response => response.json())
     .then (data => {
