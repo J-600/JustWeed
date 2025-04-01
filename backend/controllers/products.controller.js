@@ -1,7 +1,9 @@
 // import inspector from 'inspector';
 
+const path = "http://localhost/JustWeed/backend/includes";
+
 export const viewCart = (req, res) => {
-    fetch("http://localhost/Justweed/backend/includes/view-cart.php", {
+    fetch(path + "/view-cart.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `user=${req.session.email}`
@@ -18,7 +20,7 @@ export const viewCart = (req, res) => {
 
 export const insertCart = (req, res) => {
     const { product, qnt } = req.body;
-    fetch("http://localhost/Justweed/backend/includes/insert-cart.php", {
+    fetch(path + "/insert-cart.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${product}&email=${req.session.email}&qnt=${qnt ?? 1}`
@@ -36,7 +38,7 @@ export const insertCart = (req, res) => {
 export const updateCart = (req, res) => {
     const { id, qnt, del } = req.body;
     // console.log(qnt)
-    fetch("http://localhost/Justweed/backend/includes/modify-cart.php", {
+    fetch(path + "/modify-cart.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${id}&user=${req.session.email}&qnt=${qnt}&del=${del ?? 1}`
@@ -53,14 +55,14 @@ export const updateCart = (req, res) => {
 
 export const product = (req, res) => {
     const { id } = req.body;
-    fetch("http://localhost/JustWeed/backend/includes/view-single-product.php", {
+    fetch(path + "/view-single-product.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${id}`
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             if (data.response === 200) {
                 res.json(data.data[0]);
             } else if (!data.message) {
@@ -74,7 +76,7 @@ export const product = (req, res) => {
 }
 
 export const products = (req, res) => {
-    fetch("http://localhost/JustWeed/backend/includes/view-product.php")
+    fetch(path + "/view-product.php")
         .then(response => response.json())
         .then(data => {
             if (data.message && data.response === 200) {
@@ -91,14 +93,14 @@ export const products = (req, res) => {
 
 export const tag = (req, res) => {
     const { id } = req.body;
-    fetch("http://localhost/justweed/backend/includes/view-tag.php", {
+    fetch(path + "/view-tag.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${id}`
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             if (data.response === 200 && data.message) {
                 res.json(data.data)
             } else if (data.response === 500) {
@@ -114,10 +116,10 @@ export const tag = (req, res) => {
 }
 
 export const viewTags = (req, res) => {
-    fetch("http://localhost/justweed/backend/includes/view-tags.php")
+    fetch(path + "/view-tags.php")
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             if (data.response === 200 && data.message) {
                 res.json(data.data)
             } else {
@@ -132,14 +134,14 @@ export const viewTags = (req, res) => {
 
 export const comments = (req, res) => {
     const { id } = req.body;
-    fetch("http://localhost/justweed/backend/includes/view-comments.php", {
+    fetch(path + "/view-comments.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${id}`
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             if (data.response === 200) {
                 res.json(data.data)
             } else {
@@ -156,7 +158,7 @@ export const addComment = (req, res) => {
     if (!req.body)
         throw new Error("undefined req body")
     const { id, title, user, comment, star } = req.body;
-    fetch("http://localhost/justweed/backend/includes/insert-comment.php", {
+    fetch(path + "/insert-comment.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `product=${id}&comment=${comment}&user=${user ? "anonimo" : req.session.username}&title=${title}&star=${star}`
@@ -177,7 +179,7 @@ export const addComment = (req, res) => {
 }
 
 export const viewPurchase = (req, res) => {
-    fetch("http://localhost/justweed/backend/includes/view-purchase.php", {
+    fetch(path + "/view-purchase.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${req.session.email}`
@@ -190,7 +192,7 @@ export const viewPurchase = (req, res) => {
                 data.data.forEach(x => {
                     !res_temp[x["date"]] ? res_temp[x["date"]] = [x] : res_temp[x["date"]].push(x)
                 });
-                console.log(res_temp)
+                // console.log(res_temp)
                 res.json(res_temp)
             } else if (data.response === 500) {
                 res.status(500).json("errore nel db");

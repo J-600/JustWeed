@@ -130,7 +130,7 @@ function Weeder() {
     }
     finally {
       setIsProcessing(false);
-      navigate("/seller")
+      navigate("/weeder/homepage")
     }
   }
 

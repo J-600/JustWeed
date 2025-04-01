@@ -52,7 +52,7 @@ function NotFoundPage() {
                                 </div>
 
                                 <button
-                                    onClick={() => navigate("/")}
+                                    onClick={() => navigate("/products")}
                                     className="btn bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white border-none group transform transition-all duration-300 hover:scale-105 mx-auto"
                                 >
                                     <span className="flex items-center gap-2">

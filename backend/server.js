@@ -4,14 +4,10 @@ import cors from 'cors';
 import session from 'express-session';
 import { console } from 'inspector';
 
-import Stripe from 'stripe';
-
 import authRouter from './routes/auth.routes.js';
 import productsRouter from './routes/products.routes.js'
 import userRouter from './routes/user.routes.js'
 
-const STRIPE_SECRET_KEY = 'sk_test_51Qqap7J0BPVuq51Y0ydAG9kn97Q39HQ2WAP4N0J1s794JiNzwIYj2PoorgFr6A4ZJdvwbMUTwTERatnoFOUf2ltd00A6Q3laNG';
-const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 
 

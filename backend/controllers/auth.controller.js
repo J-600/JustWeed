@@ -5,6 +5,8 @@ import { console } from 'inspector';
 const tokenExpirationMap = new Map();
 const tokenMailMap = new Map();
 
+const path = "http://localhost/JustWeed/backend/includes";
+
 export const signUp = (req, res) => {
     const { username, email, password } = req.body;
     const token = crypto.randomBytes(16).toString('hex');
@@ -123,7 +125,7 @@ export const signUp = (req, res) => {
     // console.log(`Token generato: ${token}, Email associata: ${email}`);
     tokenMailMap.set(token, email)
     // console.log(tokenMailMap)
-    fetch("http://localhost/justweed/backend/includes/create-user.php", {
+    fetch(path + "/create-user.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${email}&username=${username}&password=${password}`
@@ -158,7 +160,7 @@ export const confirm = (req, res) => {
         // console.log("scaduto")
         res.json({ data: "token scaduto...", message: false });
 
-        // fetch("http://localhost/justweed/backend/includes/delete-user-unconfirmed.php", {
+        // fetch(path + "/delete-user-unconfirmed.php", {
         //   method: "POST",
         //   headers: { "Content-type": "application/x-www-form-urlencoded" },
         //   body: `email=${email}`
@@ -213,7 +215,7 @@ export const logout = (req, res) => {
 export const login = (req, res) => {
     const { username, password } = req.body;
 
-    fetch("http://localhost/justweed/backend/includes/login.php", {
+    fetch(path + "/login.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `username=${username}&password=${password}`
@@ -237,7 +239,7 @@ export const login = (req, res) => {
             } else if (!data.message && data.response === 200) {
                 try {
                     parsedData = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-                    console.log(parsedData)
+                    // console.log(parsedData)
                 } catch (error) {
                     console.error("Errore di parsing JSON:", error);
                     return res.status(500).json({ error: "Errore durante la gestione dei dati" });
@@ -251,10 +253,10 @@ export const login = (req, res) => {
                     });
                     if (emailExists) {
                         // sendConfirmationEmail(tokenMailMap.get(parsedData.email));
-                        console.log("token già creato")
+                        // console.log("token già creato")
                         res.json("mail già inviata...")
                     } else {
-                        console.log("inviando la mail");
+                        // console.log("inviando la mail");
                         const token = crypto.randomBytes(16).toString('hex');
                         const htmlContent = `
               <div class="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-center text-white p-8">
@@ -296,10 +298,6 @@ export const login = (req, res) => {
 };
 
 export const newpassword = (req, res) => {
-
-    if (req.session.email) {
-        res.status(401).json("Non autorizzato")
-    }
     const { token, password } = req.body;
     const tokenExpiration = tokenExpirationMap.get(token);
     const email = tokenMailMap.get(token);
@@ -308,7 +306,7 @@ export const newpassword = (req, res) => {
         res.status(401).json("token scaduto...")
     } else {
 
-        fetch("http://localhost/JustWeed/backend/includes/forgot-password.php", {
+        fetch(path + "/forgot-password.php", {
             method: "POST",
             headers: { "Content-type": "application/x-www-form-urlencoded" },
             body: `password=${password}&email=${email}`
@@ -457,6 +455,10 @@ export const forgotpassword = (req, res) => {
     tokenMailMap.set(token, email)
     sendConfirmationEmail(token, mailOptions);
     res.json("Mail inviata...")
+}
+
+export const session = (req, res) => {
+  res.json("autorizzato")
 }
 
 setInterval(() => {

@@ -1,7 +1,10 @@
+import { response } from 'express';
 import Stripe from 'stripe';
 
 const STRIPE_SECRET_KEY = 'sk_test_51Qqap7J0BPVuq51Y0ydAG9kn97Q39HQ2WAP4N0J1s794JiNzwIYj2PoorgFr6A4ZJdvwbMUTwTERatnoFOUf2ltd00A6Q3laNG';
 const stripe = new Stripe(STRIPE_SECRET_KEY);
+
+const path = "http://localhost/JustWeed/backend/includes";
 
 
 export const updateData = (req, res) => { //post
@@ -11,7 +14,7 @@ export const updateData = (req, res) => { //post
     if (email == new_email) {
         nE = null
     }
-    fetch("http://localhost/justweed/backend/includes/update-user-info.php", {
+    fetch(path + "/update-user-info.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `password=${password}&email=${email}&new_password=${new_password ?? ""}&new_email=${nE ?? ""}&username=${new_username ?? ""}`
@@ -45,7 +48,7 @@ export const updateData = (req, res) => { //post
 };
 
 export const addresses = (req, res) => {//get
-    fetch("http://localhost/justweed/backend/includes/view-addresses.php", {
+    fetch(path + "/view-addresses.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${req.session.email}`
@@ -72,7 +75,7 @@ export const addresses = (req, res) => {//get
 export const addAddress = (req, res) => { //post
     const { name, street, city, zip } = req.body;
 
-    fetch("http://localhost/justweed/backend/includes/add-address.php", {
+    fetch(path + "/add-address.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${req.session.email}&name=${name ?? ""}&street=${street ?? ""}&city=${city ?? ""}&zip=${zip ?? ""}`
@@ -94,11 +97,10 @@ export const addAddress = (req, res) => { //post
 
 }
 
-
 export const updateAddress = (req, res) => {//post
     const { id, name, street, city, zip } = req.body;
     // console.log(req.body)
-    fetch("http://localhost/justweed/backend/includes/update-address.php", {
+    fetch(path + "/update-address.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${id ?? ""}&name=${name ?? ""}&street=${street ?? ""}&city=${city ?? ""}&zip=${zip ?? ""}`
@@ -123,7 +125,7 @@ export const updateAddress = (req, res) => {//post
 
 export const deleteAddress = (req, res) => {//post
     const { id } = req.body;
-    fetch("http://localhost/justweed/backend/includes/delete-address.php", {
+    fetch(path + "/delete-address.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${id}`
@@ -144,7 +146,7 @@ export const deleteAddress = (req, res) => {//post
 }
 
 export const cardsdata = (req, res) => {//get
-    fetch("http://localhost/justweed/backend/includes/view-payments-method.php", {
+    fetch(path + "/view-payments-method.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${req.session.email}`
@@ -217,7 +219,7 @@ export const addCard = (req, res) => {//post
     let [month, year] = scadenza.split('/');
     month = month.padStart(2, '0');
     year = year.slice(-2);
-    fetch("http://localhost/justweed/backend/includes/add-payment-method.php", {
+    fetch(path + "/add-payment-method.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `number=${numero}&metodo=${metodoPagamento}&scadenza=${`${month}/${year}`}&nome_titolare=${nome_titolare}&email=${req.session.email}&circuito=${circuito}`
@@ -242,7 +244,7 @@ export const addCard = (req, res) => {//post
 
 export const updateCard = (req, res) => {//post 
     const { cardId, scadenza, nome_titolare } = req.body;
-    fetch("http://localhost/justweed/backend/includes/update-card.php", {
+    fetch(path + "/update-card.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${cardId}&data=${scadenza ?? ""}&nome_titolare=${nome_titolare ?? ""}`
@@ -264,7 +266,7 @@ export const updateCard = (req, res) => {//post
 
 export const deleteCard = (req, res) => {//post
     const { cardId } = req.body;
-    fetch("http://localhost/justweed/backend/includes/delete-card.php", {
+    fetch(path + "/delete-card.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${cardId}`
@@ -285,7 +287,7 @@ export const deleteCard = (req, res) => {//post
 }
 
 export const accountInfo = (req, res) => {//get
-    fetch("http://localhost/justweed/backend/includes/view-user-info.php", {
+    fetch(path + "/view-user-info.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${req.session.email}`
@@ -308,35 +310,10 @@ export const accountInfo = (req, res) => {//get
 
 }
 
-export const becomeAseller = (req, res) => {//post
-
-    const { password, email } = req.body;
-    fetch("http://localhost/justweed/backend/become-a-seller.php", {
-        method: "POST",
-        headers: { "Content-type": "application/x-www-form-urlencoded" },
-        body: `password=${password}&email=${email}`
-    })
-        .then(response => response.json())
-        .then(data => {
-            // console.log(data); 
-            if (data.response === 200) {
-                res.json(data.data);
-            } else {
-                res.status(401).json(data.data);
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            res.status(500).json({ error: "An error occurred" });
-        });
-
-
-};
-
 export const deleteUser = (req, res) => {//get
     const { email, password } = req.body;
     // console.log(req.body) 
-    fetch("http://localhost/Justweed/backend/includes/delete-user.php", {
+    fetch(path + "/delete-user.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${email}&password=${password}`
@@ -359,3 +336,25 @@ export const deleteUser = (req, res) => {//get
             res.status(500).json({ error: "An error occurred" });
         });
 };
+
+export const addWeeder = (req, res) => {
+    const { metodoPagamento, name, cognome, city, cap, address, piva, cf, descrizione } = req.body
+
+    fetch(path + "/add-weeder", {
+        method: "POST",
+        headers: { "Content-type": "application/x-www-form-urlencoded" },
+        body: `payment=${metodoPagamento}&nome=${name}&cognome=${cognome}&city=${city}&cap=${cap}&address=${address}&piva=${piva}&cf=${cf}&descrizione=${descrizione}`
+    })
+    .then(response => response.json())
+    .then (data => {
+        if (data.response === 200) {
+            res.json(data.data);
+        } else {
+            res.status(data.response).json(data.data);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+    });
+}

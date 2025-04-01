@@ -21,15 +21,12 @@ function Login() {
           credentials: 'include',
         });
 
+        // console.log(res)
+
         if (res.ok) {
-          const res = await res.json();
-          console.log(res.email,res.username,res)
-          navigate('/products', {
-            state: {
-              email: res.email,
-              username: res.username
-            }
-          });
+          const data = await res.json();
+          // console.log(data.email,data.username,data)
+          navigate('/products');
         }
         setIsLoading(false);
       } catch (error) {
