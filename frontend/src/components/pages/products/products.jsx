@@ -130,7 +130,7 @@ function Products() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col">
       <TopBar />
       {successMessage && (
         <div className="sticky top-[2em] z-50 mt-[2em] flex justify-center">
@@ -177,7 +177,7 @@ function Products() {
         <div className="relative group max-w-2xl mx-auto w-full">
           <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 animate-gradient" />
 
-          <div className="relative flex items-center bg-[#1E2633] rounded-lg border border-blue-900/30">
+          <div className="relative flex items-center bg-base-200 rounded-lg border border-blue-900/30">
             <input
               type="text"
               placeholder="Cerca prodotti..."
@@ -209,7 +209,7 @@ function Products() {
             </div>
 
             {isFilterOpen && (
-              <div className="absolute top-full right-0 mt-2 w-64 bg-[#2A3444] rounded-lg shadow-xl border border-blue-900/30 p-4 z-50">
+              <div className="absolute top-full right-0 mt-2 w-64 bg-base-300 rounded-lg shadow-xl border border-blue-900/30 p-4 z-50">
                 <div className="mb-4">
                   <h3 className="text-sm font-semibold text-blue-400 mb-2">Filtra per prezzo</h3>
                   <div className="space-y-3">
@@ -219,7 +219,7 @@ function Products() {
                         type="number"
                         value={minPrice}
                         onChange={(e) => setMinPrice(e.target.value)}
-                        className="w-full bg-[#1E2633] rounded-md px-3 py-2 text-white border border-blue-900/30"
+                        className="w-full bg-base-200 rounded-md px-3 py-2 text-white border border-blue-900/30"
                         placeholder="€0.00"
                         min="0"
                       />
@@ -230,7 +230,7 @@ function Products() {
                         type="number"
                         value={maxPrice}
                         onChange={(e) => setMaxPrice(e.target.value)}
-                        className="w-full bg-[#1E2633] rounded-md px-3 py-2 text-white border border-blue-900/30"
+                        className="w-full bg-base-200 rounded-md px-3 py-2 text-white border border-blue-900/30"
                         placeholder="€999.99"
                         min="0"
                       />
@@ -249,7 +249,7 @@ function Products() {
                             type="checkbox"
                             checked={selectedTags.has(tag)}
                             onChange={() => handleTagToggle(tag)}
-                            className="checkbox checkbox-xs bg-[#1E2633] border-blue-900/30 checked:bg-purple-500"
+                            className="checkbox checkbox-xs bg-base-200 border-blue-900/30 checked:bg-purple-500"
                           />
                           <span className="capitalize">{tag}</span>
                         </label>
@@ -298,7 +298,7 @@ function Products() {
               ))}
             </div>
 
-            <div className="relative z-10 backdrop-blur-xl bg-[#1E2633]/90 border-2 border-blue-900/30 rounded-2xl p-12 shadow-2xl transform transition-all hover:scale-[1.03] duration-500">
+            <div className="relative z-10 backdrop-blur-xl bg-base-200/90 border-2 border-blue-900/30 rounded-2xl p-12 shadow-2xl transform transition-all hover:scale-[1.03] duration-500">
               <div className="text-center space-y-8 max-w-3xl mx-auto">
                 <div className="relative w-fit mx-auto group">
                   <div className="absolute inset-0 bg-purple-500/30 blur-2xl rounded-full animate-pulse-slow" />
@@ -355,7 +355,7 @@ function Products() {
                   <input
                     type="email"
                     placeholder="La tua email"
-                    className="px-6 py-3 bg-[#1E2633] border-2 border-blue-900/30 rounded-lg text-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
+                    className="px-6 py-3 bg-base-200 border-2 border-blue-900/30 rounded-lg text-gray-300 focus:outline-none focus:border-purple-500 transition-colors"
                   />
                   <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg transform transition-all hover:scale-105 active:scale-95 shadow-lg">
                     Ricevi Aggiornamenti
@@ -371,7 +371,7 @@ function Products() {
                     <a
                       key={social}
                       href="#"
-                      className="p-2 rounded-full bg-[#1E2633] border-2 border-blue-900/30 hover:border-purple-500 text-gray-400 hover:text-purple-400 transition-all"
+                      className="p-2 rounded-full bg-base-200 border-2 border-blue-900/30 hover:border-purple-500 text-gray-400 hover:text-purple-400 transition-all"
                     >
                       <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d={social === 'twitter' ?
@@ -397,13 +397,13 @@ function Products() {
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
-                  className="group relative bg-[#1E2633] rounded-2xl border border-blue-900/30 hover:border-purple-500/30 transition-all duration-500 hover:-translate-y-2 shadow-2xl hover:shadow-purple-900/20"
+                  className="group relative bg-base-200 rounded-2xl border border-blue-900/30 hover:border-purple-500/30 transition-all duration-500 hover:-translate-y-2 shadow-2xl hover:shadow-purple-900/20"
                 >
                   <figure
                     className="relative h-60 overflow-hidden rounded-t-2xl cursor-pointer"
                     onClick={() => navigate(`/products/${product.id}`)}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A1128]/80 via-transparent to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-base-100/80 via-transparent to-transparent z-10" />
 
 
                     <img
@@ -417,7 +417,7 @@ function Products() {
                     />
 
                     <button
-                      className="absolute bottom-4 right-4 z-20 px-3 py-1.5 bg-[#1E2633]/90 text-purple-400 rounded-full text-sm backdrop-blur-sm border border-purple-500/30 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute bottom-4 right-4 z-20 px-3 py-1.5 bg-base-200/90 text-purple-400 rounded-full text-sm backdrop-blur-sm border border-purple-500/30 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedProduct(product);

@@ -229,14 +229,13 @@ const CollaboratoriPage = () => {
         Array.isArray(items) ? items.length : typeof items === 'string' ? 1 : 0;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col">
             <TopBar />
 
             <div className="w-full px-4 sm:px-8 pt-20 pb-14">
                 <div className="max-w-7xl mx-auto">
-                    {/* Layout Desktop */}
                     <div className="hidden md:block">
-                        <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+                        <div className="card bg-base-200 shadow-2xl border border-blue-900/30">
                             <div className="card-body">
                                 <h1 className="text-4xl font-bold text-white mb-8 flex items-center gap-3">
                                     <Users className="w-8 h-8 text-purple-400" />
@@ -247,7 +246,7 @@ const CollaboratoriPage = () => {
                                     <table className="table">
                                         <thead>
                                             <tr className="border-b border-blue-900/30">
-                                                <th className="bg-[#2A3447]">
+                                                <th className="bg-card-base-100">
                                                     <input
                                                         type="checkbox"
                                                         className="checkbox checkbox-primary border-blue-900/30"
@@ -261,7 +260,7 @@ const CollaboratoriPage = () => {
                                                         }}
                                                     />
                                                 </th>
-                                                <th className="bg-[#2A3447] text-blue-400">
+                                                <th className="bg-card-base-100 text-blue-400">
                                                     <button
                                                         className="flex items-center gap-2 hover:text-purple-400"
                                                         onClick={() => requestSort('name')}
@@ -274,17 +273,17 @@ const CollaboratoriPage = () => {
                                                         )}
                                                     </button>
                                                 </th>
-                                                <th className="bg-[#2A3447] text-blue-400">Ruolo</th>
-                                                <th className="bg-[#2A3447] text-blue-400">Dipartimento</th>
-                                                <th className="bg-[#2A3447] text-blue-400">RACI</th>
-                                                <th className="bg-[#2A3447] text-blue-400">Azioni</th>
+                                                <th className="bg-card-base-100 text-blue-400">Ruolo</th>
+                                                <th className="bg-card-base-100 text-blue-400">Dipartimento</th>
+                                                <th className="bg-card-base-100 text-blue-400">RACI</th>
+                                                <th className="bg-card-base-100 text-blue-400">Azioni</th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
                                             {sortedData.map((collaboratore) => (
                                                 <React.Fragment key={collaboratore.id}>
-                                                    <tr className="hover:bg-[#2A3447]/50 border-b border-blue-900/30">
+                                                    <tr className="hover:bg-card-base-100/50 border-b border-blue-900/30">
                                                         <td>
                                                             <input
                                                                 type="checkbox"
@@ -314,7 +313,7 @@ const CollaboratoriPage = () => {
                                                             </span>
                                                         </td>
                                                         <td className="text-gray-300">
-                                                            <span className="badge badge-sm bg-[#2A3447] border border-blue-900/30">
+                                                            <span className="badge badge-sm bg-card-base-100 border border-blue-900/30">
                                                                 {collaboratore.department}
                                                             </span>
                                                         </td>
@@ -336,7 +335,7 @@ const CollaboratoriPage = () => {
                                                         </td>
                                                         <td>
                                                             <button
-                                                                className="btn btn-ghost btn-xs bg-[#2A3447] border border-blue-900/30 text-blue-400 hover:text-purple-400 hover:border-purple-400/30"
+                                                                className="btn btn-ghost btn-xs bg-card-base-100 border border-blue-900/30 text-blue-400 hover:text-purple-400 hover:border-purple-400/30"
                                                                 onClick={() => toggleDetails(collaboratore.id)}
                                                             >
                                                                 {showDetails === collaboratore.id ? 'Nascondi' : 'Mostra'} dettagli
@@ -344,7 +343,7 @@ const CollaboratoriPage = () => {
                                                         </td>
                                                     </tr>
                                                     {showDetails === collaboratore.id && (
-                                                        <tr className="bg-[#2A3447]/50">
+                                                        <tr className="bg-card-base-100/50">
                                                             <td colSpan="6" className="p-4">
                                                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                                                     <div>
@@ -416,7 +415,7 @@ const CollaboratoriPage = () => {
                         </h1>
                         {/* Se si desidera, è possibile inserire un header con selezione globale */}
                         {sortedData.map((collaboratore) => (
-                            <div key={collaboratore.id} className="bg-[#1E2633] border border-blue-900/30 rounded-md p-4 mb-4">
+                            <div key={collaboratore.id} className="bg-base-200 border border-blue-900/30 rounded-md p-4 mb-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <CollaboratoreAvatar collaboratore={collaboratore} />
@@ -460,14 +459,14 @@ const CollaboratoriPage = () => {
                                 </div>
                                 <div className="mt-2">
                                     <button
-                                        className="btn btn-ghost btn-xs bg-[#2A3447] border border-blue-900/30 text-blue-400 hover:text-purple-400 hover:border-purple-400/30"
+                                        className="btn btn-ghost btn-xs bg-card-base-100 border border-blue-900/30 text-blue-400 hover:text-purple-400 hover:border-purple-400/30"
                                         onClick={() => toggleDetails(collaboratore.id)}
                                     >
                                         {showDetails === collaboratore.id ? 'Nascondi' : 'Mostra'} dettagli
                                     </button>
                                 </div>
                                 {showDetails === collaboratore.id && (
-                                    <div className="mt-2 bg-[#2A3447] p-2 rounded text-sm">
+                                    <div className="mt-2 bg-card-base-100 p-2 rounded text-sm">
                                         <div className="mb-2">
                                             <h3 className="text-blue-400 font-bold flex items-center gap-1">
                                                 <User className="w-4 h-4" />

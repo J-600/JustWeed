@@ -173,10 +173,10 @@ function Product() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col">
             <TopBar />
             <div className="w-full px-2 sm:px-4 pt-20 pb-14">
-                <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+                <div className="card bg-base-200 shadow-2xl border border-blue-900/30">
                     <div className="card-body space-y-4">
                         {cartSuccess && (
                             <div className="alert alert-success shadow-lg">
@@ -198,7 +198,7 @@ function Product() {
                         {loading ? (
                             <Loader />
                         ) : product.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center p-6 bg-[#2A3447] rounded-xl border border-red-900/30 text-center">
+                            <div className="flex flex-col items-center justify-center p-6 bg-card-base-100 rounded-xl border border-red-900/30 text-center">
                                 <svg
                                     className="w-12 h-12 text-red-400 mb-4"
                                     fill="none"
@@ -236,7 +236,7 @@ function Product() {
                             </div>
                         ) : (
                             <React.Fragment>
-                                <div key={product.id} className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+                                <div key={product.id} className="card bg-base-200 shadow-2xl border border-blue-900/30">
                                     <div className="grid lg:grid-cols-2 grid-cols-1 p-4 sm:p-6 gap-4 sm:gap-8">
                                         <figure className="px-2 sm:px-4 pt-4 pb-2 cursor-pointer">
                                             <img
@@ -331,7 +331,7 @@ function Product() {
                                         </div>
                                     </div>
                                     <div className="card-body col-span-2 pt-4 sm:pt-8">
-                                        <div className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl">
+                                        <div className="bg-card-base-100 p-4 sm:p-6 rounded-xl sm:rounded-2xl">
                                             <h2 className="text-white text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Dettagli del prodotto</h2>
                                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                                                 <div className="text-gray-300 text-sm sm:text-base">
@@ -348,7 +348,7 @@ function Product() {
                                 </div>
 
 
-                                <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+                                <div className="card bg-base-200 shadow-2xl border border-blue-900/30">
                                     <div className="card-body space-y-4 pt-4 sm:pt-8">
                                         <div className="space-y-6 sm:space-y-8">
                                             <h2 className="text-2xl sm:text-3xl sm:text-left text-center font-bold text-white mb-4 sm:mb-6">Recensioni dei clienti</h2>
@@ -370,7 +370,7 @@ function Product() {
                                                 </div>
                                             )}
 
-                                            <div className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
+                                            <div className="bg-card-base-100 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                                 <h3 className="text-lg sm:text-xl text-white mb-3 sm:mb-4">Scrivi una recensione</h3>
                                                 <form onSubmit={handleAddComment} className="space-y-3 sm:space-y-4">
 
@@ -405,14 +405,14 @@ function Product() {
                                                             type="text"
                                                             required
                                                             placeholder="Aggiungi un titolo..."
-                                                            className="input input-bordered w-full bg-[#1E2633] border border-blue-900/30 text-white focus:border-blue-500"
+                                                            className="input input-bordered w-full bg-base-200 border border-blue-900/30 text-white focus:border-blue-500"
                                                             value={reviewTitle}
                                                             onChange={(e) => setReviewTitle(e.target.value)}
                                                         />
                                                     </div>
                                                     <textarea
                                                         required
-                                                        className="textarea w-full text-sm sm:text-base bg-[#1E2633] border border-blue-900/30 text-white mb-4"
+                                                        className="textarea w-full text-sm sm:text-base bg-base-200 border border-blue-900/30 text-white mb-4"
                                                         placeholder="Condividi la tua esperienza..."
                                                         value={selectComment}
                                                         onChange={(e) => setSelectComment(e.target.value)}
@@ -427,7 +427,7 @@ function Product() {
                                                             type="checkbox"
                                                             className="toggle toggle-md checked:[--tglbg:theme(colors.blue.500)] 
                                                                 checked:bg-gradient-to-r from-blue-500 to-purple-600
-                                                                border-blue-900/30 bg-[#1E2633]"
+                                                                border-blue-900/30 bg-base-200"
                                                             onChange={(e) => setIsAnonymous(e.target.checked)}
                                                         />
                                                     </div>
@@ -445,21 +445,21 @@ function Product() {
 
                                             <div className="space-y-4 sm:space-y-6">
                                                 {loadingComments ? (
-                                                    <div className="bg-[#2A3447] p-4 rounded-xl sm:rounded-2xl border border-blue-900/30">
+                                                    <div className="bg-card-base-100 p-4 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                                         <div className="w-full text-center py-4 sm:py-6">
                                                             <Loader />
                                                         </div>
                                                     </div>
                                                 ) : comments.length === 0 ?
                                                     (
-                                                        <div className="bg-[#2A3447] p-4 rounded-xl sm:rounded-2xl border border-blue-900/30">
+                                                        <div className="bg-card-base-100 p-4 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                                             <div className="w-full text-center py-4 sm:py-6">
                                                                 <p className="text-gray-400 text-base sm:text-lg">Nessuna recensione ancora...</p>
                                                             </div>
                                                         </div>
                                                     ) : (
                                                         comments.map((comment, index) => (
-                                                            <div key={index} className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
+                                                            <div key={index} className="bg-card-base-100 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-3 gap-2">
                                                                     <div className="flex items-center space-x-2">
                                                                         <span className="pl-2 sm:pl-3 text-white text-sm font-bold sm:text-lg">{comment.user} </span>
@@ -482,7 +482,7 @@ function Product() {
                                                                     </div>
 
                                                                 </div>
-                                                                <div className="bg-[#2A3447] p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
+                                                                <div className="bg-card-base-100 p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-blue-900/30">
                                                                     <h4 className="text-lg font-bold text-white mb-2">{comment.title}</h4>
                                                                     <p className="text-gray-300">{comment.description}</p>
                                                                 </div>

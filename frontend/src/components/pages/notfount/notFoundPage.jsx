@@ -7,7 +7,7 @@ function NotFoundPage() {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col relative overflow-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col relative overflow-hidden">
             <TopBar />
             
             <div className="absolute inset-0 pointer-events-none">
@@ -27,7 +27,7 @@ function NotFoundPage() {
 
             <div className="flex-1 flex items-center justify-center p-8 min-h-[calc(100vh-80px)]">
                 <div className="relative z-10 max-w-2xl w-full">
-                    <div className="card bg-[#1E2633]/90 backdrop-blur-sm shadow-2xl border border-green-900/30 rounded-xl transition-all hover:border-green-500/30 hover:shadow-green-500/10">
+                    <div className="card bg-base-200/90 backdrop-blur-sm shadow-2xl border border-green-900/30 rounded-xl transition-all hover:border-green-500/30 hover:shadow-green-500/10">
                         <div className="card-body space-y-8 p-12">
                             <div className="absolute -top-32 -right-32 opacity-20">
                                 <TestTube2 className="w-64 h-64 text-green-500 animate-rotate" />

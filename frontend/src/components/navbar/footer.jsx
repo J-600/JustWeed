@@ -24,7 +24,7 @@ export default function Footer() {
         }
     ];
     return (
-        <div className="border-t border-blue-900/30 py-12 mt-auto bg-[#1E2633]">
+        <div className="border-t border-blue-900/30 py-12 mt-auto bg-card-base-100">
             <div className="max-w-6xl mx-auto px-4">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
                     <div>
@@ -62,7 +62,7 @@ export default function Footer() {
                                 <a
                                     key={href}
                                     href={href}
-                                    className={`btn btn-square btn-sm border border-blue-900/30 bg-[#1E2633] ${color} hover:${hoverColor} hover:text-white`}
+                                    className={`btn btn-square btn-sm border border-blue-900/30 bg-neutral ${color} hover:${hoverColor} hover:text-white`}
                                 >
                                     <Icon stroke="currentColor" size={18} />
                                 </a>

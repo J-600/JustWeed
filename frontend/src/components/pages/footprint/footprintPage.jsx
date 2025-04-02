@@ -44,7 +44,7 @@ const FootPrintPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-white">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 text-white">
             <TopBar />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -86,7 +86,7 @@ const FootPrintPage = () => {
                             chart: <TreePine className="text-purple-400" size={36} />
                         }
                     ].map((metric, i) => (
-                        <div key={i} className="bg-[#2A3447] p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all hover:-translate-y-1 shadow-md">
+                        <div key={i} className="bg-card-base-100 p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all hover:-translate-y-1 shadow-md">
                             <div className="flex items-center gap-3 mb-4">
                                 {metric.icon}
                                 <h3 className="font-bold text-lg">{metric.title}</h3>
@@ -104,7 +104,7 @@ const FootPrintPage = () => {
                     ))}
                 </div>
 
-                <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
+                <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
                     <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
                         <Clock className="text-purple-400" size={28} />
                         <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
@@ -140,7 +140,7 @@ const FootPrintPage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                    <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-6 shadow-lg">
+                    <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-6 shadow-lg">
                         <h3 className="text-xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                             Confronto con il Settore
                         </h3>
@@ -167,7 +167,7 @@ const FootPrintPage = () => {
                         </div>
                     </div>
 
-                    <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-6 shadow-lg">
+                    <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-6 shadow-lg">
                         <h3 className="text-xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                             Calcola la Tua Impronta
                         </h3>
@@ -181,7 +181,7 @@ const FootPrintPage = () => {
                                     <input
                                         type="number"
                                         placeholder={input.label}
-                                        className="input input-bordered w-full bg-[#1E2633] border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30"
+                                        className="input input-bordered w-full bg-base-200 border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30"
                                         value={calculatorInput[input.key]}
                                         onChange={(e) => setCalculatorInput({ ...calculatorInput, [input.key]: e.target.value })}
                                     />
@@ -196,7 +196,7 @@ const FootPrintPage = () => {
                     </div>
                 </div>
 
-                <div className="bg-[#2A3447] rounded-xl p-8 border border-blue-900/30 shadow-lg mb-12">
+                <div className="bg-card-base-100 rounded-xl p-8 border border-blue-900/30 shadow-lg mb-12">
                     <h2 className="text-2xl font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                         Strategie di Riduzione
                     </h2>
@@ -223,7 +223,7 @@ const FootPrintPage = () => {
                                 impact: "+20% biodiversità locale"
                             }
                         ].map((strategy, index) => (
-                            <div key={index} className="bg-[#1E2633] p-4 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all group">
+                            <div key={index} className="bg-base-200 p-4 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all group">
                                 <div className="flex items-center gap-4">
                                     <div className="bg-blue-900/20 p-3 rounded-lg group-hover:bg-purple-900/20 transition-colors">
                                         {strategy.icon}

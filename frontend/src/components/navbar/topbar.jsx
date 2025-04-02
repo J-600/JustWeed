@@ -85,7 +85,7 @@ export default function Topbar({ onUploadCart }) {
 
   return (
     <div>
-      <div className="w-full bg-[#1E2633] shadow-lg border-b border-blue-900/30 p-4 flex items-center justify-between rounded-b-3xl">
+      <div className="w-full bg-neutral shadow-lg border-b border-blue-900/30 p-4 flex items-center justify-between rounded-b-3xl">
         <div className="relative group">
           <button
             onClick={logOut}
@@ -93,9 +93,9 @@ export default function Topbar({ onUploadCart }) {
           >
             <FaSignOutAlt className="text-2xl text-red-400 hover:text-red-300 transition-colors duration-300" />
           </button>
-          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-[#2A3444] text-red-400 text-sm rounded-lg border border-red-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+          <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-base-300 text-red-400 text-sm rounded-lg border border-red-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
             Logout
-            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#2A3444] border-l border-t border-red-900/30 transform rotate-45" />
+            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-300 border-l border-t border-red-900/30 transform rotate-45" />
           </div>
         </div>
 
@@ -122,9 +122,9 @@ export default function Topbar({ onUploadCart }) {
                 </span>
               )}
             </button>
-            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-[#2A3444] text-blue-400 text-sm rounded-lg border border-blue-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-base-300 text-blue-400 text-sm rounded-lg border border-blue-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
               Carrello
-              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#2A3444] border-l border-t border-blue-900/30 transform rotate-45" />
+              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-300 border-l border-t border-blue-900/30 transform rotate-45" />
             </div>
           </div>
 
@@ -138,16 +138,16 @@ export default function Topbar({ onUploadCart }) {
                 className={`text-2xl ${isSidebarOpen ? "text-purple-400" : "text-blue-400"} hover:text-purple-300 transition-colors duration-300`}
               />
             </button>
-            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-[#2A3444] text-blue-400 text-sm rounded-lg border border-blue-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-1.5 bg-base-300 text-blue-400 text-sm rounded-lg border border-blue-900/30 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg">
               Profilo
-              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#2A3444] border-l border-t border-blue-900/30 transform rotate-45" />
+              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-2 h-2 bg-base-300 border-l border-t border-blue-900/30 transform rotate-45" />
             </div>
           </div>
         </div>
       </div>
       <div
         ref={sidebarRef}
-        className={`fixed top-0 right-0 h-screen bg-[#1E2633] shadow-2xl border-l border-blue-900/30 transform transition-all duration-500 ease-in-out ${isSidebarOpen ? "translate-x-0" : "translate-x-full"
+        className={`fixed top-0 right-0 h-screen bg-neutral shadow-2xl border-l border-blue-900/30 transform transition-all duration-500 ease-in-out ${isSidebarOpen ? "translate-x-0" : "translate-x-full"
           }`}
         style={{ width: "300px", zIndex: 1000 }}
       >
@@ -179,7 +179,7 @@ export default function Topbar({ onUploadCart }) {
             <nav className="space-y-4">
               <div
                 onClick={() => navigate("/account-info")}
-                className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-[#2A3444] cursor-pointer transition-all duration-300"
+                className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-base-300 cursor-pointer transition-all duration-300"
               >
                 <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
                   <svg
@@ -202,7 +202,7 @@ export default function Topbar({ onUploadCart }) {
 
               <div
                 onClick={() => navigate("/purchase")}
-                className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-[#2A3444] cursor-pointer transition-all duration-300"
+                className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-base-300 cursor-pointer transition-all duration-300"
               >
                 <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
                   <svg
@@ -224,7 +224,7 @@ export default function Topbar({ onUploadCart }) {
               </div>
               <div
   onClick={() => navigate("/about")}
-  className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-[#2A3444] cursor-pointer transition-all duration-300"
+  className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-base-300 cursor-pointer transition-all duration-300"
 >
   <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
     <svg

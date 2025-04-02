@@ -259,7 +259,7 @@ export const login = (req, res) => {
                         // console.log("inviando la mail");
                         const token = crypto.randomBytes(16).toString('hex');
                         const htmlContent = `
-              <div class="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-center text-white p-8">
+              <div class="min-h-screen bg-gradient-to-br from-card-base-100 to-base-200 text-center text-white p-8">
   <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">🎉 Benvenuto!</h1>
   <p class="text-lg mb-6">Siamo felici di averti con noi! Per completare la tua registrazione, clicca sul pulsante qui sotto:</p>
   <a href="http://localhost:3001/confirm?token=${token}" class="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105 mb-6">

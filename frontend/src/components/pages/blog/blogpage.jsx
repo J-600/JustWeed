@@ -191,7 +191,7 @@ const BlogPage = () => {
   const toggleFeaturedPost = useCallback(() => setFeaturedPostExpanded(prev => !prev), []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-neutral text-white">
       <TopBar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -207,20 +207,20 @@ const BlogPage = () => {
           </p>
         </div>
 
-        <div className="bg-[#1E2633] rounded-xl p-6 border border-blue-900/30 shadow-lg mb-8">
+        <div className="bg-neutral rounded-xl p-6 border border-blue-900/30 shadow-lg mb-8">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400" size={20} />
               <input
                 type="text"
                 placeholder="Cerca articoli..."
-                className="input input-bordered w-full pl-10 bg-[#2A3447] border-blue-900/30 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30"
+                className="input input-bordered w-full pl-10 bg-card-base-100 border-blue-900/30 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30"
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
             </div>
             <select
-              className="select select-bordered bg-[#2A3447] border-blue-900/30 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30"
+              className="select select-bordered bg-card-base-100 border-blue-900/30 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30"
               value={selectedCategory}
               onChange={handleCategoryChange}
             >
@@ -236,7 +236,7 @@ const BlogPage = () => {
               onClick={() => setSelectedCategory("Tutti")}
               className={`badge gap-2 transition-all ${selectedCategory === "Tutti" ?
                 'bg-blue-500/20 border-blue-500 text-blue-400' :
-                'bg-[#2A3447] border-blue-900/30 text-gray-300'}`}
+                'bg-card-base-100 border-blue-900/30 text-gray-300'}`}
             >
               <Tag size={14} />
               Tutti
@@ -283,7 +283,7 @@ const BlogPage = () => {
 };
 
 const FeaturedPost = ({ post, isExpanded, onToggle, categoryColor }) => (
-  <div className="bg-[#1E2633] rounded-xl border border-blue-900/30 mb-8 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+  <div className="bg-neutral rounded-xl border border-blue-900/30 mb-8 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
     <div className="flex flex-col lg:flex-row">
       <div className="lg:w-1/2 p-6 sm:p-8 relative">
         <div className="flex items-center gap-2 mb-4">
@@ -352,7 +352,7 @@ const FeaturedPost = ({ post, isExpanded, onToggle, categoryColor }) => (
 );
 
 const RegularPost = ({ post, categoryColor }) => (
-  <article className="bg-[#1E2633] rounded-xl border border-blue-900/30 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden">
+  <article className="bg-neutral rounded-xl border border-blue-900/30 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden">
     <div className="h-48 bg-gradient-to-br from-blue-900/20 to-purple-900/20 overflow-hidden">
       <img
         src={post.image}
@@ -401,7 +401,7 @@ const RegularPost = ({ post, categoryColor }) => (
 );
 
 const NewsletterSection = () => (
-  <div className="bg-[#1E2633] rounded-xl p-8 border border-blue-900/30 shadow-lg mb-12">
+  <div className="bg-neutral rounded-xl p-8 border border-blue-900/30 shadow-lg mb-12">
     <div className="max-w-3xl mx-auto text-center">
       <h2 className="text-2xl sm:text-3xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
         Rimani aggiornato
@@ -413,7 +413,7 @@ const NewsletterSection = () => (
         <input
           type="email"
           placeholder="La tua email"
-          className="input input-bordered flex-1 bg-[#2A3447] border-blue-900/30 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30"
+          className="input input-bordered flex-1 bg-card-base-100 border-blue-900/30 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30"
         />
         <button className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700">
           Iscriviti

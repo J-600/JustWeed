@@ -124,7 +124,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
   };
 
   return (
-    <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+    <div className="card bg-neutral shadow-2xl border border-blue-900/30">
       <div className="card-body space-y-4">
         <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
           Infomazione dell'account
@@ -236,7 +236,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
           {(isEditingUsername || isEditingEmail) && (
             <div className="card-actions gap-2">
               <button
-                className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                className="btn btn-ghost text-white hover:bg-base-400"
                 onClick={handleCalcel}
               >
                 Annulla
@@ -271,7 +271,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
 
       {showPasswordModal && (
         <div className="modal modal-open">
-          <div className="modal-box bg-[#1E2633] border border-blue-900/30">
+          <div className="modal-box bg-neutral border border-blue-900/30">
             <h3 className="font-bold text-lg text-white">Cambia Password</h3>
             <div className="space-y-4 mt-4">
               <div>
@@ -325,7 +325,7 @@ const AccountInfoContent = ({ email, username, type, registeredAt, onUpdateEmail
             </div>
             <div className="modal-action">
               <button
-                className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                className="btn btn-ghost text-white hover:bg-base-400"
                 onClick={() => setShowPasswordModal(false)}
               >
                 Annulla
@@ -402,7 +402,7 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="form-control">
-        <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+        <label className="input input-bordered input-info flex items-center gap-2 bg-base-400">
           <User className="w-4 h-4 opacity-70" />
           <input
             type="text"
@@ -416,13 +416,13 @@ const StripeCardForm = ({ onSuccess, onCancel, setErrorMessage, setIsProcessing 
       </div>
 
       <div className="form-control">
-        <div className="input input-bordered input-info bg-[#2C3E50] p-3">
+        <div className="input input-bordered input-info bg-base-400 p-3">
           <CardElement options={CARD_ELEMENT_OPTIONS} />
         </div>
       </div>
 
       <div className="modal-action">
-        <button type="button" className="btn btn-ghost text-white hover:bg-[#2C3E50]" onClick={onCancel}>
+        <button type="button" className="btn btn-ghost text-white hover:bg-base-400" onClick={onCancel}>
           Annulla
         </button>
         <button type="submit" className="btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700" disabled={!stripe}>
@@ -611,7 +611,7 @@ const PaymentMethods = () => {
   };
 
   return (
-    <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+    <div className="card bg-neutral shadow-2xl border border-blue-900/30">
       <div className="card-body space-y-4">
         <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
           Metodi di pagamento
@@ -642,7 +642,7 @@ const PaymentMethods = () => {
         ) : Array.isArray(cards) && cards.length > 0 ? (
           <div className="space-y-4">
             {cards.map((card, index) => (
-              <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedCard === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'}`}>
+              <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedCard === index ? 'bg-base-400' : 'bg-neutral hover:bg-base-400'}`}>
                 <div className="flex items-center justify-between cursor-pointer" onClick={() => setExpandedCard(prev => prev === index ? null : index)}>
                   <div className="flex items-center gap-4">
                     <CardIcon circuito={card.circuito} className="w-6 h-6 text-blue-400" />
@@ -711,7 +711,7 @@ const PaymentMethods = () => {
 
         {showAddCardModal && (
           <div className="modal modal-open">
-            <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
+            <div className="modal-box bg-neutral border border-blue-900/30 p-6">
               <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
                 Aggiungi carta
               </h3>
@@ -729,14 +729,14 @@ const PaymentMethods = () => {
 
         {showEditCardModal && (
           <div className="modal modal-open">
-            <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
+            <div className="modal-box bg-neutral border border-blue-900/30 p-6">
               <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
                 Modifica carta
               </h3>
               <form onSubmit={handleEditCard} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                   <div className="form-control">
-                    <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                    <label className="input input-bordered input-info flex items-center gap-2 bg-base-400">
                       <Calendar className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
@@ -750,7 +750,7 @@ const PaymentMethods = () => {
                     </label>
                   </div>
                   <div className="form-control">
-                    <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                    <label className="input input-bordered input-info flex items-center gap-2 bg-base-400">
                       <User className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
@@ -768,7 +768,7 @@ const PaymentMethods = () => {
                 <div className="modal-action">
                   <button
                     type="button"
-                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                    className="btn btn-ghost text-white hover:bg-base-400"
                     onClick={() => setShowEditCardModal(false)}
                   >
                     Annulla
@@ -787,12 +787,12 @@ const PaymentMethods = () => {
 
         {showRemoveCardModal && (
           <div className="modal modal-open">
-            <div className="modal-box bg-[#1E2633] border border-blue-900/30">
+            <div className="modal-box bg-neutral border border-blue-900/30">
               <h3 className="font-bold text-lg text-white">Elimina Carta</h3>
               <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questa carta?</p>
               <div className="modal-action">
                 <button
-                  className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                  className="btn btn-ghost text-white hover:bg-base-400"
                   onClick={() => setShowRemoveCardModal(false)}
                 >
                   Annulla
@@ -1058,7 +1058,7 @@ const BillingAddresses = () => {
   };
 
   return (
-    <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+    <div className="card bg-neutral shadow-2xl border border-blue-900/30">
       <div className="card-body space-y-4">
         <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
           Indirizzo di fatturazione
@@ -1089,7 +1089,7 @@ const BillingAddresses = () => {
         ) : Array.isArray(addresses) && addresses.length > 0 ? (
           <div className="space-y-4">
             {addresses.map((address, index) => (
-              <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedAddress === index ? 'bg-[#2C3E50]' : 'bg-[#1E2633] hover:bg-[#2C3E50]'}`}>
+              <div key={index} className={`border border-blue-900/30 rounded-lg p-4 transition-all duration-300 ${expandedAddress === index ? 'bg-base-400' : 'bg-neutral hover:bg-base-400'}`}>
                 <div className="flex items-center justify-between cursor-pointer" onClick={() => setExpandedAddress(prev => prev === index ? null : index)}>
                   <div className="flex items-center gap-4">
                     <MapPin className="w-6 h-6 text-blue-400" />
@@ -1164,7 +1164,7 @@ const BillingAddresses = () => {
 
         {showAddAddressModal && (
           <div className="modal modal-open">
-            <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
+            <div className="modal-box bg-neutral border border-blue-900/30 p-6">
               <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
                 Aggiungi indirizzo
                 Aggiungi indirizzo
@@ -1172,7 +1172,7 @@ const BillingAddresses = () => {
               <form onSubmit={handleAddAddress} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                   <div className="form-control">
-                    <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
+                    <label className="input input-bordered flex items-center gap-2 bg-base-400">
                       <User className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
@@ -1185,7 +1185,7 @@ const BillingAddresses = () => {
                   </div>
 
                   <div className="form-control">
-                    <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
+                    <label className="input input-bordered flex items-center gap-2 bg-base-400">
                       <MapPin className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
@@ -1210,7 +1210,7 @@ const BillingAddresses = () => {
                         <input
                           type="text"
                           placeholder="CAP*"
-                          className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400"
+                          className="input input-bordered w-full pl-10 bg-base-400 text-white placeholder-gray-400"
                           required
                           maxLength="5"
                           value={newAddress.zip}
@@ -1233,7 +1233,7 @@ const BillingAddresses = () => {
                         </div>
                         {cities.length > 0 ? (
                           <select
-                            className="select select-bordered w-full pl-10 bg-[#2C3E50] text-white"
+                            className="select select-bordered w-full pl-10 bg-base-400 text-white"
                             value={newAddress.city}
                             onChange={(e) => handleCitySelect(e.target.value)}
                             required
@@ -1247,7 +1247,7 @@ const BillingAddresses = () => {
                           <input
                             type="text"
                             placeholder="Città*"
-                            className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400 disabled:bg-[#2C3E50] disabled:text-white disabled:placeholder-gray-400 disabled:border-[#2C3E50]"
+                            className="input input-bordered w-full pl-10 bg-base-400 text-white placeholder-gray-400 disabled:bg-base-400 disabled:text-white disabled:placeholder-gray-400 disabled:border-base-400"
                             required
                             value={newAddress.city}
                             onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
@@ -1262,7 +1262,7 @@ const BillingAddresses = () => {
                 <div className="modal-action">
                   <button
                     type="button"
-                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                    className="btn btn-ghost text-white hover:bg-base-400"
                     onClick={() => { setShowAddAddressModal(false); setNewAddress({ city: '', name: '', zip: '', street: '' }); setCities([]) }}
                   >
                     Annulla
@@ -1281,14 +1281,14 @@ const BillingAddresses = () => {
 
         {showEditAddressModal && (
           <div className="modal modal-open">
-            <div className="modal-box bg-[#1E2633] border border-blue-900/30 p-6">
+            <div className="modal-box bg-neutral border border-blue-900/30 p-6">
               <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">
                 Modifica Indirizzo
               </h3>
               <form onSubmit={handleEditAddress} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                   <div className="form-control">
-                    <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
+                    <label className="input input-bordered flex items-center gap-2 bg-base-400">
                       <User className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
@@ -1301,7 +1301,7 @@ const BillingAddresses = () => {
                   </div>
 
                   <div className="form-control">
-                    <label className="input input-bordered flex items-center gap-2 bg-[#2C3E50]">
+                    <label className="input input-bordered flex items-center gap-2 bg-base-400">
                       <MapPin className="w-4 h-4 opacity-70" />
                       <input
                         type="text"
@@ -1326,7 +1326,7 @@ const BillingAddresses = () => {
                         <input
                           type="text"
                           placeholder="CAP*"
-                          className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400"
+                          className="input input-bordered w-full pl-10 bg-base-400 text-white placeholder-gray-400"
                           required
                           maxLength="5"
                           value={AddressToEdit?.zip || ''}
@@ -1349,7 +1349,7 @@ const BillingAddresses = () => {
                         </div>
                         {editCities.length > 0 ? (
                           <select
-                            className="select select-bordered w-full pl-10 bg-[#2C3E50] text-white"
+                            className="select select-bordered w-full pl-10 bg-base-400 text-white"
                             value={AddressToEdit?.city || ''}
                             onChange={(e) => setAddressToEdit({ ...AddressToEdit, city: e.target.value })}
                             required
@@ -1363,7 +1363,7 @@ const BillingAddresses = () => {
                           <input
                             type="text"
                             placeholder="Città*"
-                            className="input input-bordered w-full pl-10 bg-[#2C3E50] text-white placeholder-gray-400 disabled:bg-[#2C3E50] disabled:text-white disabled:placeholder-gray-400 disabled:border-[#2C3E50]"
+                            className="input input-bordered w-full pl-10 bg-base-400 text-white placeholder-gray-400 disabled:bg-base-400 disabled:text-white disabled:placeholder-gray-400 disabled:border-base-400"
                             required
                             value={AddressToEdit?.city || ''}
                             onChange={(e) => setAddressToEdit({ ...AddressToEdit, city: e.target.value })}
@@ -1378,7 +1378,7 @@ const BillingAddresses = () => {
                 <div className="modal-action">
                   <button
                     type="button"
-                    className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                    className="btn btn-ghost text-white hover:bg-base-400"
                     onClick={() => setShowEditAddressModal(false)}
                   >
                     Annulla
@@ -1396,12 +1396,12 @@ const BillingAddresses = () => {
         )}
         {showRemoveAddressModal && (
           <div className="modal modal-open">
-            <div className="modal-box bg-[#1E2633] border border-blue-900/30">
+            <div className="modal-box bg-neutral border border-blue-900/30">
               <h3 className="font-bold text-lg text-white">Elimina Indirizzo</h3>
               <p className="py-4 text-gray-400">Sei sicuro di voler rimuovere questo indirizzo?</p>
               <div className="modal-action">
                 <button
-                  className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                  className="btn btn-ghost text-white hover:bg-base-400"
                   onClick={() => setShowRemoveAddressModal(false)}
                 >
                   Annulla
@@ -1542,7 +1542,7 @@ function AccountInfo() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-base-100 to-neutral flex flex-col">
         <TopBar />
         <div className="flex-grow flex items-center justify-center">
           <Loader />
@@ -1552,11 +1552,11 @@ function AccountInfo() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-neutral flex flex-col">
       <TopBar />
 
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#1E2633] rounded-lg text-white"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-neutral rounded-lg text-white"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
         <Menu className="w-6 h-6" />
@@ -1565,13 +1565,13 @@ function AccountInfo() {
       <div className="flex flex-1">
         <div
           className={`fixed inset-0 z-40 lg:static lg:translate-x-0 transform ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-            } transition-all duration-300 w-72 bg-[#1E2633] p-6 border-r border-blue-900/30 flex flex-col justify-between shadow-2xl `}
+            } transition-all duration-300 w-72 bg-neutral p-6 border-r border-blue-900/30 flex flex-col justify-between shadow-2xl `}
         >
 
           <div className="space-y-6 lg:pt-0 pt-10">
             <button
               onClick={() => navigate("/products")}
-              className="group flex items-center gap-2 w-full p-3 hover:bg-[#2A3444] rounded-lg transition-all duration-300"
+              className="group flex items-center gap-2 w-full p-3 hover:bg-base-300 rounded-lg transition-all duration-300"
             >
               <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
                 <svg
@@ -1635,7 +1635,7 @@ function AccountInfo() {
                 onClick={() => { setActiveTab("account"); setIsMenuOpen(false) }}
                 className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "account"
                     ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
-                    : "hover:bg-[#2A3444]"
+                    : "hover:bg-base-300"
                   }`}
               >
                 <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -1661,7 +1661,7 @@ function AccountInfo() {
                 onClick={() => { setActiveTab("payments"); setIsMenuOpen(false) }}
                 className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "payments"
                     ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
-                    : "hover:bg-[#2A3444]"
+                    : "hover:bg-base-300"
                   }`}
               >
                 <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -1687,7 +1687,7 @@ function AccountInfo() {
                 onClick={() => { setActiveTab("addresses"); setIsMenuOpen(false) }}
                 className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "addresses"
                     ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
-                    : "hover:bg-[#2A3444]"
+                    : "hover:bg-base-300"
                   }`}
               >
                 <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -1747,12 +1747,12 @@ function AccountInfo() {
 
       {showDeleteConfirm && (
         <div className="modal modal-open">
-          <div className="modal-box bg-[#1E2633] border border-blue-900/30">
+          <div className="modal-box bg-neutral border border-blue-900/30">
             <h3 className="font-bold text-lg text-white">Elimina Account</h3>
             <p className="py-4 text-gray-400">
               Sei sicuro di voler eliminare questo account? l'operazione sarà irreversibile.
             </p>
-            <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+            <label className="input input-bordered input-info flex items-center gap-2 bg-base-400">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
@@ -1775,7 +1775,7 @@ function AccountInfo() {
             </label>
             <div className="modal-action">
               <button
-                className="btn btn-ghost text-white hover:bg-[#2C3E50]"
+                className="btn btn-ghost text-white hover:bg-base-400"
                 onClick={() => setShowDeleteConfirm(false)}
               >
                 Annulla

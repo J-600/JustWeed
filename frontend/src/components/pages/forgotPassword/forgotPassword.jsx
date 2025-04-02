@@ -33,9 +33,9 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col items-center justify-center p-4">
       <div className="flex-grow flex items-center justify-center w-full">
-        <div className="card w-full max-w-md bg-[#1E2633] shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
+        <div className="card w-full max-w-md bg-base-200 shadow-2xl border border-blue-900/30 transform transition-all duration-500 hover:scale-105">
           <div className="card-body space-y-6 p-8">
             <div className="relative w-full pb-6">
               <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient leading-normal">
@@ -45,7 +45,7 @@ function ForgotPassword() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="form-control">
-                <label className="input input-bordered input-info flex items-center gap-2 bg-[#2C3E50]">
+                <label className="input input-bordered input-info flex items-center gap-2 bg-base-400">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 16 16"

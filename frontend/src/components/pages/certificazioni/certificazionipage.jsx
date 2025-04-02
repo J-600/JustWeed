@@ -48,7 +48,7 @@ const CertificazioniPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 text-white">
       <TopBar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -82,7 +82,7 @@ const CertificazioniPage = () => {
               bg: "bg-gradient-to-r from-blue-500/20 to-cyan-500/20"
             }
           ].map((metric, i) => (
-            <div key={i} className="bg-[#2A3447] p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all shadow-md">
+            <div key={i} className="bg-card-base-100 p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all shadow-md">
               <div className="flex items-center gap-3 mb-4">
                 <div className={`${metric.bg} p-2 rounded-lg`}>
                   {metric.icon}
@@ -96,13 +96,13 @@ const CertificazioniPage = () => {
           ))}
         </div>
 
-        <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
+        <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
           <h2 className="text-2xl font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Certificazioni Attive
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {certifications.map((cert, index) => (
-              <div key={index} className="bg-[#1E2633] p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all group">
+              <div key={index} className="bg-base-200 p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all group">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="bg-blue-900/20 p-3 rounded-lg group-hover:bg-purple-900/20 transition-colors">
                     {cert.icon}
@@ -138,7 +138,7 @@ const CertificazioniPage = () => {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-6 shadow-lg">
+          <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-6 shadow-lg">
             <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
               Processo di Certificazione
             </h2>
@@ -161,7 +161,7 @@ const CertificazioniPage = () => {
               ))}
             </div>
           </div>
-          <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-6 shadow-lg">
+          <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-6 shadow-lg">
             <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
               Cronologia Certificazioni
             </h2>
@@ -186,7 +186,7 @@ const CertificazioniPage = () => {
             </div>
           </div>
         </div>
-        <div className="bg-[#2A3447] rounded-xl p-8 border border-blue-900/30 shadow-lg text-center">
+        <div className="bg-card-base-100 rounded-xl p-8 border border-blue-900/30 shadow-lg text-center">
           <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Documentazione Completa
           </h2>

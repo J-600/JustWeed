@@ -7,7 +7,7 @@ function PreWeeder() {
     const navigate = useNavigate();
     
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col overflow-x-hidden">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col overflow-x-hidden">
             <TopBar />
             <div className="flex-1 pt-24 pb-12 px-4 lg:px-8">
                 <div className="max-w-7xl mx-auto">
@@ -58,13 +58,13 @@ function PreWeeder() {
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="stats bg-[#1E2633] border border-blue-900/30 shadow">
+                                <div className="stats bg-base-200 border border-blue-900/30 shadow">
                                     <div className="stat">
                                         <div className="stat-title text-gray-400">Partner Attivi</div>
                                         <div className="stat-value text-blue-400">150+</div>
                                     </div>
                                 </div>
-                                <div className="stats bg-[#1E2633] border border-blue-900/30 shadow">
+                                <div className="stats bg-base-200 border border-blue-900/30 shadow">
                                     <div className="stat">
                                         <div className="stat-title text-gray-400">Margine Medio</div>
                                         <div className="stat-value text-purple-400">35%</div>

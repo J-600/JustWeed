@@ -103,12 +103,12 @@ function Purchase() {
     }, {});
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col">
             <TopBar />
             <style>{customDatePickerStyles}</style>
 
             <div className="flex-1 p-4 md:p-8 overflow-y-auto">
-                <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30 w-full max-w-none md:w-full md:mx-auto">
+                <div className="card bg-base-200 shadow-2xl border border-blue-900/30 w-full max-w-none md:w-full md:mx-auto">
                     <div className="card-body space-y-6 px-4 md:px-6">
                         <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient text-4xl text-center font-bold mt-4">
                             I Tuoi Ordini
@@ -118,7 +118,7 @@ function Purchase() {
                         <div className="relative group max-w-2xl mx-auto w-full">
                             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200 animate-gradient" />
 
-                            <div className="relative flex items-center bg-[#1E2633] rounded-lg border border-blue-900/30">
+                            <div className="relative flex items-center bg-base-200 rounded-lg border border-blue-900/30">
                                 <input
                                     type="text"
                                     placeholder="Cerca ordini..."
@@ -150,7 +150,7 @@ function Purchase() {
                                 </div>
 
                                 {isFilterOpen && (
-                                    <div className="absolute top-full right-0 mt-2 w-64 bg-[#2A3444] rounded-lg shadow-xl border border-blue-900/30 p-4 z-50">
+                                    <div className="absolute top-full right-0 mt-2 w-64 bg-base-300 rounded-lg shadow-xl border border-blue-900/30 p-4 z-50">
                                         <div className="mb-4">
                                             <h3 className="text-sm font-semibold text-blue-400 mb-2">Ordina per</h3>
                                             <div className="space-y-2">
@@ -182,7 +182,7 @@ function Purchase() {
                                                     <DatePicker
                                                         selected={startDate}
                                                         onChange={setStartDate}
-                                                        className="w-full bg-[#1E2633] rounded-md px-3 py-2 text-white border border-blue-900/30"
+                                                        className="w-full bg-base-200 rounded-md px-3 py-2 text-white border border-blue-900/30"
                                                         placeholderText="Seleziona data"
                                                     />
                                                 </div>
@@ -191,7 +191,7 @@ function Purchase() {
                                                     <DatePicker
                                                         selected={endDate}
                                                         onChange={setEndDate}
-                                                        className="w-full bg-[#1E2633] rounded-md px-3 py-2 text-white border border-blue-900/30"
+                                                        className="w-full bg-base-200 rounded-md px-3 py-2 text-white border border-blue-900/30"
                                                         placeholderText="Seleziona data"
                                                         minDate={startDate}
                                                     />
@@ -208,7 +208,7 @@ function Purchase() {
                                                             type="checkbox"
                                                             checked={selectedTags.has(tag)}
                                                             onChange={() => handleTagToggle(tag)}
-                                                            className="checkbox checkbox-xs bg-[#1E2633] border-blue-900/30 checked:bg-purple-500"
+                                                            className="checkbox checkbox-xs bg-base-200 border-blue-900/30 checked:bg-purple-500"
                                                         />
                                                         <span>{tag}</span>
                                                     </label>
@@ -241,12 +241,12 @@ function Purchase() {
                         ) : Object.keys(filteredPurchases).length > 0 ? (
                             <div className="space-y-8">
                                 {Object.keys(filteredPurchases).map((date) => (
-                                    <div key={date} className="bg-[#1E2633] rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
+                                    <div key={date} className="bg-base-200 rounded-xl border border-blue-900/30 md:p-6 p-3 shadow-lg">
                                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                                             <h2 className="text-3xl font-bold text-blue-400 mb-2 md:mb-0">
                                                 Ordini del {new Date(date).toLocaleDateString()}
                                             </h2>
-                                            <div className="bg-[#2C3E50] px-4 py-2 rounded-lg">
+                                            <div className="bg-base-400 px-4 py-2 rounded-lg">
                                                 <span className="font-semibold text-white">
                                                     Totale: €{filteredPurchases[date]
                                                         .reduce((sum, order) => sum + (order.product_price * order.quantity), 0)
@@ -257,7 +257,7 @@ function Purchase() {
 
                                         <div className="space-y-6">
                                             {filteredPurchases[date].map((item) => (
-                                                <div key={item.order_id} className="flex flex-col h-auto md:flex-row md:gap-6 gap-1 p-4 bg-[#2C3E50] rounded-lg border border-blue-900/30">
+                                                <div key={item.order_id} className="flex flex-col h-auto md:flex-row md:gap-6 gap-1 p-4 bg-base-400 rounded-lg border border-blue-900/30">
                                                     <img
                                                         src={item.img}
                                                         alt={item.product_name}

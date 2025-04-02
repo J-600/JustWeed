@@ -49,7 +49,7 @@ const CookiePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 text-white">
       <TopBar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -66,9 +66,9 @@ const CookiePage = () => {
           </p>
         </div>
 
-        <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-6 shadow-lg">
+        <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-6 shadow-lg">
           <div className="space-y-6">
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" defaultChecked />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <Lock size={20} className="text-purple-400" />
@@ -94,7 +94,7 @@ const CookiePage = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <ShieldCheck size={20} className="text-purple-400" />
@@ -107,7 +107,7 @@ const CookiePage = () => {
                   <span className="text-gray-300">Memorizza dosaggi e preferenze</span>
                   <input 
                     type="checkbox" 
-                    className="toggle bg-[#2A3447] border-blue-900/30 hover:border-purple-500 checked:bg-purple-500"
+                    className="toggle bg-card-base-100 border-blue-900/30 hover:border-purple-500 checked:bg-purple-500"
                     checked={preferences.preferences}
                     onChange={(e) => setPreferences({...preferences, preferences: e.target.checked})}
                   />
@@ -119,7 +119,7 @@ const CookiePage = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <ChartBar size={20} className="text-purple-400" />
@@ -132,7 +132,7 @@ const CookiePage = () => {
                   <span className="text-gray-300">Statistiche d'uso anonime</span>
                   <input 
                     type="checkbox" 
-                    className="toggle bg-[#2A3447] border-blue-900/30 hover:border-purple-500 checked:bg-purple-500"
+                    className="toggle bg-card-base-100 border-blue-900/30 hover:border-purple-500 checked:bg-purple-500"
                     checked={preferences.statistics}
                     onChange={(e) => setPreferences({...preferences, statistics: e.target.checked})}
                   />
@@ -162,7 +162,7 @@ const CookiePage = () => {
                 </div>
               </div>
             </div>
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <Megaphone size={20} className="text-purple-400" />
@@ -175,7 +175,7 @@ const CookiePage = () => {
                   <span className="text-gray-300">Contenuti personalizzati</span>
                   <input 
                     type="checkbox" 
-                    className="toggle bg-[#2A3447] border-blue-900/30 hover:border-purple-500 checked:bg-purple-500"
+                    className="toggle bg-card-base-100 border-blue-900/30 hover:border-purple-500 checked:bg-purple-500"
                     checked={preferences.marketing}
                     onChange={(e) => setPreferences({...preferences, marketing: e.target.checked})}
                   />

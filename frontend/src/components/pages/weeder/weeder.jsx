@@ -137,7 +137,7 @@ function Weeder() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-card-base-100 to-base-200 flex flex-col">
       <TopBar />
 
       <div className="flex-1 p-4 md:p-8 overflow-y-auto">
@@ -191,7 +191,7 @@ function Weeder() {
             </SectionCard>
 
             <SectionCard title="Metodo di pagamento" icon={<CreditCard className="w-5 h-5" />}>
-              <div className="p-4 bg-[#1E2633] rounded-lg border border-blue-900/30 transition-colors 
+              <div className="p-4 bg-base-200 rounded-lg border border-blue-900/30 transition-colors 
                 hover:border-blue-600/50">
                 <CardElement options={CARD_ELEMENT_OPTIONS} />
               </div>
@@ -202,7 +202,7 @@ function Weeder() {
                 <InputField icon={<FileText />} value={pIva} setValue={setPIva} placeholder="Partita IVA *" required />
                 <div className="relative">
                   <textarea
-                    className="w-full bg-[#1E2633] border border-blue-900/30 rounded-lg px-4 py-3 pl-11
+                    className="w-full bg-base-200 border border-blue-900/30 rounded-lg px-4 py-3 pl-11
                       text-blue-100 placeholder-blue-400/70 focus:outline-none focus:ring-2 
                       focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                     rows="3"
@@ -231,7 +231,7 @@ function Weeder() {
 }
 
 const SectionCard = ({ title, icon, children }) => (
-  <div className="bg-[#1E2633] rounded-xl border border-blue-900/30 p-6 shadow-xl hover:shadow-blue-900/10 
+  <div className="bg-base-200 rounded-xl border border-blue-900/30 p-6 shadow-xl hover:shadow-blue-900/10 
     transition-shadow">
     <div className="flex items-center space-x-3 mb-6">
       <div className="p-2 bg-blue-900/20 rounded-lg text-blue-400">
@@ -246,7 +246,7 @@ const SectionCard = ({ title, icon, children }) => (
 const InputField = ({ icon, placeholder, required = false, value, setValue, ...props }) => (
   <div className="relative">
     <input
-      className="w-full bg-[#1E2633] border border-blue-900/30 rounded-lg px-4 py-3 pl-11
+      className="w-full bg-base-200 border border-blue-900/30 rounded-lg px-4 py-3 pl-11
         text-blue-100 placeholder-blue-400/70 focus:outline-none focus:ring-2 
         focus:ring-blue-500/50 focus:border-blue-500 transition-all"
       placeholder={placeholder + (required ? ' *' : '')}

@@ -11,7 +11,7 @@ const PartnershipPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-white">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 text-white">
             <TopBar />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -50,7 +50,7 @@ const PartnershipPage = () => {
                             bg: "bg-gradient-to-r from-blue-500/20 to-cyan-500/20"
                         }
                     ].map((metric, i) => (
-                        <div key={i} className="bg-[#2A3447] p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all shadow-md">
+                        <div key={i} className="bg-card-base-100 p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all shadow-md">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className={`${metric.bg} p-2 rounded-lg`}>
                                     {metric.icon}
@@ -63,7 +63,7 @@ const PartnershipPage = () => {
                         </div>
                     ))}
                 </div>
-                <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
+                <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
                     <h2 className="text-2xl font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                         Modelli Collaborativi
                     </h2>
@@ -85,7 +85,7 @@ const PartnershipPage = () => {
                                 features: ["Logistica tracciata", "Supply chain sicura", "Distribuzione B2B"]
                             }
                         ].map((type, index) => (
-                            <div key={index} className="bg-[#1E2633] p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all group">
+                            <div key={index} className="bg-base-200 p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all group">
                                 <div className="flex items-center gap-3 mb-4">
                                     <div className="bg-blue-900/20 p-2 rounded-lg group-hover:bg-purple-900/20 transition-colors">
                                         {type.icon}
@@ -111,7 +111,7 @@ const PartnershipPage = () => {
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                         {partners.map((partner, index) => (
-                            <div key={index} className="bg-[#2A3447] p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all shadow-md">
+                            <div key={index} className="bg-card-base-100 p-6 rounded-xl border border-blue-900/30 hover:border-purple-500/50 transition-all shadow-md">
                                 <div className="bg-blue-900/10 p-4 rounded-lg mb-3 flex justify-center">
                                     {partner.icon}
                                 </div>
@@ -122,7 +122,7 @@ const PartnershipPage = () => {
                     </div>
                 </div>
 
-                <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-8 shadow-lg mb-12">
+                <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-8 shadow-lg mb-12">
                     <div className="max-w-2xl mx-auto text-center">
                         <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                             Richiesta Partnership
@@ -134,16 +134,16 @@ const PartnershipPage = () => {
                                 <input
                                     type="text"
                                     placeholder="Ragione Sociale"
-                                    className="input input-bordered w-full bg-[#1E2633] border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30"
+                                    className="input input-bordered w-full bg-base-200 border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30"
                                 />
                                 <input
                                     type="email"
                                     placeholder="Email Certificata"
-                                    className="input input-bordered w-full bg-[#1E2633] border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30"
+                                    className="input input-bordered w-full bg-base-200 border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30"
                                 />
                             </div>
 
-                            <select className="select select-bordered w-full bg-[#1E2633] border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30">
+                            <select className="select select-bordered w-full bg-base-200 border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30">
                                 <option disabled value="">Tipo di Richiesta</option>
                                 <option>Fornitura Materia Prima</option>
                                 <option>Co-Sviluppo Prodotto</option>
@@ -153,7 +153,7 @@ const PartnershipPage = () => {
 
                             <textarea
                                 placeholder="Descrivi la tua proposta (include numero licenza operativa)"
-                                className="textarea textarea-bordered w-full h-32 bg-[#1E2633] border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30"
+                                className="textarea textarea-bordered w-full h-32 bg-base-200 border-blue-900/30 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/30"
                                 minLength={200}
                                 required
                             ></textarea>
@@ -166,7 +166,7 @@ const PartnershipPage = () => {
                     </div>
                 </div>
 
-                <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-8 shadow-lg">
+                <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-8 shadow-lg">
                     <h2 className="text-2xl font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                         Documentazione
                     </h2>
@@ -176,7 +176,7 @@ const PartnershipPage = () => {
                             { title: "Manuale Qualità", format: "ZIP", size: "4.7MB" },
                             { title: "Regolamentazione Attuale", format: "PDF", size: "1.3MB" }
                         ].map((resource, index) => (
-                            <div key={index} className="bg-[#1E2633] p-4 rounded-xl flex items-center justify-between border border-blue-900/30 hover:border-purple-500/50 transition-all group">
+                            <div key={index} className="bg-base-200 p-4 rounded-xl flex items-center justify-between border border-blue-900/30 hover:border-purple-500/50 transition-all group">
                                 <div>
                                     <h4 className="font-bold mb-1">{resource.title}</h4>
                                     <p className="text-sm text-gray-300">{resource.format} • {resource.size}</p>

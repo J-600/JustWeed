@@ -168,7 +168,7 @@ const CartPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col">
       <TopBar />
 
       <div className="w-full px-4 sm:px-8 pt-20 pb-14">
@@ -193,7 +193,7 @@ const CartPage = () => {
             </h1>
 
             <div className="hidden sm:block">
-              <span className="badge badge-lg bg-[#2A3447] border border-blue-900/30 text-blue-400">
+              <span className="badge badge-lg bg-card-base-100 border border-blue-900/30 text-blue-400">
                 Prezzo
               </span>
             </div>
@@ -206,7 +206,7 @@ const CartPage = () => {
               </div>
             ) : cartItems.length === 0 ? (
               <div className="lg:col-span-3 flex justify-center">
-                <div className="card bg-[#1E2633] border border-blue-900/30 w-full">
+                <div className="card bg-base-200 border border-blue-900/30 w-full">
                   <div className="card-body items-center text-center py-16">
                     <h2 className="text-2xl text-gray-400 mb-4">Il tuo carrello è vuoto</h2>
                     <Link
@@ -222,7 +222,7 @@ const CartPage = () => {
               <div className="lg:col-span-2 space-y-6">
                 {
                   cartItems.map((item) => (
-                    <div key={item.id} className="card bg-[#1E2633] border border-blue-900/30 group">
+                    <div key={item.id} className="card bg-base-200 border border-blue-900/30 group">
                       <div className="card-body">
                         <div className="flex flex-col sm:flex-row gap-6">
                           <div className="relative w-full sm:w-48 flex-shrink-0">
@@ -256,7 +256,7 @@ const CartPage = () => {
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => handleDecrement(item.id)}
-                                  className="btn btn-sm btn-square bg-[#2A3447] border border-blue-900/30 text-white hover:bg-blue-500 disabled:opacity-50"
+                                  className="btn btn-sm btn-square bg-card-base-100 border border-blue-900/30 text-white hover:bg-blue-500 disabled:opacity-50"
                                   disabled={item.quantity === 1}
                                 >
                                   <Minus size={16} />
@@ -272,11 +272,11 @@ const CartPage = () => {
                                     }
                                   }}
                                   min="1"
-                                  className="input input-sm w-20 text-center bg-[#2A3447] border border-blue-900/30 text-white focus:border-blue-500"
+                                  className="input input-sm w-20 text-center bg-card-base-100 border border-blue-900/30 text-white focus:border-blue-500"
                                 />
                                 <button
                                   onClick={() => handleIncrement(item.id)}
-                                  className="btn btn-sm btn-square bg-[#2A3447] border border-blue-900/30 text-white hover:bg-blue-500"
+                                  className="btn btn-sm btn-square bg-card-base-100 border border-blue-900/30 text-white hover:bg-blue-500"
                                 >
                                   <Plus size={16} />
                                 </button>
@@ -305,7 +305,7 @@ const CartPage = () => {
 
 
             {cartItems.length > 0 && (
-              <div className="card bg-[#1E2633] border border-blue-900/30 h-fit lg:sticky lg:top-20">
+              <div className="card bg-base-200 border border-blue-900/30 h-fit lg:sticky lg:top-20">
                 <div className="card-body">
                   <h2 className="text-2xl font-bold text-white mb-4">Riepilogo ordine</h2>
 

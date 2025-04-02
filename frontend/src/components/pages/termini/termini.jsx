@@ -4,7 +4,7 @@ import Footer from "../../navbar/footer";
 
 const TerminiPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-card-base-100 to-base-200 text-white">
       <TopBar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -21,9 +21,9 @@ const TerminiPage = () => {
           </p>
         </div>
 
-        <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-6 shadow-lg">
+        <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-6 shadow-lg">
           <div className="space-y-6">
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" defaultChecked />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <BookOpen size={20} className="text-purple-400" />
@@ -58,7 +58,7 @@ const TerminiPage = () => {
                 </div>
               </div>
             </div>
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <Wallet size={20} className="text-purple-400" />
@@ -88,7 +88,7 @@ const TerminiPage = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <AlertTriangle size={20} className="text-purple-400" />
@@ -120,7 +120,7 @@ const TerminiPage = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <Shield size={20} className="text-purple-400" />
@@ -156,7 +156,7 @@ const TerminiPage = () => {
               </div>
             </div>
 
-            <div className="collapse collapse-plus bg-[#1E2633] border border-blue-900/30 hover:border-purple-500/50 transition-colors">
+            <div className="collapse collapse-plus bg-base-200 border border-blue-900/30 hover:border-purple-500/50 transition-colors">
               <input type="checkbox" />
               <div className="collapse-title font-bold text-xl flex items-center gap-3">
                 <Clock size={20} className="text-purple-400" />
@@ -175,7 +175,7 @@ const TerminiPage = () => {
               </div>
             </div>
 
-            <div className="bg-[#2A3447] rounded-xl p-6 border border-blue-900/30 mt-8 shadow-lg">
+            <div className="bg-card-base-100 rounded-xl p-6 border border-blue-900/30 mt-8 shadow-lg">
               <div className="flex items-start gap-4">
                 <Mail className="text-purple-400 mt-1 flex-shrink-0" size={24} />
                 <div>

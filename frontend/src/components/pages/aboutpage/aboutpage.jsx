@@ -28,12 +28,12 @@ const AboutPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col">
             <TopBar />
 
             <div id='start' className="w-full px-4 sm:px-8 pt-20 pb-14">
                 <div className="max-w-7xl mx-auto">
-                    <div className="card bg-[#1E2633] shadow-2xl border border-blue-900/30">
+                    <div className="card bg-base-200 shadow-2xl border border-blue-900/30">
                         <div className="card-body space-y-8 py-12">
 
                             <div className="text-center max-w-3xl mx-auto">
@@ -55,7 +55,7 @@ const AboutPage = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {members.map((item) => (
-                                        <div key={item} className="card bg-[#2A3447] border border-blue-900/30 hover:border-purple-500/50 transition-all group">
+                                        <div key={item} className="card bg-card-base-100 border border-blue-900/30 hover:border-purple-500/50 transition-all group">
                                             <div className="card-body items-center text-center">
                                                 {item.img ? (
                                                     <div className="avatar mb-4">
@@ -79,7 +79,7 @@ const AboutPage = () => {
                                                         <a
                                                             key={href}
                                                             href={href}
-                                                            className={`btn btn-square btn-sm border border-blue-900/30 bg-[#1E2633] ${color} hover:${hoverColor} hover:text-white`}
+                                                            className={`btn btn-square btn-sm border border-blue-900/30 bg-base-200 ${color} hover:${hoverColor} hover:text-white`}
                                                         >
                                                             <Icon stroke="currentColor" size={18} />
                                                         </a>
@@ -98,19 +98,19 @@ const AboutPage = () => {
                                 </h2>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="card bg-[#2A3447] border border-blue-900/30 p-6">
+                                    <div className="card bg-card-base-100 border border-blue-900/30 p-6">
                                         <Truck className="w-12 h-12 text-blue-400 mb-4" />
                                         <h3 className="text-xl font-bold text-white mb-2">Spedizioni Sicure</h3>
                                         <p className="text-gray-400">Consegna discreta e tracciabile in tutta Italia</p>
                                     </div>
 
-                                    <div className="card bg-[#2A3447] border border-blue-900/30 p-6">
+                                    <div className="card bg-card-base-100 border border-blue-900/30 p-6">
                                         <Leaf className="w-12 h-12 text-purple-400 mb-4" />
                                         <h3 className="text-xl font-bold text-white mb-2">Qualità Certificata</h3>
                                         <p className="text-gray-400">Prodotti testati in laboratorio e garantiti</p>
                                     </div>
 
-                                    <div className="card bg-[#2A3447] border border-blue-900/30 p-6">
+                                    <div className="card bg-card-base-100 border border-blue-900/30 p-6">
                                         <Heart className="w-12 h-12 text-red-400 mb-4" />
                                         <h3 className="text-xl font-bold text-white mb-2">Supporto 24/7</h3>
                                         <p className="text-gray-400">Assistenza clienti sempre disponibile</p>
@@ -118,7 +118,7 @@ const AboutPage = () => {
                                 </div>
                             </div>
 
-                            <div className="card bg-[#2A3447] border border-blue-900/30 mt-12">
+                            <div className="card bg-card-base-100 border border-blue-900/30 mt-12">
                                 <div className="card-body py-8">
                                     <h2 className="text-3xl font-bold text-white mb-6 text-center">Contattaci</h2>
                                     <form className="max-w-xl mx-auto space-y-4">
@@ -126,19 +126,19 @@ const AboutPage = () => {
                                             <input
                                                 type="text"
                                                 placeholder="Nome"
-                                                className="input bg-[#1E2633] border border-blue-900/30 text-white focus:border-purple-500"
+                                                className="input bg-base-200 border border-blue-900/30 text-white focus:border-purple-500"
                                             />
                                         </div>
                                         <div className="form-control">
                                             <input
                                                 type="email"
                                                 placeholder="Email"
-                                                className="input bg-[#1E2633] border border-blue-900/30 text-white focus:border-purple-500"
+                                                className="input bg-base-200 border border-blue-900/30 text-white focus:border-purple-500"
                                             />
                                         </div>
                                         <div className="form-control">
                                             <textarea
-                                                className="textarea bg-[#1E2633] border border-blue-900/30 text-white focus:border-purple-500 h-32"
+                                                className="textarea bg-base-200 border border-blue-900/30 text-white focus:border-purple-500 h-32"
                                                 placeholder="Messaggio"
                                             ></textarea>
                                         </div>

@@ -77,7 +77,7 @@ const Contatti = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col">
       <TopBar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1">
@@ -90,7 +90,7 @@ const Contatti = () => {
           </p>
         </div>
 
-        <div className="tabs tabs-boxed bg-[#1E2633] border border-blue-900/30 max-w-md mx-auto mb-12">
+        <div className="tabs tabs-boxed bg-base-200 border border-blue-900/30 max-w-md mx-auto mb-12">
           <button 
             className={`tab text-gray-500 flex-1 ${activeTab === 'scrivici' ? 'tab-active bg-gradient-to-r from-blue-500/20 to-purple-500/20' : ''}`}
             onClick={() => setActiveTab("scrivici")}
@@ -111,7 +111,7 @@ const Contatti = () => {
           </button>
         </div>
 
-        <div className="bg-[#1E2633] rounded-xl border border-blue-900/30 shadow-lg p-6 md:p-8 mb-12">
+        <div className="bg-base-200 rounded-xl border border-blue-900/30 shadow-lg p-6 md:p-8 mb-12">
           {activeTab === "scrivici" && (
             <div className="max-w-2xl mx-auto">
               {isSubmitted ? (
@@ -137,7 +137,7 @@ const Contatti = () => {
                         name="nome"
                         value={formData.nome}
                         onChange={handleChange}
-                        className="input input-bordered w-full bg-[#2A3447] border-blue-900/30 focus:border-blue-500"
+                        className="input input-bordered w-full bg-card-base-100 border-blue-900/30 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -150,7 +150,7 @@ const Contatti = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="input input-bordered w-full bg-[#2A3447] border-blue-900/30 focus:border-blue-500"
+                        className="input input-bordered w-full bg-card-base-100 border-blue-900/30 focus:border-blue-500"
                         required
                       />
                     </div>
@@ -163,7 +163,7 @@ const Contatti = () => {
                       name="messaggio"
                       value={formData.messaggio}
                       onChange={handleChange}
-                      className="textarea textarea-bordered w-full h-32 bg-[#2A3447] border-blue-900/30 focus:border-blue-500"
+                      className="textarea textarea-bordered w-full h-32 bg-card-base-100 border-blue-900/30 focus:border-blue-500"
                       required
                     ></textarea>
                   </div>
@@ -174,7 +174,7 @@ const Contatti = () => {
                         name="privacy"
                         checked={formData.privacy}
                         onChange={handleChange}
-                        className="checkbox checkbox-primary bg-[#2A3447] border-blue-900/30 checked:border-blue-500"
+                        className="checkbox checkbox-primary bg-card-base-100 border-blue-900/30 checked:border-blue-500"
                         required
                       />
                       <span className="label-text text-gray-300">
@@ -197,7 +197,7 @@ const Contatti = () => {
           {activeTab === "uffici" && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {uffici.map((ufficio, index) => (
-                <div key={index} className="bg-[#2A3447] rounded-xl border border-blue-900/30 hover:border-blue-500/50 transition-all overflow-hidden">
+                <div key={index} className="bg-card-base-100 rounded-xl border border-blue-900/30 hover:border-blue-500/50 transition-all overflow-hidden">
                   <div className="h-48 bg-gradient-to-br from-blue-900/20 to-purple-900/20 overflow-hidden">
                     <img 
                       src={ufficio.image} 
@@ -242,10 +242,10 @@ const Contatti = () => {
                 {faqs.map((faq) => (
                   <div 
                     key={faq.id} 
-                    className="bg-[#2A3447] rounded-xl border border-blue-900/30 overflow-hidden"
+                    className="bg-card-base-100 rounded-xl border border-blue-900/30 overflow-hidden"
                   >
                     <button
-                      className="w-full p-5 text-left flex justify-between items-center hover:bg-[#2A3447]/80 transition-colors"
+                      className="w-full p-5 text-left flex justify-between items-center hover:bg-card-base-100/80 transition-colors"
                       onClick={() => toggleFaq(faq.id)}
                     >
                       <h3 className="font-medium text-white">{faq.domanda}</h3>
@@ -281,7 +281,7 @@ const Contatti = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <a 
             href="mailto:info@justweed.com" 
-            className="bg-[#1E2633] p-5 rounded-xl border border-blue-900/30 hover:border-blue-500/50 transition-all flex items-center gap-4 group"
+            className="bg-base-200 p-5 rounded-xl border border-blue-900/30 hover:border-blue-500/50 transition-all flex items-center gap-4 group"
           >
             <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 p-3 rounded-lg group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all">
               <Mail className="text-blue-400" size={24} />
@@ -294,7 +294,7 @@ const Contatti = () => {
           
           <a 
             href="tel:+390212345678" 
-            className="bg-[#1E2633] p-5 rounded-xl border border-blue-900/30 hover:border-blue-500/50 transition-all flex items-center gap-4 group"
+            className="bg-base-200 p-5 rounded-xl border border-blue-900/30 hover:border-blue-500/50 transition-all flex items-center gap-4 group"
           >
             <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 p-3 rounded-lg group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all">
               <Phone className="text-blue-400" size={24} />
@@ -305,7 +305,7 @@ const Contatti = () => {
             </div>
           </a>
           
-          <div className="bg-[#1E2633] p-5 rounded-xl border border-blue-900/30 flex items-center gap-4">
+          <div className="bg-base-200 p-5 rounded-xl border border-blue-900/30 flex items-center gap-4">
             <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 p-3 rounded-lg">
               <Clock className="text-blue-400" size={24} />
             </div>

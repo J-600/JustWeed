@@ -112,7 +112,7 @@ const Sostenibilita = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#0A1128] to-[#1E2633] text-white">
+        <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 text-white">
             <TopBar />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -132,7 +132,7 @@ const Sostenibilita = () => {
                     </p>
                 </div>
 
-                <div className="bg-[#1E2633] rounded-xl p-6 border border-blue-900/30 shadow-lg mb-12 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div className="bg-base-200 rounded-xl p-6 border border-blue-900/30 shadow-lg mb-12 flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-4">
                         <div className="bg-gradient-to-r from-green-500/20 to-cyan-500/20 p-3 rounded-xl">
                             <Download className="text-cyan-400" size={28} />
@@ -177,7 +177,7 @@ const Sostenibilita = () => {
                             chart: <Leaf className="text-cyan-400" size={36} />
                         }
                     ].map((metric, i) => (
-                        <div key={i} className="bg-[#2A3447] p-6 rounded-xl border border-blue-900/30 hover:border-cyan-500/50 transition-all hover:-translate-y-1 shadow-md">
+                        <div key={i} className="bg-card-base-100 p-6 rounded-xl border border-blue-900/30 hover:border-cyan-500/50 transition-all hover:-translate-y-1 shadow-md">
                             <div className="flex items-center gap-3 mb-4">
                                 {metric.icon}
                                 <h3 className="font-bold text-lg">{metric.title}</h3>
@@ -194,7 +194,7 @@ const Sostenibilita = () => {
                         </div>
                     ))}
                 </div>
-                <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
+                <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
                     <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
                         <Factory className="text-cyan-400" size={28} />
                         <span className="bg-gradient-to-r from-green-400 to-cyan-500 bg-clip-text text-transparent">
@@ -231,7 +231,7 @@ const Sostenibilita = () => {
                     </div>
                 </div>
 
-                <div className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
+                <div className="bg-card-base-100 rounded-xl border border-blue-900/30 p-8 mb-12 shadow-lg">
                     <h2 className="text-2xl font-bold mb-8 bg-gradient-to-r from-green-400 to-cyan-500 bg-clip-text text-transparent">
                         Progresso Annuale
                     </h2>
@@ -240,10 +240,10 @@ const Sostenibilita = () => {
                         <table className="table w-full">
                             <thead>
                                 <tr className="border-b border-blue-900/30">
-                                    <th className="bg-[#2A3447] text-gray-300 font-semibold">Anno</th>
-                                    <th className="bg-[#2A3447] text-gray-300 font-semibold">CO₂ (ton)</th>
-                                    <th className="bg-[#2A3447] text-gray-300 font-semibold">Acqua (m³)</th>
-                                    <th className="bg-[#2A3447] text-gray-300 font-semibold">Rifiuti (kg)</th>
+                                    <th className="bg-card-base-100 text-gray-300 font-semibold">Anno</th>
+                                    <th className="bg-card-base-100 text-gray-300 font-semibold">CO₂ (ton)</th>
+                                    <th className="bg-card-base-100 text-gray-300 font-semibold">Acqua (m³)</th>
+                                    <th className="bg-card-base-100 text-gray-300 font-semibold">Rifiuti (kg)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -291,7 +291,7 @@ const Sostenibilita = () => {
                                 color: "from-blue-500/20 to-purple-500/20"
                             }
                         ].map((initiative, i) => (
-                            <div key={i} className="bg-[#2A3447] rounded-xl border border-blue-900/30 p-6 hover:border-cyan-500/50 transition-all hover:-translate-y-1 shadow-md group">
+                            <div key={i} className="bg-card-base-100 rounded-xl border border-blue-900/30 p-6 hover:border-cyan-500/50 transition-all hover:-translate-y-1 shadow-md group">
                                 <div className="flex items-start gap-4 mb-4">
                                     <div className={`bg-gradient-to-r ${initiative.color} p-3 rounded-xl`}>
                                         {initiative.icon}
@@ -309,7 +309,7 @@ const Sostenibilita = () => {
                     </div>
                 </div>
 
-                <div className="bg-[#2A3447] rounded-xl p-8 border border-blue-900/30 shadow-lg">
+                <div className="bg-card-base-100 rounded-xl p-8 border border-blue-900/30 shadow-lg">
                     <h2 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-cyan-500 bg-clip-text text-transparent">
                         Certificazioni
                     </h2>
