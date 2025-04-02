@@ -23,6 +23,7 @@ import TerminiPage from './components/pages/termini/termini';
 import CookiePage from './components/pages/cookie/cookiepage';
 import NotFoundPage from './components/pages/notfount/notFoundPage';
 import Login from './components/pages/login/login';
+import HomeWeeder from './components/pages/homeweeder/homeWeeder';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -45,6 +46,7 @@ function AppRoutes() {
         <Route path='/homepage/products/purchase' element={<Purchase />} />
         <Route path='/homepage/preWeeder' element={<PreWeeder />} />
         <Route path='/homepage/preWeeder/become-weeder' element={<Weeder />} />
+        <Route path='/seller/weeder/homepage' element={<HomeWeeder />} />
         <Route path='/homepage/products/:id' element={<Product/>}/>
         <Route path='/homepage/products/cart' element={<CartPage/>}/>
         <Route path='/homepage/about' element={<AboutPage/>}/>
