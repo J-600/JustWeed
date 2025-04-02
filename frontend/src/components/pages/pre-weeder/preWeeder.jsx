@@ -48,7 +48,7 @@ function PreWeeder() {
 
                                 <button
                                     className="btn btn-lg btn-primary w-full lg:w-auto bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-none transform transition-all duration-300 hover:scale-[1.02] group"
-                                    onClick={() => navigate("/become-weeder")}
+                                    onClick={() => navigate("/homepage/preWeeder/become-weeder")}
                                 >
                                     <span className="group-hover:scale-110 transition-transform">Inizia Ora</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -102,7 +102,7 @@ export default function Topbar({ onUploadCart }) {
         <div className="flex-1 flex justify-center">
           <div
             className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 animate-gradient cursor-pointer transform transition-all duration-500 hover:scale-105 hover:from-blue-500 hover:to-purple-600"
-            onClick={() => navigate("/products")}
+            onClick={() => navigate("/homepage/products")}
           >
             JustWeed
           </div>
@@ -110,7 +110,7 @@ export default function Topbar({ onUploadCart }) {
         <div className="flex items-center gap-4">
           <div className="relative group">
             <button
-              onClick={() => navigate("/cart")}
+              onClick={() => navigate("/homepage/products/cart")}
               className="p-2 rounded-full hover:bg-blue-500/10 transition-colors duration-300 relative"
             >
               <FaShoppingCart
@@ -178,7 +178,7 @@ export default function Topbar({ onUploadCart }) {
           <div className="flex-1 p-6 overflow-y-auto">
             <nav className="space-y-4">
               <div
-                onClick={() => navigate("/account-info")}
+                onClick={() => navigate("/homepage/account-info")}
                 className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-base-300 cursor-pointer transition-all duration-300"
               >
                 <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -201,7 +201,7 @@ export default function Topbar({ onUploadCart }) {
               </div>
 
               <div
-                onClick={() => navigate("/purchase")}
+                onClick={() => navigate("/homepage/products/purchase")}
                 className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-base-300 cursor-pointer transition-all duration-300"
               >
                 <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -223,7 +223,7 @@ export default function Topbar({ onUploadCart }) {
                 </span>
               </div>
               <div
-  onClick={() => navigate("/about")}
+  onClick={() => navigate("/homepage/about")}
   className="group flex items-center space-x-3 p-3 rounded-lg hover:bg-base-300 cursor-pointer transition-all duration-300"
 >
   <div className="p-2 bg-blue-900/20 rounded-lg group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -256,7 +256,7 @@ export default function Topbar({ onUploadCart }) {
                    shadow-lg hover:shadow-[0_5px_30px_-5px_rgba(99,102,241,0.3)] relative overflow-hidden
                    before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-400/20 before:to-purple-500/20 
                    before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300"
-              onClick={() => navigate("/preWeeder")}
+              onClick={() => navigate("/homepage/preWeeder")}
             >
               <span className="relative z-10">Diventa uno Weeder</span>
             </button>

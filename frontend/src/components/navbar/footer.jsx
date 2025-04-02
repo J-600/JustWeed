@@ -30,28 +30,28 @@ export default function Footer() {
                     <div>
                         <h3 className="text-white font-semibold mb-4">Azienda</h3>
                         <ul className="space-y-2">
-                            <li><a href="/about" className="text-gray-400 hover:text-white transition-colors">Chi siamo</a></li>
-                            <li><a href="/about/collaboratori" className="text-gray-400 hover:text-white transition-colors">Collaboratori</a></li>
-                            <li><a href="/about/blog" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-                            <li><a href="/about/contatti" className="text-gray-400 hover:text-white transition-colors">Contatti</a></li>
+                            <li><a href="/homepage/about" className="text-gray-400 hover:text-white transition-colors">Chi siamo</a></li>
+                            <li><a href="/homepage/about/collaboratori" className="text-gray-400 hover:text-white transition-colors">Collaboratori</a></li>
+                            <li><a href="/homepage/about/blog" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+                            <li><a href="/homepage/about/contatti" className="text-gray-400 hover:text-white transition-colors">Contatti</a></li>
                         </ul>
                     </div>
 
                     <div>
                         <h3 className="text-white font-semibold mb-4">Impatto</h3>
                         <ul className="space-y-2">
-                            <li><a href="/about/sostenibilita" className="text-gray-400 hover:text-white transition-colors">Report sostenibilità</a></li>
-                            <li><a href="/about/footprint" className="text-gray-400 hover:text-white transition-colors">Impronta ecologica</a></li>
-                            <li><a href="/about/partnership" className="text-gray-400 hover:text-white transition-colors">Partnership green</a></li>
-                            <li><a href="/about/certificazioni" className="text-gray-400 hover:text-white transition-colors">Certificazioni</a></li>
+                            <li><a href="/homepage/about/sostenibilita" className="text-gray-400 hover:text-white transition-colors">Report sostenibilità</a></li>
+                            <li><a href="/homepage/about/footprint" className="text-gray-400 hover:text-white transition-colors">Impronta ecologica</a></li>
+                            <li><a href="/homepage/about/partnership" className="text-gray-400 hover:text-white transition-colors">Partnership green</a></li>
+                            <li><a href="/homepage/about/certificazioni" className="text-gray-400 hover:text-white transition-colors">Certificazioni</a></li>
                         </ul>
                     </div>
                     <div>
                         <h3 className="text-white font-semibold mb-4">Legal</h3>
                         <ul className="space-y-2">
-                            <li><a href="/about/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                            <li><a href="/about/termini" className="text-gray-400 hover:text-white transition-colors">Termini di servizio</a></li>
-                            <li><a href="/about/cookie" className="text-gray-400 hover:text-white transition-colors">Preferenze cookie</a></li>
+                            <li><a href="/homepage/about/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
+                            <li><a href="/homepage/about/termini" className="text-gray-400 hover:text-white transition-colors">Termini di servizio</a></li>
+                            <li><a href="/homepage/about/cookie" className="text-gray-400 hover:text-white transition-colors">Preferenze cookie</a></li>
                         </ul>
                     </div>
 
@@ -74,7 +74,7 @@ export default function Footer() {
                 <div className="border-t border-blue-900/30 pt-8">
                     <div className="text-center text-gray-400">
                         <p>© 2025 JustWeed. Tutti i diritti riservati |
-                            <a href="/about/termini" className="hover:text-white ml-2">Termini e Condizioni</a>
+                            <a href="/homepage/about/termini" className="hover:text-white ml-2">Termini e Condizioni</a>
                         </p>
                         <p className="mt-2 text-sm">P.IVA 01234567890 | Registro Imprese Milano</p>
                     </div>

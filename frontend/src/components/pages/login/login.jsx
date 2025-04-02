@@ -57,10 +57,8 @@ function Login() {
       if (data.email) {
         setResponseMessage("Benvenuto");
         setResponseType('success');
-        const email = data.email;
-        const username = data.username;
         setTimeout(() => {
-          navigate('/products', { state: { email, username } });
+          navigate('/homepage/products');
         }, 1000);
       } else {
         setResponseMessage(data);

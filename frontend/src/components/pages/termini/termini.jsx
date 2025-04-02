@@ -4,7 +4,7 @@ import Footer from "../../navbar/footer";
 
 const TerminiPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-card-base-100 to-base-200 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 text-white">
       <TopBar />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">

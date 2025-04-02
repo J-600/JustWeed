@@ -25,13 +25,13 @@ function Products() {
     window.dispatchEvent(new Event("triggerUploadCart"));
   };
 
-  const openQuickView = (product) => {
-    setSelectedProduct(product);
-  };
+  // const openQuickView = (product) => {
+  //   setSelectedProduct(product);
+  // };
 
-  const closeQuickView = () => {
-    setSelectedProduct(null);
-  };
+  // const closeQuickView = () => {
+  //   setSelectedProduct(null);
+  // };
 
   useEffect(() => {
     const fetchProductsAndTags = async () => {
@@ -401,7 +401,7 @@ function Products() {
                 >
                   <figure
                     className="relative h-60 overflow-hidden rounded-t-2xl cursor-pointer"
-                    onClick={() => navigate(`/products/${product.id}`)}
+                    onClick={() => navigate(`/homepage/products/${product.id}`)}
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-base-100/80 via-transparent to-transparent z-10" />
 

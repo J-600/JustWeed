@@ -1570,7 +1570,7 @@ function AccountInfo() {
 
           <div className="space-y-6 lg:pt-0 pt-10">
             <button
-              onClick={() => navigate("/products")}
+              onClick={() => navigate("/homepage/products")}
               className="group flex items-center gap-2 w-full p-3 hover:bg-base-300 rounded-lg transition-all duration-300"
             >
               <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">

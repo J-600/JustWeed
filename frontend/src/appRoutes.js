@@ -35,28 +35,29 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<App />} />
         <Route path='/login' element={<Login/>} />
-        <Route path="/products" element={<Products />} />
+        <Route path="/homepage/products" element={<Products />} />
+        <Route path="/homepage" element={<Products />} />
         <Route path="/signup" element={<Signup />} />
         <Route path='/confirm' element={<Confirm />} />
         <Route path='/forgotpassword' element={<ForgotPassword />} />
         <Route path='/newpassword' element={<NewPassword />} />
-        <Route path='/account-info' element={<AccountInfo />} />
-        <Route path='/purchase' element={<Purchase />} />
-        <Route path='/preWeeder' element={<PreWeeder />} />
-        <Route path='/become-weeder' element={<Weeder />} />
-        <Route path='/products/:id' element={<Product/>}/>
-        <Route path='/cart' element={<CartPage/>}/>
-        <Route path='/about' element={<AboutPage/>}/>
-        <Route path='/about/collaboratori' element={<CollaboratoriPage/>}/>
-        <Route path='/about/blog' element={<BlogPage/>}/>
-        <Route path='/about/contatti' element={<Contatti/>}/>
-        <Route path='/about/sostenibilita' element={<Sostenibilita/>}/>
-        <Route path='/about/footprint' element={<FootPrintPage/>}/>
-        <Route path='/about/partnership' element={<Partnership/>}/>
-        <Route path='/about/certificazioni' element={<CertificazioniPage/>}/>
-        <Route path='/about/privacy' element={<PrivacyPolicyPage/>}/>
-        <Route path='/about/termini' element={<TerminiPage/>}/>
-        <Route path='/about/cookie' element={<CookiePage/>}/>
+        <Route path='/homepage/account-info' element={<AccountInfo />} />
+        <Route path='/homepage/products/purchase' element={<Purchase />} />
+        <Route path='/homepage/preWeeder' element={<PreWeeder />} />
+        <Route path='/homepage/preWeeder/become-weeder' element={<Weeder />} />
+        <Route path='/homepage/products/:id' element={<Product/>}/>
+        <Route path='/homepage/products/cart' element={<CartPage/>}/>
+        <Route path='/homepage/about' element={<AboutPage/>}/>
+        <Route path='/homepage/about/collaboratori' element={<CollaboratoriPage/>}/>
+        <Route path='/homepage/about/blog' element={<BlogPage/>}/>
+        <Route path='/homepage/about/contatti' element={<Contatti/>}/>
+        <Route path='/homepage/about/sostenibilita' element={<Sostenibilita/>}/>
+        <Route path='/homepage/about/footprint' element={<FootPrintPage/>}/>
+        <Route path='/homepage/about/partnership' element={<Partnership/>}/>
+        <Route path='/homepage/about/certificazioni' element={<CertificazioniPage/>}/>
+        <Route path='/homepage/about/privacy' element={<PrivacyPolicyPage/>}/>
+        <Route path='/homepage/about/termini' element={<TerminiPage/>}/>
+        <Route path='/homepage/about/cookie' element={<CookiePage/>}/>
         <Route path='*' element={<NotFoundPage/>}/>
       </Routes>
     </Elements>
