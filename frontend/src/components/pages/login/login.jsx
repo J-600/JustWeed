@@ -26,7 +26,7 @@ function Login() {
         if (res.ok) {
           const data = await res.json();
           // console.log(data.email,data.username,data)
-          navigate('/products');
+          navigate('/homepage/products');
         }
         setIsLoading(false);
       } catch (error) {

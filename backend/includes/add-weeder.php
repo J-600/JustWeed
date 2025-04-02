@@ -10,10 +10,10 @@ try {
     $payment = $_POST["payment"];
     $nome = $_POST["nome"];
     $cognome = $_POST["cognome"];
-    $full_name = $nome + " " + $cognome;
+    $full_name = $nome . " " . $cognome;
     $city = $_POST["city"];
     $zip = $_POST["cap"];
-    $street = $_POST["addess"];
+    $street = $_POST["address"];
     $piva = $_POST["piva"];
     $cf = $_POST["cf"];
     $descrizione = $_POST["descrizione"];
@@ -31,16 +31,17 @@ try {
     if (!empty($weeder))
         throw new Exception("utente già seller");
 
-    $sql = "SELECT id $table_cards WHERE metodo = :metodo";
+    $sql = "SELECT id FROM $table_cards WHERE metodo = :metodo";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":metodo", $payment);
     $stmt->execute();
 
-    $id_p = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if (!empty($id_p))
+    $id_p = $stmt->fetchColumn();
+    // echo json_encode($id_p);
+    if (empty($id_p))
         throw new Exception("carta necessaria");   
 
-    $sql = "INSERT INTO $table (email, name, street, city, zip) VALUES (:email, :name, :street, :city, :zip)";
+    $sql = "INSERT INTO $table_address (email, name, street, city, zip) VALUES (:email, :name, :street, :city, :zip)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->bindParam(":name", $full_name);
@@ -60,12 +61,12 @@ try {
 
     $stmt->execute();
 
-    $id_addr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $id_addr = $stmt->fetchColumn();
 
 
     $sql = "INSERT INTO $table (firstName, secondName, email, codiceFiscale, pt, bio, card, address) VALUES (:name, :cognome, :email, :cf, :pt, :bio, :card, :address)";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":name", $name);
+    $stmt->bindParam(":name", $nome);
     $stmt->bindParam(":cognome", $cognome);
     $stmt->bindParam(":email", $email);
     $stmt->bindParam(":cf", $cf);
@@ -76,7 +77,6 @@ try {
 
     $stmt->execute();
 
-    $stmt->execute();
 
     $response = [
         "response" => 200,
@@ -96,7 +96,7 @@ try {
 
 } catch (Exception $e) {
     $response = [
-        "response" => 200,
+        "response" => 400,
         "message" => false,
         "data" => $e->getMessage()
         

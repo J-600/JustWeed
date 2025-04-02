@@ -14,12 +14,11 @@ function PreWeeder() {
                     <div className="flex flex-col lg:flex-row gap-8 items-center">
                         <div className="flex-1 w-full">
                             <img
-                                src="caps.jpg"
+                                src="/caps.jpg"
                                 alt="Collaborazione Weeder"
                                 className="w-full h-[28rem] lg:h-[32rem] object-cover rounded-2xl shadow-2xl border border-blue-900/30 hover:scale-[1.02] transition-transform duration-300"
                             />
                         </div>
-
                         <div className="flex-1 w-full space-y-8">
                             <div className="flex items-start gap-4">
                                 <FaSeedling className="w-10 h-10 text-purple-500 mt-1" />

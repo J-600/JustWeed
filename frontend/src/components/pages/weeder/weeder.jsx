@@ -101,7 +101,7 @@ function Weeder() {
         credentials: 'include'
       });
 
-      if (addRes.status !== 200) throw new Error({ error: "Errore nel salvataggio della carta" });
+      if (!addRes.ok) throw new Error({ error: "Errore nel salvataggio della carta" });
 
 
       const addWeeder = await fetch("http://localhost:3000/api/user/add-weeder", {
@@ -121,23 +121,29 @@ function Weeder() {
         credentials: "include"
       })
 
-      if (addWeeder.status !== 200) throw new Error({ error: "Errore nel salvataggio della carta" });
+      if (!addWeeder.ok) {
+        throw new Error({ error: "Errore nel salvataggio della carta" });
+      }
 
+      const resWeeder = addWeeder.json()
 
-
+      setSuccessMessage(resWeeder);
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setTimeout(() => {
+        navigate('/seller/weeder/homepage');
+      }, 1000);
     } catch (err) {
-      setErrorMessage(err.message || 'Si è verificato un errore durante la verifica');
+      setErrorMessage('Si è verificato un errore durante la verifica');
     }
     finally {
       setIsProcessing(false);
-      navigate("/weeder/homepage")
     }
   }
 
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-card-base-100 to-base-200 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 flex flex-col">
       <TopBar />
 
       <div className="flex-1 p-4 md:p-8 overflow-y-auto">

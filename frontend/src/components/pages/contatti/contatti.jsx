@@ -42,7 +42,7 @@ const Contatti = () => {
       telefono: "+39 02 1234567",
       email: "milano@justweed.com",
       orari: "Lun-Ven: 9:00-18:00",
-      image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5"
+      image: "https://images.pexels.com/photos/4161863/pexels-photo-4161863.jpeg"
     },
     {
       citta: "Roma",
