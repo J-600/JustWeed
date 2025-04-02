@@ -377,21 +377,24 @@ function Product() {
                                                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                                                         <span className="text-gray-400 text-sm sm:text-base">Valutazione:</span>
                                                         <div className="rating rating-sm rating-half sm:rating-md">
+                                                            
                                                             {[1, 2, 3, 4, 5].map((star) => (
-                                                                <React.Fragment>
+                                                                <React.Fragment key = { 10 +star}>
                                                                     <input
-                                                                        key={10 + star}
+                                                                        // key={10 + star}
                                                                         type="radio"
                                                                         name="rating"
                                                                         className="mask mask-star-2 mask-half-1 bg-yellow-400"
                                                                         onChange={() => setSelectedRating(star - 0.5)}
+                                                                        aria-label= {star - 0.5}
                                                                     />
                                                                     <input
-                                                                        key={10 + star + 0.5}
+                                                                        // key={10 + star + 0.5}
                                                                         type="radio"
                                                                         name="rating"
                                                                         className="mask mask-star-2 mask-half-2 bg-yellow-400"
                                                                         onChange={() => setSelectedRating(star)}
+                                                                        aria-label= {star}
                                                                     />
                                                                 </React.Fragment>
                                                             ))}
