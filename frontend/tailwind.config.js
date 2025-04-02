@@ -4,8 +4,7 @@ import daisyui from 'daisyui';
 module.exports = {
   content: ["./src/**/*.{html,js,jsx}", "./public/index.html"],
   
-  // Aggiunto per forzare alcuni stili quando necessario
-  important: true,
+  // important: true,
   
   daisyui: {
     themes: [
