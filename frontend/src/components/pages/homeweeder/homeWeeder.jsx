@@ -14,6 +14,12 @@ function HomeWeeder() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchData = async ()=>{
+            
+        }
+    })
+
     const TopBar = () => {
         return (
             <div className="w-full bg-neutral shadow-2xl border-b border-blue-900/30 p-4 flex items-center justify-center">
@@ -29,7 +35,7 @@ function HomeWeeder() {
     const renderContent = () => {
 
         switch (activeTab) {
-            case "account":
+            case "andamento":
                 return (
                     <></>
                     // <AccountInfoContent
@@ -144,7 +150,7 @@ function HomeWeeder() {
 
                         <nav className="space-y-2">
                             <div
-                                onClick={() => { setActiveTab("account"); setIsMenuOpen(false) }}
+                                onClick={() => { setActiveTab("andamento"); setIsMenuOpen(false) }}
                                 className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "account"
                                     ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
                                     : "hover:bg-base-300"
