@@ -43,6 +43,25 @@ function Weeder() {
   const elements = useElements();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchIsWeeder = async () => {
+      try {
+        const res = await fetch ("http://localhost:3000/api/auth/weeder", {
+          method: "GET",
+          credentials: "include"
+        })
+        if (!res.ok)
+          throw new Error(res)
+  
+        navigate("/seller/weeder/homepage")
+      } catch (error) {
+        console.log(error.message)
+      }
+    }
+
+    fetchIsWeeder()
+  }, [])
+
   const handleSubmit = async (e) => {
     const cardholderName = name + " " + cognome
 

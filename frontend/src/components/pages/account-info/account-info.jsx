@@ -1673,12 +1673,12 @@ function AccountInfo() {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
-                    className="w-5 h-5 text-purple-400"
+                    className="w-5 h-5 text-blue-400"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                   </svg>
                 </div>
-                <span className="text-white group-hover:text-purple-400 transition-colors duration-300">
+                <span className="text-white group-hover:text-blue-400 transition-colors duration-300">
                   Metodi di Pagamento
                 </span>
               </div>

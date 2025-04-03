@@ -8,10 +8,10 @@ const tokenMailMap = new Map();
 const path = "http://localhost/JustWeed/backend/includes";
 
 export const signUp = (req, res) => {
-    const { username, email, password } = req.body;
-    const token = crypto.randomBytes(16).toString('hex');
+  const { username, email, password } = req.body;
+  const token = crypto.randomBytes(16).toString('hex');
 
-    const htmlContent = `
+  const htmlContent = `
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: #0A1128; border-radius: 12px; min-height: 100vh;">
   <tr>
     <td align="center" valign="center">
@@ -110,155 +110,155 @@ export const signUp = (req, res) => {
   </tr>
 </table>
   `;
-    let mailOptions = {
-        from: 'noReplyJustWeed@gmail.com',
-        to: email,
-        subject: 'Conferma la tua registrazione',
-        html: htmlContent,
-        text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
-    };
-    const isEmailPending = Array.from(tokenMailMap.values()).includes(email);
+  let mailOptions = {
+    from: 'noReplyJustWeed@gmail.com',
+    to: email,
+    subject: 'Conferma la tua registrazione',
+    html: htmlContent,
+    text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
+  };
+  const isEmailPending = Array.from(tokenMailMap.values()).includes(email);
 
-    if (isEmailPending) {
-        return res.status(400).json({ error: "Una richiesta di registrazione è già in corso per questa email" });
-    }
-    // console.log(`Token generato: ${token}, Email associata: ${email}`);
-    tokenMailMap.set(token, email)
-    // console.log(tokenMailMap)
-    fetch(path + "/create-user.php", {
-        method: "POST",
-        headers: { "Content-type": "application/x-www-form-urlencoded" },
-        body: `email=${email}&username=${username}&password=${password}`
+  if (isEmailPending) {
+    return res.status(400).json({ error: "Una richiesta di registrazione è già in corso per questa email" });
+  }
+  // console.log(`Token generato: ${token}, Email associata: ${email}`);
+  tokenMailMap.set(token, email)
+  // console.log(tokenMailMap)
+  fetch(path + "/create-user.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `email=${email}&username=${username}&password=${password}`
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.response === 200) {
+        sendConfirmationEmail(token, mailOptions);
+        res.json(data.data);
+      } else {
+        res.json(data.data);
+      }
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.response === 200) {
-                sendConfirmationEmail(token, mailOptions);
-                res.json(data.data);
-            } else {
-                res.json(data.data);
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            res.status(500).json({ error: "An error occurred" });
-        });
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
 };
 
 export const confirm = (req, res) => {
 
-    const { token } = req.query;
-    const tokenExpiration = tokenExpirationMap.get(token);
-    const email = tokenMailMap.get(token);
-    // console.log(token);
-    // console.log(email);
-    // console.log(tokenExpiration);
-    // console.log(tokenMailMap)
-    // console.log(tokenExpirationMap)
+  const { token } = req.query;
+  const tokenExpiration = tokenExpirationMap.get(token);
+  const email = tokenMailMap.get(token);
+  // console.log(token);
+  // console.log(email);
+  // console.log(tokenExpiration);
+  // console.log(tokenMailMap)
+  // console.log(tokenExpirationMap)
 
-    if (!tokenExpiration || Date.now() > tokenExpiration) {
-        // console.log("scaduto")
-        res.json({ data: "token scaduto...", message: false });
+  if (!tokenExpiration || Date.now() > tokenExpiration) {
+    // console.log("scaduto")
+    res.json({ data: "token scaduto...", message: false });
 
-        // fetch(path + "/delete-user-unconfirmed.php", {
-        //   method: "POST",
-        //   headers: { "Content-type": "application/x-www-form-urlencoded" },
-        //   body: `email=${email}`
-        // })
-        //   .then(response => response.json())
-        //   .then(deleteData => {
-        //     deleteToken(token);
-        //     res.json({ data: "token scaduto...", message: false });
-        //   })
-        //   .catch(error => {
-        //     console.error("Error deleting user:", error);
-        //     res.status(500).json({ data: "error...", message: false });
-        //   });
-    } else {
-        fetch(`http://localhost/justweed/backend/includes/confirm-user.php`, {
-            method: "POST",
-            headers: { "Content-type": "application/x-www-form-urlencoded" },
-            body: `email=${email}`
-        })
-            .then(response => response.json())
-            .then(data => {
-                deleteToken(token);
-                // console.log(data)
-                if (data.message && data.response === 200) {
-                    req.session.username = data.data[0].username;
-                    req.session.email = email;
-                    req.session.save(err => {
-                        if (err) {
-                            console.error("Errore salvataggio sessione:", err);
-                            return res.status(500).json("Errore durante il salvataggio della sessione");
-                        }
-                        res.json({ data: "Benvenuto in JustWeed", message: true, email: email, username: data.data[0].username });
-                    });
-                } else if (data.response === 200 && !data.message) {
-                    res.json({ data: "Token Scaduto o account non registrato", message: false });
-                } else {
-                    res.json("Error...")
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                res.status(500).json("An error occurred");
-            });
-    }
+    // fetch(path + "/delete-user-unconfirmed.php", {
+    //   method: "POST",
+    //   headers: { "Content-type": "application/x-www-form-urlencoded" },
+    //   body: `email=${email}`
+    // })
+    //   .then(response => response.json())
+    //   .then(deleteData => {
+    //     deleteToken(token);
+    //     res.json({ data: "token scaduto...", message: false });
+    //   })
+    //   .catch(error => {
+    //     console.error("Error deleting user:", error);
+    //     res.status(500).json({ data: "error...", message: false });
+    //   });
+  } else {
+    fetch(`http://localhost/justweed/backend/includes/confirm-user.php`, {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `email=${email}`
+    })
+      .then(response => response.json())
+      .then(data => {
+        deleteToken(token);
+        // console.log(data)
+        if (data.message && data.response === 200) {
+          req.session.username = data.data[0].username;
+          req.session.email = email;
+          req.session.save(err => {
+            if (err) {
+              console.error("Errore salvataggio sessione:", err);
+              return res.status(500).json("Errore durante il salvataggio della sessione");
+            }
+            res.json({ data: "Benvenuto in JustWeed", message: true, email: email, username: data.data[0].username });
+          });
+        } else if (data.response === 200 && !data.message) {
+          res.json({ data: "Token Scaduto o account non registrato", message: false });
+        } else {
+          res.json("Error...")
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json("An error occurred");
+      });
+  }
 };
 
 export const logout = (req, res) => {
-    req.session.destroy();
-    res.json("logout")
+  req.session.destroy();
+  res.json("logout")
 }
 
 export const login = (req, res) => {
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
-    fetch(path + "/login.php", {
-        method: "POST",
-        headers: { "Content-type": "application/x-www-form-urlencoded" },
-        body: `username=${username}&password=${password}`
-    })
-        .then(response => response.json())
-        .then(data => {
-            // console.log(data);
-            if (data.message && data.response === 200) {
-                req.session.username = data.data[0].username;
-                req.session.email = data.data[0].email;
-                req.session.save(err => {
-                    if (err) {
-                        console.error("Errore salvataggio sessione:", err);
-                        return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
-                    }
-                    // console.log(data.data[0]);
-                    data = data.data[0];
-                    res.json(data);
-                });
-                // console.log(req.session);
-            } else if (!data.message && data.response === 200) {
-                try {
-                    parsedData = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
-                    // console.log(parsedData)
-                } catch (error) {
-                    console.error("Errore di parsing JSON:", error);
-                    return res.status(500).json({ error: "Errore durante la gestione dei dati" });
-                }
-                if (parsedData.email) {
-                    let emailExists = false;
-                    tokenMailMap.forEach((value, key) => {
-                        if (value === parsedData.email) {
-                            emailExists = true;
-                        }
-                    });
-                    if (emailExists) {
-                        // sendConfirmationEmail(tokenMailMap.get(parsedData.email));
-                        // console.log("token già creato")
-                        res.json("mail già inviata...")
-                    } else {
-                        // console.log("inviando la mail");
-                        const token = crypto.randomBytes(16).toString('hex');
-                        const htmlContent = `
+  fetch(path + "/login.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `username=${username}&password=${password}`
+  })
+    .then(response => response.json())
+    .then(data => {
+      // console.log(data);
+      if (data.message && data.response === 200) {
+        req.session.username = data.data[0].username;
+        req.session.email = data.data[0].email;
+        req.session.save(err => {
+          if (err) {
+            console.error("Errore salvataggio sessione:", err);
+            return res.status(500).json({ error: "Errore durante il salvataggio della sessione" });
+          }
+          // console.log(data.data[0]);
+          data = data.data[0];
+          res.json(data);
+        });
+        // console.log(req.session);
+      } else if (!data.message && data.response === 200) {
+        try {
+          parsedData = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
+          // console.log(parsedData)
+        } catch (error) {
+          console.error("Errore di parsing JSON:", error);
+          return res.status(500).json({ error: "Errore durante la gestione dei dati" });
+        }
+        if (parsedData.email) {
+          let emailExists = false;
+          tokenMailMap.forEach((value, key) => {
+            if (value === parsedData.email) {
+              emailExists = true;
+            }
+          });
+          if (emailExists) {
+            // sendConfirmationEmail(tokenMailMap.get(parsedData.email));
+            // console.log("token già creato")
+            res.json("mail già inviata...")
+          } else {
+            // console.log("inviando la mail");
+            const token = crypto.randomBytes(16).toString('hex');
+            const htmlContent = `
               <div class="min-h-screen bg-gradient-to-br from-card-base-100 to-base-200 text-center text-white p-8">
   <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-6">🎉 Benvenuto!</h1>
   <p class="text-lg mb-6">Siamo felici di averti con noi! Per completare la tua registrazione, clicca sul pulsante qui sotto:</p>
@@ -272,63 +272,63 @@ export const login = (req, res) => {
 </div>
 
             `;
-                        let mailOptions = {
-                            from: 'noReplyJustWeed@gmail.com',
-                            to: parsedData.email,
-                            subject: 'Conferma la tua registrazione',
-                            html: htmlContent,
-                            text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
-                        };
-                        tokenMailMap.set(token, parsedData.email)
-                        sendConfirmationEmail(token, mailOptions);
-                        res.json(parsedData.message)
-                    }
+            let mailOptions = {
+              from: 'noReplyJustWeed@gmail.com',
+              to: parsedData.email,
+              subject: 'Conferma la tua registrazione',
+              html: htmlContent,
+              text: `Clicca sul seguente link per confermare la tua registrazione: http://localhost:3001/confirm?token=${token}`
+            };
+            tokenMailMap.set(token, parsedData.email)
+            sendConfirmationEmail(token, mailOptions);
+            res.json(parsedData.message)
+          }
 
-                } else {
-                    res.json(parsedData.message);
-                }
-            } else {
-                res.json(data.data);
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            res.status(500).json({ error: "An error occurred" });
-        });
+        } else {
+          res.json(parsedData.message);
+        }
+      } else {
+        res.json(data.data);
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
 };
 
 export const newpassword = (req, res) => {
-    const { token, password } = req.body;
-    const tokenExpiration = tokenExpirationMap.get(token);
-    const email = tokenMailMap.get(token);
+  const { token, password } = req.body;
+  const tokenExpiration = tokenExpirationMap.get(token);
+  const email = tokenMailMap.get(token);
 
-    if (!tokenExpiration || Date.now() > tokenExpiration) {
-        res.status(401).json("token scaduto...")
-    } else {
+  if (!tokenExpiration || Date.now() > tokenExpiration) {
+    res.status(401).json("token scaduto...")
+  } else {
 
-        fetch(path + "/forgot-password.php", {
-            method: "POST",
-            headers: { "Content-type": "application/x-www-form-urlencoded" },
-            body: `password=${password}&email=${email}`
-        })
-            .then(response => response.json())
-            .then(data => {
-                res.json(data.data);
-            })
-    }
+    fetch(path + "/forgot-password.php", {
+      method: "POST",
+      headers: { "Content-type": "application/x-www-form-urlencoded" },
+      body: `password=${password}&email=${email}`
+    })
+      .then(response => response.json())
+      .then(data => {
+        res.json(data.data);
+      })
+  }
 
 
 
 };
 
 export const forgotpassword = (req, res) => {
-    const { email } = req.body;
-    if (!email) {
-        return res.status(400).json({ error: "Email is required" });
-    }
+  const { email } = req.body;
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
 
-    const token = crypto.randomBytes(16).toString('hex');
-    const htmlContent = `
+  const token = crypto.randomBytes(16).toString('hex');
+  const htmlContent = `
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background: #0A1128; border-radius: 12px; min-height: 100vh;">
     <tr>
       <td align="center" valign="center">
@@ -444,45 +444,64 @@ export const forgotpassword = (req, res) => {
   </table>
   `;
 
-    let mailOptions = {
-        from: 'noReplyJustWeed@gmail.com',
-        to: email,
-        subject: 'Reimposta la password',
-        html: htmlContent,
-        text: `Clicca sul seguente link per reimpostare la password: http://localhost:3001/newpassword?token=${token}`
-    };
+  let mailOptions = {
+    from: 'noReplyJustWeed@gmail.com',
+    to: email,
+    subject: 'Reimposta la password',
+    html: htmlContent,
+    text: `Clicca sul seguente link per reimpostare la password: http://localhost:3001/newpassword?token=${token}`
+  };
 
-    tokenMailMap.set(token, email)
-    sendConfirmationEmail(token, mailOptions);
-    res.json("Mail inviata...")
+  tokenMailMap.set(token, email)
+  sendConfirmationEmail(token, mailOptions);
+  res.json("Mail inviata...")
 }
 
 export const session = (req, res) => {
   res.json("autorizzato")
 }
 
+export const isWeeder = (req, res) => {
+  fetch(path + "/view-weeder.php", {
+    method: "POST",
+    headers: { "Content-type": "application/x-www-form-urlencoded" },
+    body: `email=${req.session.email}`
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.response === 200)
+        res.json(data.data)
+      else
+        res.status(data.response).json(data.data)
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      res.status(500).json({ error: "An error occurred" });
+    });
+}
+
 setInterval(() => {
-    const now = Date.now();
-    let deletedCount = 0;
+  const now = Date.now();
+  let deletedCount = 0;
 
-    for (const [token, expiration] of tokenExpirationMap.entries()) {
-        if (now > expiration) {
-            tokenExpirationMap.delete(token);
+  for (const [token, expiration] of tokenExpirationMap.entries()) {
+    if (now > expiration) {
+      tokenExpirationMap.delete(token);
 
-            const email = tokenMailMap.get(token);
-            if (email) {
-                tokenMailMap.delete(token);
-            }
+      const email = tokenMailMap.get(token);
+      if (email) {
+        tokenMailMap.delete(token);
+      }
 
-            deletedCount++;
-        }
+      deletedCount++;
     }
+  }
 }, 60 * 60 * 1000);
 
 function deleteToken(token) {
-    tokenExpirationMap.delete(token);
+  tokenExpirationMap.delete(token);
 
-    tokenMailMap.delete(token)
+  tokenMailMap.delete(token)
 }
 
 async function sendConfirmationEmail(token, mailOptions) {

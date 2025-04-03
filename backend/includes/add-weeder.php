@@ -6,6 +6,7 @@ try {
     }
 
     require_once "dbh.inc.php";
+    
     $email = $_POST["email"];
     $payment = $_POST["payment"];
     $nome = $_POST["nome"];
