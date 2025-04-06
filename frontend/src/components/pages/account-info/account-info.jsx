@@ -1445,11 +1445,11 @@ function AccountInfo() {
         });
         const data = await res.json();
         // console.log(data) 
-        if(!res.ok){
+        if (!res.ok) {
           // console.log(res)
           navigate("/")
           return
-      }
+        }
 
         if (res.status !== 200) {
           throw new Error(data)
@@ -1634,8 +1634,8 @@ function AccountInfo() {
               <div
                 onClick={() => { setActiveTab("account"); setIsMenuOpen(false) }}
                 className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "account"
-                    ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
-                    : "hover:bg-base-300"
+                  ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
+                  : "hover:bg-base-300"
                   }`}
               >
                 <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -1660,8 +1660,8 @@ function AccountInfo() {
               <div
                 onClick={() => { setActiveTab("payments"); setIsMenuOpen(false) }}
                 className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "payments"
-                    ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
-                    : "hover:bg-base-300"
+                  ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
+                  : "hover:bg-base-300"
                   }`}
               >
                 <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">
@@ -1686,8 +1686,8 @@ function AccountInfo() {
               <div
                 onClick={() => { setActiveTab("addresses"); setIsMenuOpen(false) }}
                 className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "addresses"
-                    ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
-                    : "hover:bg-base-300"
+                  ? "bg-gradient-to-r from-blue-500/20 to-purple-600/20 border border-blue-900/30"
+                  : "hover:bg-base-300"
                   }`}
               >
                 <div className="p-2 bg-blue-900/20 rounded-md group-hover:bg-gradient-to-r from-blue-400/20 to-purple-500/20">

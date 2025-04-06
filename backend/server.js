@@ -7,6 +7,7 @@ import { console } from 'inspector';
 import authRouter from './routes/auth.routes.js';
 import productsRouter from './routes/products.routes.js'
 import userRouter from './routes/user.routes.js'
+import weederRouter from './routes/weeder.routes.js'
 
 
 
@@ -38,6 +39,7 @@ app.use(session({
 app.use("/api/auth", authRouter)
 app.use("/api/products", productsRouter)
 app.use("/api/user", userRouter)
+app.use("/api/weeder", weederRouter)
 
 
 app.listen(PORT, () => {

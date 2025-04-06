@@ -123,7 +123,7 @@ function Weeder() {
       if (!addRes.ok) throw new Error({ error: "Errore nel salvataggio della carta" });
 
 
-      const addWeeder = await fetch("http://localhost:3000/api/user/add-weeder", {
+      const addWeeder = await fetch("http://localhost:3000/api/weeder/add-weeder", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

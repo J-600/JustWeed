@@ -10,9 +10,10 @@ try {
     $table = "selled_jw";
     $table_products = "products_jw";
 
-    $sql = "SELECT s.date, p.price
-            JOIN $table_products ON s.id_product = p.id
-            FROM $table WHERE email = :email";
+    $sql = "SELECT s.date, s.quantity, p.price
+            FROM $table_products p
+            JOIN $table s ON s.id_product = p.id
+            WHERE p.email = :email";
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
@@ -21,8 +22,8 @@ try {
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $response = [
-        "response" => 500,
-        "message" => false,
+        "response" => 200,
+        "message" => true,
         "data" => $result
     ];
     echo json_encode($response);
@@ -40,7 +41,7 @@ try {
         "response" => 200,
         "message" => false,
         "data" => $e->getMessage()
-        
+
     ];
     echo json_encode($response);
 }

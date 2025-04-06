@@ -5,7 +5,6 @@ import {
   addAddress, 
   addCard, 
   addresses, 
-  addWeeder, 
   cardsdata, 
   deleteAddress, 
   deleteCard, 
@@ -27,7 +26,7 @@ router.post("/verify-card", protectRoute, verifyCard)
 router.post("/add-card", protectRoute, addCard)
 router.post("/update-card", protectRoute, updateCard)
 router.post("/delete-card", protectRoute, deleteCard)
-router.post("/add-weeder", protectRoute, addWeeder)
+// router.post("/add-weeder", protectRoute, addWeeder)
 
 router.get("/addresses", protectRoute, addresses)
 router.get("/cardsdata", protectRoute, cardsdata)
