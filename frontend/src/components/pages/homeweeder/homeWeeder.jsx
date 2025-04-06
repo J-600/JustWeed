@@ -1,14 +1,14 @@
 import { Line } from 'react-chartjs-2';
-import { 
-  Chart as ChartJS, 
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
 } from 'chart.js';
 
 import React, { useEffect, useState } from "react";
@@ -25,7 +25,7 @@ ChartJS.register(
     Tooltip,
     Legend,
     Filler
-  );
+);
 
 
 
@@ -34,6 +34,7 @@ function Progress() {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("Sempre");
+    const [selectedProductId, setSelectedProductId] = useState("Tutti");
     const [progress, setProgress] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -61,8 +62,21 @@ function Progress() {
         fetchData();
     }, []);
 
+    const uniqueProducts = Array.from(
+        new Set((Array.isArray(progress) ? progress : []).map(item => item.id + "-" + item.name))
+    ).map(str => {
+        const [id, name] = str.split("-");
+        return { id, name };
+    });
+
+
     const processData = (data) => {
-        const grouped = data.reduce((acc, { date, quantity, price }) => {
+
+        const filteredData = selectedProductId === "Tutti"
+            ? data
+            : data.filter(item => item.id.toString() === selectedProductId);
+
+        const grouped = filteredData.reduce((acc, { date, quantity, price }) => {
             const earnings = quantity * price;
             if (!acc[date]) {
                 acc[date] = { date, earnings, quantity };
@@ -81,7 +95,7 @@ function Progress() {
         const now = new Date();
         const cutoff = new Date(now);
 
-        switch(filter) {
+        switch (filter) {
             case '1 Anno': cutoff.setFullYear(now.getFullYear() - 1); break;
             case '6 Mesi': cutoff.setMonth(now.getMonth() - 6); break;
             case '3 Mesi': cutoff.setMonth(now.getMonth() - 3); break;
@@ -95,156 +109,179 @@ function Progress() {
     const processedData = processData(progress);
     const filteredData = filterData(processedData, selectedFilter);
     const totalEarnings = filteredData.reduce((acc, curr) => acc + curr.earnings, 0);
+    const hasDuplicateNames = new Set(uniqueProducts.map(p => p.name)).size !== uniqueProducts.length;
 
     return (
         <div className="card bg-emerald-900/80 shadow-2xl border-2 border-emerald-700/30">
-        <div className="card-body space-y-4">
-            <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-lime-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
-                Statistiche
-            </h2>
-            
-            <div className="space-y-6">
-                {successMessage && (
-                    <div className="alert alert-success shadow-lg">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="stroke-current shrink-0 h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                        </svg>
-                        <span>{successMessage}</span>
-                    </div>
-                )}
-                
-                {errorMessage && (
-                    <div className="alert alert-error shadow-lg">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="stroke-current shrink-0 h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                        </svg>
-                        <span>{errorMessage}</span>
-                    </div>
-                )}
+            <div className="card-body space-y-4">
+                <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-lime-500 animate-gradient text-4xl font-bold mb-6 leading-normal">
+                    Statistiche
+                </h2>
 
-                <div className="flex flex-wrap gap-2 mb-6">
-                    {['Sempre', '1 Anno', '6 Mesi', '3 Mesi', '1 Mese'].map((filter) => (
-                        <button
-                            key={filter}
-                            onClick={() => setSelectedFilter(filter)}
-                            className={`px-4 py-2 rounded-full text-sm transition-all ${
-                                selectedFilter === filter
-                                    ? 'bg-gradient-to-r from-emerald-500 to-lime-600 text-white'
-                                    : 'bg-emerald-800/50 text-emerald-200 hover:bg-emerald-700/40'
-                            }`}
-                        >
-                            {filter}
-                        </button>
-                    ))}
-                </div>
+                <div className="space-y-6">
+                    {successMessage && (
+                        <div className="alert alert-success shadow-lg">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="stroke-current shrink-0 h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                            <span>{successMessage}</span>
+                        </div>
+                    )}
 
-                {/* Sezione Totale Guadagno */}
-                {!loading && filteredData.length > 0 && (
-                    <div className="bg-emerald-800/30 p-4 rounded-lg border border-emerald-700/50">
-                        <div className="flex justify-between items-center">
-                            <div>
-                                <div className="text-emerald-300 text-sm">Totale guadagno</div>
-                                <div className="text-emerald-100 text-xs">Periodo selezionato: {selectedFilter}</div>
+                    {errorMessage && (
+                        <div className="alert alert-error shadow-lg">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="stroke-current shrink-0 h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                            <span>{errorMessage}</span>
+                        </div>
+                    )}
+
+                    <div className="flex flex-col md:flex-row gap-4 mb-6">
+                        <div className="flex flex-wrap gap-2">
+                            {['Sempre', '1 Anno', '6 Mesi', '3 Mesi', '1 Mese'].map((filter) => (
+                                <button
+                                    key={filter}
+                                    onClick={() => setSelectedFilter(filter)}
+                                    className={`px-4 py-2 rounded-full text-sm transition-all ${selectedFilter === filter
+                                            ? 'bg-gradient-to-r from-emerald-500 to-lime-600 text-white'
+                                            : 'bg-emerald-800/50 text-emerald-200 hover:bg-emerald-700/40'
+                                        }`}
+                                >
+                                    {filter}
+                                </button>
+                            ))}
+                        </div>
+
+                        {uniqueProducts.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                <select
+                                    value={selectedProductId}
+                                    onChange={(e) => setSelectedProductId(e.target.value)}
+                                    className="select select-bordered bg-emerald-800/50 text-emerald-200 border-emerald-700/30 focus:border-emerald-500 focus:outline-none"
+                                >
+                                    <option value="Tutti">Tutti i prodotti</option>
+                                    {uniqueProducts.map(({ id, name }) => (
+                                        <option key={id} value={id}>
+                                            {hasDuplicateNames ? `${name} (ID: ${id})` : name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
-                            <div className="text-2xl font-bold bg-gradient-to-r from-emerald-300 to-lime-400 bg-clip-text text-transparent">
-                                € {totalEarnings.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                        )}
+                    </div>
+
+                    {!loading && filteredData.length > 0 && (
+                        <div className="bg-emerald-800/30 p-4 rounded-lg border border-emerald-700/50">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                <div className="text-emerald-300 text-sm">
+                                        {selectedProductId === "Tutti" 
+                                            ? "Totale guadagno" 
+                                            : `Guadagno da ${uniqueProducts.find(p => p.id === selectedProductId)?.name}`
+                                        }
+                                    </div>
+                                    <div className="text-emerald-100 text-xs">Periodo selezionato: {selectedFilter}</div>
+                                </div>
+                                <div className="text-2xl font-bold bg-gradient-to-r from-emerald-300 to-lime-400 bg-clip-text text-transparent">
+                                    € {totalEarnings.toLocaleString('it-IT', { minimumFractionDigits: 2 })}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {loading ? (
-                    <div className="h-96 flex items-center justify-center">
-                        <span className="loading loading-spinner loading-lg text-emerald-400"></span>
-                    </div>
-                ) : progress.length === 0 ? (
-                    <div className="h-96 flex flex-col items-center justify-center text-emerald-400/50 gap-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span className="text-lg">Nessun dato disponibile</span>
-                        <button 
-                            onClick={() => window.location.reload()}
-                            className="btn btn-outline text-emerald-400 hover:bg-emerald-800/50"
-                        >
-                            Ricarica i dati
-                        </button>
-                    </div>
-                ) : (
-                    <div className="h-96 relative">
-                        <Line
-                            data={{
-                                labels: filteredData.map(d => new Date(d.date).toLocaleDateString()),
-                                datasets: [{
-                                    label: 'Guadagni (€)',
-                                    data: filteredData.map(d => d.earnings),
-                                    borderColor: '#34d399',
-                                    backgroundColor: 'rgba(52, 211, 153, 0.2)',
-                                    borderWidth: 2,
-                                    pointBackgroundColor: '#84cc16',
-                                    pointRadius: 4,
-                                    pointHoverRadius: 6,
-                                    tension: 0.3,
-                                    fill: true
-                                }]
-                            }}
-                            options={{
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: {
-                                        callbacks: {
-                                            label: (context) => `€ ${context.raw.toFixed(2)}`
-                                        },
-                                        backgroundColor: '#064e3b',
-                                        borderColor: '#047857',
-                                        borderWidth: 1,
-                                        titleColor: '#34d399',
-                                        bodyColor: '#a7f3d0'
-                                    }
-                                },
-                                scales: {
-                                    x: {
-                                        grid: { color: '#04785730' },
-                                        ticks: { color: '#6ee7b7' }
+                    {loading ? (
+                        <div className="h-96 flex items-center justify-center">
+                            <span className="loading loading-spinner loading-lg text-emerald-400"></span>
+                        </div>
+                    ) : progress.length === 0 ? (
+                        <div className="h-96 flex flex-col items-center justify-center text-emerald-400/50 gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span className="text-lg">Nessun dato disponibile</span>
+                            <button
+                                onClick={() => window.location.reload()}
+                                className="btn btn-outline text-emerald-400 hover:bg-emerald-800/50"
+                            >
+                                Ricarica i dati
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="h-96 relative">
+                            <Line
+                                data={{
+                                    labels: filteredData.map(d => new Date(d.date).toLocaleDateString()),
+                                    datasets: [{
+                                        label: 'Guadagni (€)',
+                                        data: filteredData.map(d => d.earnings),
+                                        borderColor: '#34d399',
+                                        backgroundColor: 'rgba(52, 211, 153, 0.2)',
+                                        borderWidth: 2,
+                                        pointBackgroundColor: '#84cc16',
+                                        pointRadius: 4,
+                                        pointHoverRadius: 6,
+                                        tension: 0.3,
+                                        fill: true
+                                    }]
+                                }}
+                                options={{
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: { display: false },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: (context) => `€ ${context.raw.toFixed(2)}`
+                                            },
+                                            backgroundColor: '#064e3b',
+                                            borderColor: '#047857',
+                                            borderWidth: 1,
+                                            titleColor: '#34d399',
+                                            bodyColor: '#a7f3d0'
+                                        }
                                     },
-                                    y: {
-                                        grid: { color: '#04785730' },
-                                        ticks: { 
-                                            color: '#6ee7b7',
-                                            callback: (value) => `€ ${value}`
+                                    scales: {
+                                        x: {
+                                            grid: { color: '#04785730' },
+                                            ticks: { color: '#6ee7b7' }
                                         },
-                                        beginAtZero: true
+                                        y: {
+                                            grid: { color: '#04785730' },
+                                            ticks: {
+                                                color: '#6ee7b7',
+                                                callback: (value) => `€ ${value}`
+                                            },
+                                            beginAtZero: true
+                                        }
                                     }
-                                }
-                            }}
-                        />
-                    </div>
-                )}
+                                }}
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
-    </div>
     );
 }
 

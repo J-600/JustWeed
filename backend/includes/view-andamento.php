@@ -10,7 +10,7 @@ try {
     $table = "selled_jw";
     $table_products = "products_jw";
 
-    $sql = "SELECT s.date, s.quantity, p.price
+    $sql = "SELECT s.date, s.quantity, p.price, p.name, p.id
             FROM $table_products p
             JOIN $table s ON s.id_product = p.id
             WHERE p.email = :email";
