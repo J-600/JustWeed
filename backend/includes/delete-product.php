@@ -9,6 +9,12 @@ try{
 
     $id = $_POST["id"];
     $table = "products_jw";
+    $table_cart = "cart_jw";
+    $sql = "DELETE FROM $table_cart WHERE product = :id";
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
 
     $sql = "DELETE FROM $table WHERE id = :id";
     $stmt = $pdo->prepare($sql);
@@ -21,7 +27,7 @@ try{
         "message" => true,
         "data" => "Prodotto eliminato correttamente..."
     ];
-    
+    echo json_encode($response);
 } catch (PDOException $e) {
     $response = [
         "response" => 500,

@@ -1,7 +1,6 @@
 const path = "http://localhost/JustWeed/backend/includes";
 import multer from 'multer';
 
-// Configurazione Multer per file upload
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: 50 * 1024 * 1024 }
@@ -122,3 +121,26 @@ export const updateProduct = [
         }
     }
 ];
+
+export const deleteProduct = (req,res) => {
+    const { id } = req.params;
+    // console.log(req.body, req.params)
+
+    fetch(path + "/delete-product.php", {
+        method: "POST",
+        headers: { "Content-type": "application/x-www-form-urlencoded" },
+        body: `id=${id}`
+    })
+    .then(response => response.json())
+    .then (data => {
+        if (data.response === 200) {
+            res.json(data.data);
+        } else {
+            res.status(data.response).json(data.data);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        res.status(500).json({ error: "An error occurred" });
+    });
+}

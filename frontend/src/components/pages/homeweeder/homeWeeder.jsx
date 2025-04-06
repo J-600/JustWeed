@@ -10,6 +10,7 @@ import {
     Legend,
     Filler
 } from 'chart.js';
+import { Cannabis } from "lucide-react";
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -301,7 +302,7 @@ function Prodotti() {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([])
     const [editingProduct, setEditingProduct] = useState(null);
-    const [showRemoveAddressModal, setShowRemoveAddressModal] = useState(false);
+    const [deletingProduct, setDeletingProduct] = useState(null);
     const [editForm, setEditForm] = useState({
         id: '',
         name: '',
@@ -338,20 +339,24 @@ function Prodotti() {
 
 
     useEffect(() => {
-        
+
         fetchData()
     }, [])
 
-    const handleDelete = async (id) => {
+    const handleDelete = (id) => {
+        setDeletingProduct(id);
+    };
+
+    const handleConfirmDelete = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/weeder/products/${id}`, {
+            const res = await fetch(`http://localhost:3000/api/weeder/products/${deletingProduct}`, {
                 method: "DELETE",
                 credentials: "include"
             });
 
             if (!res.ok) throw new Error("Errore nell'eliminazione");
 
-            setProducts(products.filter(product => product.id !== id));
+            setProducts(products.filter(product => product.id !== deletingProduct));
             setSuccessMessage("Prodotto eliminato con successo");
             setTimeout(() => setSuccessMessage(""), 3000);
         } catch (error) {
@@ -360,20 +365,6 @@ function Prodotti() {
             setTimeout(() => setErrorMessage(""), 3000);
         }
     };
-    async function convertToBlob(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-
-            reader.onload = (event) => {
-                const arrayBuffer = event.target.result;
-                const blob = new Blob([arrayBuffer], { type: 'image/png' });
-                resolve(blob);
-            };
-
-            reader.onerror = (error) => reject(error);
-            reader.readAsArrayBuffer(file);
-        });
-    }
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -423,17 +414,17 @@ function Prodotti() {
             if (!res.ok) throw new Error("Errore nella modifica");
 
             const updatedProduct = await res.json();
-            setProducts(prevProducts => 
+            setProducts(prevProducts =>
                 prevProducts.map(product =>
-                  product.id === editingProduct?.id 
-                    ? { 
-                        ...product, 
-                        ...editForm, 
-                        img: editForm.img || product.img 
-                      } 
-                    : product
+                    product.id === editingProduct?.id
+                        ? {
+                            ...product,
+                            ...editForm,
+                            img: editForm.img || product.img
+                        }
+                        : product
                 )
-              );
+            );
             setEditingProduct(null);
             setSuccessMessage("Prodotto modificato con successo");
             setTimeout(() => setSuccessMessage(""), 3000);
@@ -598,6 +589,44 @@ function Prodotti() {
                             </div>
                         )}
 
+                        {deletingProduct && (
+                            <div className="modal modal-open">
+                                <div className="modal-box bg-emerald-900 border border-emerald-500/30 max-w-md">
+                                    <h3 className="font-bold text-2xl text-emerald-300 mb-4">Conferma Eliminazione</h3>
+
+                                    <div className="text-center py-6">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-red-400/80 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+
+                                        <p className="text-emerald-200 mb-2">
+                                            Sei sicuro di voler eliminare definitivamente
+                                            <span className="font-bold text-emerald-100 block mt-1">
+                                                {products.find(p => p.id === deletingProduct)?.name}
+                                            </span>
+                                        </p>
+                                        <p className="text-sm text-emerald-400/70">Questa azione non può essere annullata</p>
+                                    </div>
+
+                                    <div className="modal-action">
+                                        <button
+                                            type="button"
+                                            onClick={() => setDeletingProduct(null)}
+                                            className="btn btn-ghost text-emerald-400 hover:bg-emerald-800/50"
+                                        >
+                                            Annulla
+                                        </button>
+                                        <button
+                                            onClick={handleConfirmDelete}
+                                            className="btn bg-gradient-to-r from-red-500 to-orange-600 text-white border-none hover:scale-[1.02] transition-transform"
+                                        >
+                                            Conferma Eliminazione
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {products.map(product => (
                                 <div key={product.id} className="bg-emerald-900/50 rounded-xl p-4 border-2 border-emerald-700/30 hover:border-emerald-500/40 transition-all duration-300">
@@ -659,6 +688,19 @@ function HomeWeeder() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchSession = async () => {
+            const res = await fetch("http://localhost:3000/api/auth/session", {
+                credentials: "include"
+            })
+
+            if (!res.ok)
+                navigate("/")
+        }
+
+        fetchSession()
+    }, [])
+
     const TopBar = () => {
         return (
             <div className="w-full bg-emerald-900 shadow-2xl border-b border-emerald-700/30 p-4 flex items-center justify-center">
@@ -689,16 +731,6 @@ function HomeWeeder() {
         }
     };
 
-    // if (loading) {
-    //     return (
-    //         <div className="min-h-screen bg-gradient-to-br from-base-100 to-neutral flex flex-col">
-    //             <TopBar />
-    //             <div className="flex-grow flex items-center justify-center">
-    //                 <Loader />
-    //             </div>
-    //         </div>
-    //     );
-    // }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-base-100 to-emerald-900 flex flex-col">
@@ -798,7 +830,12 @@ function HomeWeeder() {
                                         strokeWidth="2"
                                         className="w-5 h-5 text-emerald-400"
                                     >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                            d="M4 4V20M4 20H20
+                                                M8 16V8
+                                                M12 16V12
+                                                M16 16V4"
+                                        />
                                     </svg>
                                 </div>
                                 <span className="text-white group-hover:text-emerald-300 transition-colors duration-300">
@@ -814,18 +851,7 @@ function HomeWeeder() {
                                     }`}
                             >
                                 <div className="p-2 bg-emerald-800/20 rounded-md group-hover:bg-gradient-to-r from-emerald-400/20 to-lime-500/20">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        className="w-5 h-5 text-emerald-400"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                    </svg>
+                                    <Cannabis className="w-5 h-5 text-emerald-400"/>
                                 </div>
                                 <span className="text-white group-hover:text-emerald-300 transition-colors duration-300">
                                     Prodotti

@@ -5,15 +5,12 @@ header("Access-Control-Allow-Methods: PUT");
 header("Access-Control-Allow-Headers: Content-Type");
 
 try {
-    // Verifica metodo PUT
     if ($_SERVER["REQUEST_METHOD"] !== "PUT") {
         throw new Exception("Richiesta non valida: metodo non consentito", 405);
     }
 
-    // Leggi i dati della richiesta PUT
     parse_str(file_get_contents("php://input"), $putData);
 
-    // Validazione campi obbligatori
     $requiredFields = ['id', 'name', 'price', 'quantity'];
     foreach ($requiredFields as $field) {
         if (!isset($putData[$field]) || empty($putData[$field])) {
@@ -22,8 +19,6 @@ try {
     }
 
     require_once "dbh.inc.php";
-
-    // Preparazione dati
     $id = (int)$putData['id'];
     $name = htmlspecialchars($putData['name']);
     $price = (float)$putData['price'];
@@ -38,7 +33,6 @@ try {
 
     $table = "products_jw";
 
-    // Costruzione query dinamica
     $sql = "UPDATE $table SET 
             name = :name, 
             price = :price, 
@@ -49,16 +43,14 @@ try {
 
     $stmt = $pdo->prepare($sql);
 
-    // Bind parametri
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
     $stmt->bindParam(':price', $price, PDO::PARAM_STR); // Usato STR per decimali
     $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
     $stmt->bindParam(':description', $description, PDO::PARAM_STR);
     
-    // Gestione immagine (BLOB o NULL)
     if ($img && strpos($img, 'data:image/') === 0) {
-        // Decodifica base64 se presente
+
         $imgData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $img));
         $stmt->bindParam(':img', $imgData, PDO::PARAM_LOB);
     } else {
@@ -91,7 +83,6 @@ try {
         "error" => $e->getMessage()
     ];
 } finally {
-    // Chiudi le connessioni
     $pdo = null;
     $stmt = null;
     
