@@ -6,46 +6,46 @@ const upload = multer({
     limits: { fileSize: 50 * 1024 * 1024 }
 });
 
-export const viewAndamento = (req,res) => {
+export const viewAndamento = (req, res) => {
 
     fetch(path + "/view-andamento.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${req.session.email}`
     })
-    .then(response => response.json())
-    .then (data => {
-        if (data.response === 200) {
-            res.json(data.data);
-        } else {
-            res.status(data.response).json(data.data);
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        res.status(500).json({ error: "An error occurred" });
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.response === 200) {
+                res.json(data.data);
+            } else {
+                res.status(data.response).json(data.data);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            res.status(500).json({ error: "An error occurred" });
+        });
 
 }
 
-export const viewProducts = (req, res) =>{
+export const viewProducts = (req, res) => {
     fetch(path + "/view-weeder-product.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${req.session.email}`
     })
-    .then(response => response.json())
-    .then (data => {
-        if (data.response === 200) {
-            res.json(data.data);
-        } else {
-            res.status(data.response).json(data.data);
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        res.status(500).json({ error: "An error occurred" });
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.response === 200) {
+                res.json(data.data);
+            } else {
+                res.status(data.response).json(data.data);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            res.status(500).json({ error: "An error occurred" });
+        });
 }
 
 export const addWeeder = (req, res) => {
@@ -56,26 +56,68 @@ export const addWeeder = (req, res) => {
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `email=${req.session.email}&payment=${metodoPagamento}&nome=${name}&cognome=${cognome}&city=${city}&cap=${cap}&address=${address}&piva=${piva}&cf=${cf}&descrizione=${descrizione}`
     })
-    .then(response => response.json())
-    .then (data => {
-        if (data.response === 200) {
-            res.json(data.data);
-        } else {
-            res.status(data.response).json(data.data);
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        res.status(500).json({ error: "An error occurred" });
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.response === 200) {
+                res.json(data.data);
+            } else {
+                res.status(data.response).json(data.data);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            res.status(500).json({ error: "An error occurred" });
+        });
 }
 
+export const uploadProduct = [
+    upload.single('img'),
+    async (req, res) => {
+        try {
+            const { name, price, quantity, description } = req.body;
+            let imgBase64 = req.body.img;
+
+            if (!id || !name || !price || !quantity) {
+                return res.status(400).json({ error: "Dati mancanti" });
+            }
+
+            const formData = new URLSearchParams();
+            formData.append('id', id);
+            formData.append('name', name);
+            formData.append('price', price);
+            formData.append('quantity', quantity);
+            formData.append('description', description || '');
+            formData.append('img', imgBase64 || '');
+
+            const phpResponse = await fetch(path + "/update-product.php", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData
+            });
+
+            const data = await phpResponse.json();
+
+            if (data.response === 200) {
+                res.status(200).json(data.data);
+            } else {
+                res.status(data.response || 500).json(data.data);
+            }
+
+        } catch (error) {
+            console.error("Errore nel controller:", error);
+            res.status(500).json({ error: "Errore interno del server" });
+        }
+    }
+]
+
 export const updateProduct = [
-    upload.single('img'), 
+    upload.single('img'),
     async (req, res) => {
         try {
             const { id } = req.params;
-            
+
 
             const { name, price, quantity, description } = req.body;
             let imgBase64 = req.body.img;
@@ -101,20 +143,20 @@ export const updateProduct = [
 
             const phpResponse = await fetch(path + "/update-product.php", {
                 method: 'PUT',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: formData
             });
 
             const data = await phpResponse.json();
-            
+
             if (data.response === 200) {
                 res.status(200).json(data.data);
             } else {
                 res.status(data.response || 500).json(data.data);
             }
-            
+
         } catch (error) {
             console.error("Errore nel controller:", error);
             res.status(500).json({ error: "Errore interno del server" });
@@ -122,7 +164,7 @@ export const updateProduct = [
     }
 ];
 
-export const deleteProduct = (req,res) => {
+export const deleteProduct = (req, res) => {
     const { id } = req.params;
     // console.log(req.body, req.params)
 
@@ -131,16 +173,16 @@ export const deleteProduct = (req,res) => {
         headers: { "Content-type": "application/x-www-form-urlencoded" },
         body: `id=${id}`
     })
-    .then(response => response.json())
-    .then (data => {
-        if (data.response === 200) {
-            res.json(data.data);
-        } else {
-            res.status(data.response).json(data.data);
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        res.status(500).json({ error: "An error occurred" });
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.response === 200) {
+                res.json(data.data);
+            } else {
+                res.status(data.response).json(data.data);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            res.status(500).json({ error: "An error occurred" });
+        });
 }

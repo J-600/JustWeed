@@ -10,7 +10,7 @@ import {
     Legend,
     Filler
 } from 'chart.js';
-import { Cannabis } from "lucide-react";
+import { Cannabis, Upload } from "lucide-react";
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -678,6 +678,208 @@ function Prodotti() {
     )
 }
 
+function UploadProdotto() {
+    const [formData, setFormData] = useState({
+        name: '',
+        price: '',
+        quantity: '',
+        description: '',
+        image: null
+    });
+    const [imagePreview, setImagePreview] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+                setFormData(prev => ({ ...prev, image: file }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        const formDataToSend = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value) formDataToSend.append(key, value);
+        });
+
+        try {
+            const response = await fetch('http://localhost:3000/api/weeder/products/upload', {
+                method: 'POST',
+                body: formDataToSend,
+                credentials: "include"
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                setSuccessMessage('Prodotto caricato con successo!');
+                setFormData({
+                    name: '',
+                    price: '',
+                    quantity: '',
+                    description: '',
+                    image: null
+                });
+                setImagePreview(null);
+            } else {
+                throw new Error(data.error || 'Errore nel salvataggio');
+            }
+
+        } catch (error) {
+            setErrorMessage(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="card bg-emerald-900/80 shadow-2xl border-2 border-emerald-700/30">
+            <div className="card-body space-y-4">
+                <h2 className="card-title text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-lime-500 animate-gradient text-4xl font-bold mb-6">
+                    Nuovo Prodotto
+                </h2>
+
+                {successMessage && (
+                    <div className="alert alert-success shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{successMessage}</span>
+                    </div>
+                )}
+
+                {errorMessage && (
+                    <div className="alert alert-error shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{errorMessage}</span>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text text-emerald-200">Immagine del Prodotto</span>
+                        </label>
+                        <div className="group relative w-full h-48 rounded-xl overflow-hidden border-2 border-dashed border-emerald-700/30 hover:border-emerald-500 transition-colors">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                required
+                            />
+                            {imagePreview ? (
+                                <img
+                                    src={imagePreview}
+                                    alt="Anteprima"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full text-emerald-500/50 group-hover:text-emerald-400">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-12 w-12 mb-2"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <span className="text-sm">Trascina un'immagine o clicca per selezionare</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text text-emerald-200">Nome Prodotto</span>
+                            </label>
+                            <input
+                                type="text"
+                                className="input input-bordered bg-emerald-900/50 border-emerald-700/30 text-emerald-100"
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text text-emerald-200">Prezzo (€)</span>
+                            </label>
+                            <input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                className="input input-bordered bg-emerald-900/50 border-emerald-700/30 text-emerald-100"
+                                value={formData.price}
+                                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text text-emerald-200">Quantità</span>
+                            </label>
+                            <input
+                                type="number"
+                                min="0"
+                                className="input input-bordered bg-emerald-900/50 border-emerald-700/30 text-emerald-100"
+                                value={formData.quantity}
+                                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text text-emerald-200">Descrizione</span>
+                        </label>
+                        <textarea
+                            className="textarea textarea-bordered bg-emerald-900/50 border-emerald-700/30 text-emerald-100 h-32"
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        ></textarea>
+                    </div>
+
+                    <div className="form-control mt-8">
+                        <button
+                            type="submit"
+                            className="btn bg-gradient-to-r from-emerald-500 to-lime-600 text-white border-none hover:scale-[1.02] transition-transform"
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <span className="loading loading-spinner"></span>
+                            ) : (
+                                'Carica Prodotto'
+                            )}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
 
 function HomeWeeder() {
 
@@ -721,12 +923,14 @@ function HomeWeeder() {
                     <Progress />
                 );
             case "prodotti":
-                return (<Prodotti />);
-            case "addresses":
+                return (
+                    <Prodotti />
+                );
+            case "upload":
                 return (<></>);
             default:
                 return (
-                    <></>
+                    <UploadProdotto />
                 );
         }
     };
@@ -851,7 +1055,7 @@ function HomeWeeder() {
                                     }`}
                             >
                                 <div className="p-2 bg-emerald-800/20 rounded-md group-hover:bg-gradient-to-r from-emerald-400/20 to-lime-500/20">
-                                    <Cannabis className="w-5 h-5 text-emerald-400"/>
+                                    <Cannabis className="w-5 h-5 text-emerald-400" />
                                 </div>
                                 <span className="text-white group-hover:text-emerald-300 transition-colors duration-300">
                                     Prodotti
@@ -859,29 +1063,17 @@ function HomeWeeder() {
                             </div>
 
                             <div
-                                onClick={() => { setActiveTab("addresses"); setIsMenuOpen(false) }}
-                                className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "addresses"
+                                onClick={() => { setActiveTab("upload"); setIsMenuOpen(false) }}
+                                className={`group flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-300 ${activeTab === "upload"
                                     ? "bg-gradient-to-r from-emerald-500/20 to-lime-600/20 border border-emerald-700/30"
                                     : "hover:bg-emerald-800"
                                     }`}
                             >
                                 <div className="p-2 bg-emerald-800/20 rounded-md group-hover:bg-gradient-to-r from-emerald-400/20 to-lime-500/20">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        className="w-5 h-5 text-emerald-400"
-                                    >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
+                                    <Upload className="w-5 h-5 text-emerald-400" />
                                 </div>
                                 <span className="text-white group-hover:text-emerald-300 transition-colors duration-300">
-                                    I Tuoi Indirizzi
+                                    Upload prodotto
                                 </span>
                             </div>
                         </nav>

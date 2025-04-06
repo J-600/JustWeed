@@ -14,6 +14,7 @@ try {
     $description = $_POST["description"];
     $price = $_POST["price"];
     $quantity = $_POST["quantity"];
+    $img = $_POST["img"];
 
     $sql = "SELECT type FROM $tableUsers WHERE email = :email";
     $stmt = $pdo->prepare($sql);
@@ -27,13 +28,14 @@ try {
     } else if ($result == "customer"){
         throw new Exception("Utente non autorizzato");
     } else {
-        $sql = "INSERT INTO $table (name,email, description, price, quatity) VALUES (:name, :email, :description, :price, :quantity)";
+        $sql = "INSERT INTO $table (name,email, description, price, quatity, img) VALUES (:name, :email, :description, :price, :quantity, :img)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":email", $email);
         $stmt->bindParam(":description", $description);
         $stmt->bindParam(":price", $price);
         $stmt->bindParam(":quantity", $quantity);
+        $stmt->bindParam(":img", $img);
 
         $stmt->execute();
 
