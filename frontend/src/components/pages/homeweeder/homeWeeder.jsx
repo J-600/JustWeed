@@ -14,8 +14,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu } from "lucide-react";
-import imageCompression from 'browser-image-compression';
-
 // import Loader from "../../loader/loader";
 
 ChartJS.register(
@@ -303,6 +301,7 @@ function Prodotti() {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([])
     const [editingProduct, setEditingProduct] = useState(null);
+    const [showRemoveAddressModal, setShowRemoveAddressModal] = useState(false);
     const [editForm, setEditForm] = useState({
         id: '',
         name: '',
@@ -312,32 +311,34 @@ function Prodotti() {
         img: ''
     });
 
+    const fetchData = async () => {
+        try {
+            const res = await fetch("http://localhost:3000/api/weeder/products", {
+                method: "GET",
+                credentials: "include"
+            })
+            if (!res.ok)
+                throw new Error("Errore nel fetch dei dati");
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetch("http://localhost:3000/api/weeder/products", {
-                    method: "GET",
-                    credentials: "include"
-                })
-                if (!res.ok)
-                    throw new Error("Errore nel fetch dei dati");
+            const data = await res.json();
+            console.log(data)
 
-                const data = await res.json();
-                console.log(data)
+            setProducts(data)
 
-                setProducts(data)
-
-            } catch (error) {
-                console.error(error);
-                setErrorMessage("Si è verificato un errore, riprova più tardi");
-
-            }
-            finally {
-                setLoading(false);
-            }
+        } catch (error) {
+            console.error(error);
+            setErrorMessage("Si è verificato un errore, riprova più tardi");
 
         }
+        finally {
+            setLoading(false);
+        }
+
+    }
+
+
+    useEffect(() => {
+        
         fetchData()
     }, [])
 
@@ -388,26 +389,6 @@ function Prodotti() {
         }
     };
 
-    const handleArchive = async (id) => {
-        try {
-            const res = await fetch(`http://localhost:3000/api/weeder/products/${id}/archive`, {
-                method: "PUT",
-                credentials: "include"
-            });
-
-            if (!res.ok) throw new Error("Errore nell'archiviazione");
-
-            setProducts(products.map(product =>
-                product.id === id ? { ...product, verified: "n" } : product
-            ));
-            setSuccessMessage("Prodotto archiviato con successo");
-            setTimeout(() => setSuccessMessage(""), 3000);
-        } catch (error) {
-            console.error(error);
-            setErrorMessage("Errore durante l'archiviazione");
-            setTimeout(() => setErrorMessage(""), 3000);
-        }
-    };
 
     const handleEdit = (product) => {
         setEditingProduct(product);
@@ -422,70 +403,44 @@ function Prodotti() {
 
     const handleEditSubmit = async (e) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('name', editForm.name);
+        formData.append('price', editForm.price.toString());
+        formData.append('quantity', editForm.quantity.toString());
+        formData.append('description', editForm.description);
+
+        if (editForm.img) {
+            formData.append('img', editForm.img);
+        }
+
         try {
-            let optimizedImg = editForm.img;
-            
-            // Compressione immagine se è un File
-            if (editForm.img instanceof File) {
-                const options = {
-                    maxSizeMB: 0.5,
-                    maxWidthOrHeight: 1024,
-                    useWebWorker: true
-                };
-                optimizedImg = await imageCompression(editForm.img, options);
-            }
-    
-            // Prepara il payload solo con i campi modificati
-            const payload = {
-                name: editForm.name,
-                price: editForm.price,
-                quantity: editForm.quantity,
-                description: editForm.description
-            };
-    
-            // Aggiungi immagine solo se modificata
-            if (optimizedImg !== editingProduct.img) {
-                const reader = new FileReader();
-                payload.img = await new Promise((resolve) => {
-                    reader.onload = () => resolve(reader.result);
-                    reader.readAsDataURL(optimizedImg);
-                });
-            }
-    
             const res = await fetch(`http://localhost:3000/api/weeder/products/${editingProduct.id}`, {
                 method: "PUT",
                 credentials: "include",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Image-Compression': 'true' // Header per tracking compressione
-                },
-                body: JSON.stringify(payload)
+                body: formData
             });
-    
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || "Modifica fallita");
-            }
-    
-            // Aggiorna lo stato solo con i dati necessari
-            setProducts(products.map(product => 
-                product.id === editingProduct.id ? { 
-                    ...product, 
-                    ...payload,
-                    img: payload.img || product.img 
-                } : product
-            ));
-    
+
+            if (!res.ok) throw new Error("Errore nella modifica");
+
+            const updatedProduct = await res.json();
+            setProducts(prevProducts => 
+                prevProducts.map(product =>
+                  product.id === editingProduct?.id 
+                    ? { 
+                        ...product, 
+                        ...editForm, 
+                        img: editForm.img || product.img 
+                      } 
+                    : product
+                )
+              );
             setEditingProduct(null);
-            setSuccessMessage("Prodotto aggiornato ✓");
-            setTimeout(() => setSuccessMessage(""), 2500);
-    
+            setSuccessMessage("Prodotto modificato con successo");
+            setTimeout(() => setSuccessMessage(""), 3000);
+            fetchData()
         } catch (error) {
-            console.error("Errore aggiornamento:", error);
-            setErrorMessage(error.message.includes("413") 
-                ? "Immagine troppo grande, riduci le dimensioni" 
-                : error.message
-            );
+            console.error(error);
+            setErrorMessage("Errore durante la modifica");
             setTimeout(() => setErrorMessage(""), 3000);
         }
     };
