@@ -24,6 +24,7 @@ import CookiePage from './components/pages/cookie/cookiepage';
 import NotFoundPage from './components/pages/notfount/notFoundPage';
 import Login from './components/pages/login/login';
 import HomeWeeder from './components/pages/homeweeder/homeWeeder';
+import CheckoutPage from './components/pages/checkoutpage/chekoutpage';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -49,6 +50,7 @@ function AppRoutes() {
         <Route path='/seller/weeder/homepage' element={<HomeWeeder />} />
         <Route path='/homepage/products/:id' element={<Product/>}/>
         <Route path='/homepage/products/cart' element={<CartPage/>}/>
+        <Route path='/homepage/products/checkout/:id' element={<CheckoutPage/>}/>
         <Route path='/homepage/about' element={<AboutPage/>}/>
         <Route path='/homepage/about/collaboratori' element={<CollaboratoriPage/>}/>
         <Route path='/homepage/about/blog' element={<BlogPage/>}/>

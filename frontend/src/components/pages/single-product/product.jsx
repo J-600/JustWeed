@@ -315,6 +315,7 @@ function Product() {
                                             <div className="flex flex-col space-y-3 sm:space-y-4">
                                                 <button
                                                     type="submit"
+                                                    onClick={() => navigate("/homepage/products/checkout/"+product.id)}
                                                     className="btn btn-primary w-full text-sm sm:text-base bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-[1.02]"
                                                 >
                                                     Acquista ora
