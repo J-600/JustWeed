@@ -91,7 +91,7 @@ const CheckoutPage = () => {
             if(!res.ok)
                 throw new Error(data)
 
-            // navigate("/homepage/products/track/" + id)
+            navigate("/homepage/products/purchase")
 
         } catch (error) {
             console.error("Errore durante il fetch dei dati:", error);

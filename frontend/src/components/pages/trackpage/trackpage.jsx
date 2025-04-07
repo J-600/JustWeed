@@ -298,7 +298,7 @@ const TrackPackagePage = () => {
                             </div>
 
                             <Link
-                                to={`/products/${order.id_product}`}
+                                to={`/homepage/products/${order.id_product}`}
                                 className="btn btn-primary btn-block gap-2"
                             >
                                 <Package className="w-4 h-4" />
