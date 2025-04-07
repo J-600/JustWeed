@@ -12,6 +12,10 @@ try {
     $password = $_POST["password"];
     $table = "users_jw";
     $table_products = "products_jw";
+    $table_cart = "cart_jw";
+    $table_comments = "comments_jw";
+    $table_selled = "selled_jw";
+    $table_weeder = "weeder_jw";
 
     if (empty($email) || empty($password)) {
         throw new Exception("Fornire email e password");
@@ -26,8 +30,22 @@ try {
     if (!$user || $password != $user["password"]) {
         throw new Exception("Password errata");
     }
+    $sql = "DELETE FROM $table_selled WHERE email = :email";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+
+    $sql = "DELETE FROM $table_comments WHERE email = :email";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
 
     $sql = "DELETE FROM $table_products WHERE email = :email";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+
+    $sql = "DELETE FROM $table_weeder WHERE email = :email";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':email', $email);
     $stmt->execute();
