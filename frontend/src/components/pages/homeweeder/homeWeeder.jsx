@@ -359,6 +359,7 @@ function Prodotti() {
             setProducts(products.filter(product => product.id !== deletingProduct));
             setSuccessMessage("Prodotto eliminato con successo");
             setTimeout(() => setSuccessMessage(""), 3000);
+            setDeletingProduct(null)
         } catch (error) {
             console.error(error);
             setErrorMessage("Errore durante l'eliminazione");
@@ -413,7 +414,6 @@ function Prodotti() {
 
             if (!res.ok) throw new Error("Errore nella modifica");
 
-            const updatedProduct = await res.json();
             setProducts(prevProducts =>
                 prevProducts.map(product =>
                     product.id === editingProduct?.id
@@ -627,7 +627,7 @@ function Prodotti() {
                             </div>
                         )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {products.map(product => (
                                 <div key={product.id} className="bg-emerald-900/50 rounded-xl p-4 border-2 border-emerald-700/30 hover:border-emerald-500/40 transition-all duration-300">
                                     <div className="relative mb-4">
@@ -684,7 +684,7 @@ function UploadProdotto() {
         price: '',
         quantity: '',
         description: '',
-        image: null
+        img: null
     });
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -697,7 +697,7 @@ function UploadProdotto() {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
-                setFormData(prev => ({ ...prev, image: file }));
+                setFormData(prev => ({ ...prev, img: reader.result }));
             };
             reader.readAsDataURL(file);
         }
@@ -706,44 +706,85 @@ function UploadProdotto() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
-        const formDataToSend = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-            if (value) formDataToSend.append(key, value);
-        });
+        setErrorMessage('');
+        setSuccessMessage('');
 
         try {
+            if (!formData.name || !formData.price || !formData.quantity) {
+                throw new Error('Compila tutti i campi obbligatori');
+            }
+
+            const formUploadData = new FormData();
+            formUploadData.append('name', formData.name);
+            formUploadData.append('price', formData.price.toString());
+            formUploadData.append('quantity', formData.quantity.toString());
+            formUploadData.append('description', formData.description);
+            if (formData.img) {
+                formUploadData.append('img', formData.img );
+            }
+
             const response = await fetch('http://localhost:3000/api/weeder/products/upload', {
                 method: 'POST',
-                body: formDataToSend,
+                body: formUploadData,
                 credentials: "include"
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
             const data = await response.json();
 
-            if (data.success) {
-                setSuccessMessage('Prodotto caricato con successo!');
-                setFormData({
-                    name: '',
-                    price: '',
-                    quantity: '',
-                    description: '',
-                    image: null
-                });
-                setImagePreview(null);
-            } else {
-                throw new Error(data.error || 'Errore nel salvataggio');
-            }
+            if (!response.ok) throw new Error(data.message || 'Errore server');
+
+            setSuccessMessage('Prodotto caricato!');
+            setFormData({
+                name: '',
+                price: '',
+                quantity: '',
+                description: '',
+                img: null
+            });
+            setImagePreview(null);
+
 
         } catch (error) {
             setErrorMessage(error.message);
         } finally {
             setLoading(false);
         }
+    };
+
+    const convertToBase64 = async (file) => {
+        const MAX_WIDTH = 800; // Larghezza massima
+        const QUALITY = 0.7; // Qualità compressa
+
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scale;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    canvas.toBlob(
+                        (blob) => {
+                            const compressedReader = new FileReader();
+                            compressedReader.readAsDataURL(blob);
+                            compressedReader.onloadend = () => {
+                                resolve(compressedReader.result.split(',')[1]);
+                            };
+                        },
+                        'image/*',
+                        QUALITY
+                    );
+                };
+            };
+            reader.readAsDataURL(file);
+        });
     };
 
     return (
@@ -927,10 +968,10 @@ function HomeWeeder() {
                     <Prodotti />
                 );
             case "upload":
-                return (<></>);
+                return (<UploadProdotto />);
             default:
                 return (
-                    <UploadProdotto />
+                    <Progress />
                 );
         }
     };

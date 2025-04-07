@@ -10,6 +10,21 @@ try{
     $id = $_POST["id"];
     $table = "products_jw";
     $table_cart = "cart_jw";
+    $table_comments = "comments_jw";
+    $table_selled = "selled_jw";
+
+    $sql = "DELETE FROM $table_selled WHERE id_product = :id";
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
+
+    $sql = "DELETE FROM $table_comments WHERE product = :id";
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
+
     $sql = "DELETE FROM $table_cart WHERE product = :id";
     $stmt = $pdo->prepare($sql);
 

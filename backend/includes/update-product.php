@@ -26,7 +26,6 @@ try {
     $description = htmlspecialchars($putData['description'] ?? '');
     $img = $putData['img'] ?? null;
 
-    // Validazione dati
     if ($id <= 0) throw new Exception("ID prodotto non valido", 400);
     if ($price <= 0) throw new Exception("Prezzo non valido", 400);
     if ($quantity < 0) throw new Exception("Quantità non valida", 400);
@@ -45,7 +44,7 @@ try {
 
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-    $stmt->bindParam(':price', $price, PDO::PARAM_STR); // Usato STR per decimali
+    $stmt->bindParam(':price', $price, PDO::PARAM_STR);
     $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
     $stmt->bindParam(':description', $description, PDO::PARAM_STR);
     
