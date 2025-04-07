@@ -10,7 +10,8 @@ import {
   tag, 
   updateCart, 
   viewPurchase, 
-  viewTags 
+  viewTags,
+  trackProduct
 } from '../controllers/products.controller.js';
 
 import { protectRoute } from '../middleware/protectroute.middleware.js';
@@ -25,6 +26,7 @@ router.post("/tag", protectRoute, tag)
 router.post("/comments", protectRoute, comments)
 router.post("/add-comment", protectRoute, addComment)
 router.post("/updateProducts", protectRoute, updateProducts)
+router.post("/tracking", protectRoute, trackProduct)
 
 router.get("/view-purchase", protectRoute, viewPurchase)
 router.get("/view-cart", protectRoute, viewCart)

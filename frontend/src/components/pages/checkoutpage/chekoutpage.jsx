@@ -69,9 +69,14 @@ const CheckoutPage = () => {
     const total = product ? (product.price * quantity).toFixed(2) : 0;
 
     const handleCheckout = async () => {
+
+        
         try {
             const res = await fetch("http://localhost:3000/api/user/buy", {
                 method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                  },
                 body: JSON.stringify({
                     productId: id,
                     quantity: quantity,
@@ -86,7 +91,7 @@ const CheckoutPage = () => {
             if(!res.ok)
                 throw new Error(data)
 
-            navigate("/homepage/products/track/25")
+            // navigate("/homepage/products/track/" + id)
 
         } catch (error) {
             console.error("Errore durante il fetch dei dati:", error);

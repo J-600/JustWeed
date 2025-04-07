@@ -25,6 +25,7 @@ import NotFoundPage from './components/pages/notfount/notFoundPage';
 import Login from './components/pages/login/login';
 import HomeWeeder from './components/pages/homeweeder/homeWeeder';
 import CheckoutPage from './components/pages/checkoutpage/chekoutpage';
+import TrackPackagePage from './components/pages/trackpage/trackpage';
 import App from './App';
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -45,6 +46,7 @@ function AppRoutes() {
         <Route path='/newpassword' element={<NewPassword />} />
         <Route path='/homepage/account-info' element={<AccountInfo />} />
         <Route path='/homepage/products/purchase' element={<Purchase />} />
+        <Route path='/homepage/products/track/:id' element={<TrackPackagePage />} />
         <Route path='/homepage/preWeeder' element={<PreWeeder />} />
         <Route path='/homepage/preWeeder/become-weeder' element={<Weeder />} />
         <Route path='/seller/weeder/homepage' element={<HomeWeeder />} />

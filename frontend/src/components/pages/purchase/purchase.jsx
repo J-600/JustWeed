@@ -287,7 +287,7 @@ function Purchase() {
                                                     <div className="flex flex-col gap-3 md:w-48">
                                                         <button
                                                             className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700 transform transition-all duration-300 hover:scale-105"
-                                                            onClick={() => navigate("/tracking")}
+                                                            onClick={() => navigate("/homepage/products/track/"+item.id)}
                                                         >
                                                             Traccia pacco
                                                         </button>

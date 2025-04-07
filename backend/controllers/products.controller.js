@@ -228,3 +228,25 @@ export const updateProducts = (req, res) => {
         });
 
 };
+
+export const trackProduct = (req, res) => {
+    const { id } = req.body;
+    // console.log(req.body)
+    fetch(path + "/view-single-purchase.php", {
+        method: "POST",
+        headers: { "Content-type": "application/x-www-form-urlencoded" },
+        body: `email=${req.session.email}&id=${id}`
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.response === 200) {
+                res.json(data.data[0]);
+            } else {
+                res.status(data.response).json(data.data);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            res.status(500).json({ error: "An error occurred" });
+        });
+}

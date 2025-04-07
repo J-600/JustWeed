@@ -15,9 +15,9 @@ try{
 
     $table = "selled_jw";
 
-    $sql = "INSERT INTO $table (email, id_payment, id_address, id_product) VALUES (:email, :payment, :address, :product)";
+    $sql = "INSERT INTO $table (email, id_payment, id_address, id_product, deliveryDate) VALUES (:email, :payment, :address, :product, CURRENT_DATE() + 7)";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(":name", $name);
+    $stmt->bindParam(":email", $email);
     $stmt->bindParam(":payment", $payment);
     $stmt->bindParam(":address", $address);
     $stmt->bindParam(":product", $product);

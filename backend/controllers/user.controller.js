@@ -338,10 +338,11 @@ export const deleteUser = (req, res) => {//get
 
 export const buyProduct = (req, res) => {
     const { productId, quantity, address, card } = req.body
+    // console.log(productId,quantity,address,card,req.body)
     fetch(path + "/add-payment.php", {
         method: "POST",
         headers: { "Content-type": "application/x-www-form-urlencoded" },
-        body: `email=${req.session.email}&id=${productId}&quantity=${quantity}&address=${address}&payment=${card}`
+        body: `email=${req.session.email}&product=${productId}&quantity=${quantity}&address=${address}&payment=${card}`
     })
         .then(response => response.json())
         .then(data => {
@@ -356,4 +357,5 @@ export const buyProduct = (req, res) => {
             res.status(500).json({ error: "An error occurred" });
         });
 }
+
 
