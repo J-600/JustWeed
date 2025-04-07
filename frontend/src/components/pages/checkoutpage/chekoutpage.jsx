@@ -70,7 +70,7 @@ const CheckoutPage = () => {
 
     const handleCheckout = async () => {
 
-        
+        console.log(quantity)
         try {
             const res = await fetch("http://localhost:3000/api/user/buy", {
                 method: "POST",

@@ -22,7 +22,8 @@ export default function Topbar({ onUploadCart }) {
       })
       if (!res.ok)
         navigate("/homepage/preWeeder")
-      navigate("/seller/weeder/homepage")
+      else 
+        navigate("/seller/weeder/homepage")
     } catch (error) {
       console.log(error.message)
     }

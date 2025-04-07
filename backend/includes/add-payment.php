@@ -15,11 +15,12 @@ try{
 
     $table = "selled_jw";
 
-    $sql = "INSERT INTO $table (email, id_payment, id_address, id_product, deliveryDate) VALUES (:email, :payment, :address, :product, CURRENT_DATE() + 7)";
+    $sql = "INSERT INTO $table (email, id_payment, id_address, id_product,quantity , deliveryDate) VALUES (:email, :payment, :address, :product, :quantity, CURRENT_DATE() + 7)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(":email", $email);
     $stmt->bindParam(":payment", $payment);
     $stmt->bindParam(":address", $address);
+    $stmt->bindParam(":quantity", $quantity);
     $stmt->bindParam(":product", $product);
 
     $stmt->execute();
