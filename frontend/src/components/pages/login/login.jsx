@@ -51,8 +51,9 @@ function Login() {
       });
 
       const data = await res.json();
+      console.log(data)
       if (!res.ok)
-        throw new Error()
+        throw new Error(data)
       console.log(data)
       if (data.email) {
         setResponseMessage("Benvenuto");
@@ -61,13 +62,13 @@ function Login() {
           navigate('/homepage/products');
         }, 1000);
       } else {
-        setResponseMessage(data);
+        setResponseMessage("mail o password sbagliati");
         setResponseType('error'); 
       }
     } catch (error) {
       // console.error('Request error:', error);
       
-      setResponseMessage('Errore di rete');
+      setResponseMessage("mail o password sbagliati");
       setResponseType('error'); 
     }
   };

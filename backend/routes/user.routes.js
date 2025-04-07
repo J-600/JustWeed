@@ -28,11 +28,12 @@ router.post("/add-card", protectRoute, addCard)
 router.post("/update-card", protectRoute, updateCard)
 router.post("/delete-card", protectRoute, deleteCard)
 router.post("/buy", protectRoute, buyProduct)
+router.post("/delete-user", protectRoute, deleteUser)
 
 
 router.get("/addresses", protectRoute, addresses)
 router.get("/cardsdata", protectRoute, cardsdata)
 router.get("/account-info", protectRoute, accountInfo)
-router.get("/delete-user", protectRoute, deleteUser)
+
 
 export default router

@@ -293,7 +293,7 @@ function Purchase() {
                                                         </button>
                                                         <button
                                                             className="btn bg-gradient-to-r from-green-500 to-teal-600 text-white border-none hover:from-green-600 hover:to-teal-700 transform transition-all duration-300 hover:scale-105"
-                                                            onClick={() => navigate("/homepage/products/"+item.id)}
+                                                            onClick={() => navigate("/homepage/products/"+item.product_id)}
                                                         >
                                                             Acquista di nuovo
                                                         </button>

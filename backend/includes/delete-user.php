@@ -16,6 +16,9 @@ try {
     $table_comments = "comments_jw";
     $table_selled = "selled_jw";
     $table_weeder = "weeder_jw";
+    $table_address = "addresses_jw";
+    $table_cards = "cards_jw";
+    $table_tags = "tags_jw";
 
     if (empty($email) || empty($password)) {
         throw new Exception("Fornire email e password");
@@ -30,25 +33,51 @@ try {
     if (!$user || $password != $user["password"]) {
         throw new Exception("Password errata");
     }
-    $sql = "DELETE FROM $table_selled WHERE email = :email";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
+    // $sql = "DELETE FROM $table_selled WHERE email = :email";
+    // $stmt = $pdo->prepare($sql);
+    // $stmt->bindParam(':email', $email);
+    // $stmt->execute();
 
-    $sql = "DELETE FROM $table_comments WHERE email = :email";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
+    // $sql = "SELECT id FROM $table_products WHERE email = :email";
+    // $stmt = $pdo->prepare($sql);
+    // $stmt->bindParam(':email', $email);
+    // $stmt->execute();
 
-    $sql = "DELETE FROM $table_products WHERE email = :email";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
+    // $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $sql = "DELETE FROM $table_weeder WHERE email = :email";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
+    // $sql = "DELETE FROM $table_comments WHERE id = :id";
+    // $stmt = $pdo->prepare($sql);
+    // foreach ($res as $row) {
+    //     $stmt->bindValue(':id', $row['id'], PDO::PARAM_INT);
+    //     $stmt->execute();
+    // }
+
+    // $sql = "DELETE FROM $table_tags WHERE id = :id";
+    // $stmt = $pdo->prepare($sql);
+    // foreach ($res as $row) {
+    //     $stmt->bindValue(':id', $row['id'], PDO::PARAM_INT);
+    //     $stmt->execute();
+    // }
+
+    // $sql = "DELETE FROM $table_products WHERE email = :email";
+    // $stmt = $pdo->prepare($sql);
+    // $stmt->bindParam(':email', $email);
+    // $stmt->execute();
+
+    // // $sql = "DELETE FROM $table_address WHERE email = :email";
+    // // $stmt = $pdo->prepare($sql);
+    // // $stmt->bindParam(':email', $email);
+    // // $stmt->execute();
+
+    // // $sql = "DELETE FROM $table_cards WHERE email = :email";
+    // // $stmt = $pdo->prepare($sql);
+    // // $stmt->bindParam(':email', $email);
+    // // $stmt->execute();
+
+    // $sql = "DELETE FROM $table_weeder WHERE email = :email";
+    // $stmt = $pdo->prepare($sql);
+    // $stmt->bindParam(':email', $email);
+    // $stmt->execute();
 
     $sql = "DELETE FROM $table WHERE email = :email";
     $stmt = $pdo->prepare($sql);

@@ -46,7 +46,7 @@ function Confirm() {
 
         if (responseData?.message) {
           await sleep(3000);
-          navigate('/products', { state: { email: responseData.email, username: responseData.username } });
+          navigate('/homepage/products');
         }
       }
     };

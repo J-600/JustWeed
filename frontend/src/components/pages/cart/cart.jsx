@@ -210,7 +210,7 @@ const CartPage = () => {
                   <div className="card-body items-center text-center py-16">
                     <h2 className="text-2xl text-gray-400 mb-4">Il tuo carrello è vuoto</h2>
                     <Link
-                      to="/"
+                      to="/homepage/products"
                       className="btn bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none hover:from-blue-600 hover:to-purple-700"
                     >
                       Continua gli acquisti
@@ -226,7 +226,7 @@ const CartPage = () => {
                       <div className="card-body">
                         <div className="flex flex-col sm:flex-row gap-6">
                           <div className="relative w-full sm:w-48 flex-shrink-0">
-                            <Link to={"/products/"+ item.id}>
+                            <Link to={"/homepage/products/"+ item.id}>
                             <img
                               src={item.img}
                               alt={item.name}
@@ -240,7 +240,7 @@ const CartPage = () => {
                             <div className="flex justify-between items-start">
                               <div>
                                 <h3 className="text-xl text-white font-semibold hover:text-blue-400 transition-colors">
-                                  <Link to={"/products/" + item.id}>{item.name}</Link>
+                                  <Link to={"/homepage/products/" + item.id}>{item.name}</Link>
                                 </h3>
                                 <p className="text-gray-400 text-sm mt-1">Venduto da: {item.seller}</p>
                               </div>
@@ -330,7 +330,7 @@ const CartPage = () => {
                     </button>
 
                     <Link
-                      to="/products"
+                      to="/homepage/products"
                       className="btn btn-outline w-full text-white border-blue-500 hover:bg-blue-500 hover:text-white mt-2"
                     >
                       Continua gli acquisti

@@ -15,6 +15,7 @@ try {
     $email = $_POST["email"];
 
     $sql = "SELECT s.*,
+                    p.id as product_id,
                     p.name as product_name,
                     p.img,
                     p.description as product_description,

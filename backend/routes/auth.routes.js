@@ -9,7 +9,7 @@ router.get("/logout", protectRoute, logout)
 router.get("/confirm", confirm)
 router.post("/signup", signUp)
 router.post("/forgotpassword", forgotpassword)
-router.post("/newpassword", protectRoute, newpassword)
+router.post("/newpassword", newpassword)
 router.get("/session", protectRoute, session)
 router.get("/weeder", protectRoute, isWeeder)
 

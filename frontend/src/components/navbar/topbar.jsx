@@ -21,12 +21,12 @@ export default function Topbar({ onUploadCart }) {
         credentials: "include"
       })
       if (!res.ok)
-        throw new Error(res)
-
+        navigate("/homepage/preWeeder")
       navigate("/seller/weeder/homepage")
     } catch (error) {
       console.log(error.message)
     }
+    
   }
 
   const logOut = async () => {

@@ -1776,7 +1776,7 @@ function AccountInfo() {
             <div className="modal-action">
               <button
                 className="btn btn-ghost text-white hover:bg-base-400"
-                onClick={() => setShowDeleteConfirm(false)}
+                onClick={() => {setShowDeleteConfirm(false); setPassword("")}}
               >
                 Annulla
               </button>
