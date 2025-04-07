@@ -336,3 +336,24 @@ export const deleteUser = (req, res) => {//get
         });
 };
 
+export const buyProduct = (req, res) => {
+    const { productId, quantity, address, card } = req.body
+    fetch(path + "/add-payment.php", {
+        method: "POST",
+        headers: { "Content-type": "application/x-www-form-urlencoded" },
+        body: `email=${req.session.email}&id=${productId}&quantity=${quantity}&address=${address}&payment=${card}`
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.response === 200) {
+                res.json(data.data);
+            } else {
+                res.status(data.response).json(data.data);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            res.status(500).json({ error: "An error occurred" });
+        });
+}
+

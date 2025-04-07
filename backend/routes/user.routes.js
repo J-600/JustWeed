@@ -11,7 +11,8 @@ import {
   deleteUser, 
   updateCard, 
   updateData, 
-  verifyCard 
+  verifyCard,
+  buyProduct
 } from '../controllers/user.controller.js';
 
 import { protectRoute } from '../middleware/protectroute.middleware.js';
@@ -26,6 +27,7 @@ router.post("/verify-card", protectRoute, verifyCard)
 router.post("/add-card", protectRoute, addCard)
 router.post("/update-card", protectRoute, updateCard)
 router.post("/delete-card", protectRoute, deleteCard)
+router.post("/buy", protectRoute, buyProduct)
 
 router.get("/addresses", protectRoute, addresses)
 router.get("/cardsdata", protectRoute, cardsdata)
