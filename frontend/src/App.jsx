@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useSpring, useAnimation } from 'framer-motion';
-import { 
-  FaLeaf, FaLock, FaFlask, FaShieldAlt, 
-  FaUser, FaChevronRight, FaBirthdayCake, 
+import {
+  FaLeaf, FaLock, FaFlask, FaShieldAlt,
+  FaUser, FaChevronRight, FaBirthdayCake,
   FaRegEnvelope, FaArrowUp, FaStar,
   FaGooglePlay, FaApple, FaEye
 } from 'react-icons/fa';
@@ -88,12 +88,12 @@ const ParticleSystem = () => {
         this.angle += 0.005;
         this.x += Math.cos(this.angle) * 0.3 + this.velocity.x;
         this.y += Math.sin(this.angle) * 0.3 + this.velocity.y;
-        
-        if (this.x > canvas.width + 20 || this.x < -20 || 
-            this.y > canvas.height + 20 || this.y < -20) {
+
+        if (this.x > canvas.width + 20 || this.x < -20 ||
+          this.y > canvas.height + 20 || this.y < -20) {
           this.reset();
         }
-        
+
         this.size = this.baseSize * (0.5 + Math.abs(Math.sin(this.angle * 2)) * 5);
       }
 
@@ -117,12 +117,12 @@ const ParticleSystem = () => {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
       particles.forEach(particle => {
         particle.update();
         particle.draw();
       });
-      
+
       animationFrameId = requestAnimationFrame(animate);
     };
 
@@ -160,7 +160,7 @@ const FeatureCard = ({ icon, title, description, index }) => {
       onHoverEnd={() => setIsHovered(false)}
     >
       <div className="absolute inset-0 bg-base-100/80 backdrop-blur-sm rounded-xl" />
-      
+
       <div className="relative z-10 card bg-transparent h-full">
         <div className="card-body items-center text-center space-y-4">
           <motion.div
@@ -184,20 +184,20 @@ const FeatureCard = ({ icon, title, description, index }) => {
           >
             {icon}
           </motion.div>
-          
+
           <h2 className="card-title text-2xl mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             {title}
           </h2>
-          
+
           <p className="opacity-80 min-h-[60px]">{description}</p>
-          
+
           <motion.div
             className="w-full overflow-hidden"
             initial={{ maxHeight: 0 }}
             animate={{ maxHeight: isHovered ? 100 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            <button 
+            <button
               className="btn btn-sm btn-outline btn-primary w-full transform hover:-translate-y-0.5 transition-all"
               aria-label={`Scopri di più su ${title}`}
             >
@@ -223,7 +223,7 @@ const AgeVerificationModal = ({ onVerify }) => {
     >
       <div className="modal-box bg-neutral text-neutral-content relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-pulse" />
-        
+
         <div className="relative z-10 flex flex-col items-center text-center space-y-6">
           <motion.div
             animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
@@ -231,17 +231,17 @@ const AgeVerificationModal = ({ onVerify }) => {
           >
             <FaBirthdayCake className="w-16 h-16 text-primary" />
           </motion.div>
-          
+
           <h3 id="ageVerificationTitle" className="text-2xl font-bold">
             Verifica dell'età
           </h3>
-          
+
           <p className="mb-6">
             Per accedere a Justweed devi avere almeno 21 anni.
             <br />
             Confermi di essere maggiorenne?
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -252,7 +252,7 @@ const AgeVerificationModal = ({ onVerify }) => {
               Sì, ho più di 21 anni
               <FaChevronRight />
             </motion.button>
-            
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -337,8 +337,8 @@ const StatsSection = () => {
               </div>
             </div>
             <div className="mt-4">
-              <div className="radial-progress text-primary" 
-                   style={{"--value":100,"--size":"3rem","--thickness":"6px"}}>
+              <div className="radial-progress text-primary"
+                style={{ "--value": 100, "--size": "3rem", "--thickness": "6px" }}>
                 <span className="text-xs">100%</span>
               </div>
               <p className="text-xs mt-2 opacity-70">Soddisfazione clienti</p>
@@ -372,8 +372,8 @@ const StatsSection = () => {
               </div>
             </div>
             <div className="mt-4">
-              <div className="radial-progress text-secondary" 
-                   style={{"--value":85,"--size":"3rem","--thickness":"6px"}}>
+              <div className="radial-progress text-secondary"
+                style={{ "--value": 85, "--size": "3rem", "--thickness": "6px" }}>
                 <span className="text-xs">85%</span>
               </div>
               <p className="text-xs mt-2 opacity-70">Tasso di crescita</p>
@@ -445,8 +445,8 @@ const AppDownloadSection = () => {
               Esperienza Mobile Premium
             </h3>
             <p className="text-lg opacity-90">
-              Acquista in modo ancora più semplice e veloce con la nostra app dedicata. 
-              Ricevi notifiche in tempo reale, sblocca offerte esclusive e gestisci 
+              Acquista in modo ancora più semplice e veloce con la nostra app dedicata.
+              Ricevi notifiche in tempo reale, sblocca offerte esclusive e gestisci
               i tuoi ordini ovunque ti trovi.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -475,13 +475,13 @@ const AppDownloadSection = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <div className="mockup-phone border-primary">
-            <div className="camera"></div> 
+            <div className="camera"></div>
             <div className="display">
               <div className="artboard artboard-demo phone-1 bg-base-100">
-                <img 
-                  src="/screenshots/app-preview.jpg" 
-                  alt="Anteprima app" 
-                  className="rounded-lg object-cover"
+                <img
+                  src="https://i0.wp.com/post.healthline.com/wp-content/uploads/2019/04/Weed_Orange_1296x728-header-1296x728.jpg"
+                  alt="Foglia di cannabis"
+                  className="rounded-lg object-cover w-full h-full"
                 />
               </div>
             </div>
@@ -510,7 +510,7 @@ const LandingPage = () => {
     const handleScroll = () => {
       setState(prev => ({ ...prev, navScrolled: window.scrollY > 50 }));
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -532,16 +532,16 @@ const LandingPage = () => {
     }
 
     setState(prev => ({ ...prev, isSubscribing: true, subscribeError: '' }));
-    
+
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     setState(prev => ({
       ...prev,
       isSubscribing: false,
       subscribeSuccess: true,
       email: ''
     }));
-    
+
     setTimeout(() => {
       setState(prev => ({ ...prev, subscribeSuccess: false }));
     }, 3000);
@@ -561,11 +561,10 @@ const LandingPage = () => {
       </AnimatePresence>
 
       <motion.nav
-        className={`navbar sticky top-0 z-50 transition-all duration-300 ${
-          state.navScrolled 
+        className={`navbar sticky top-0 z-50 transition-all duration-300 ${state.navScrolled
             ? 'py-3 bg-base-200/90 backdrop-blur-md border-b border-base-300 shadow-lg'
             : 'py-4 bg-transparent'
-        }`}
+          }`}
       >
         <div className="flex-1">
           <motion.div
@@ -583,7 +582,7 @@ const LandingPage = () => {
             </div>
           </motion.div>
         </div>
-        
+
         <div className="flex-none gap-2">
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -601,7 +600,7 @@ const LandingPage = () => {
       <main>
         <section className="hero min-h-[80vh] relative overflow-hidden">
           <ParticleSystem />
-          
+
           <div className="hero-content text-center relative z-10">
             <div className="max-w-4xl space-y-8">
               <motion.div
@@ -614,7 +613,7 @@ const LandingPage = () => {
                     Justweed
                   </span>
                 </h1>
-                
+
                 <motion.p
                   className="text-xl opacity-90 max-w-2xl mx-auto"
                   initial={{ opacity: 0, y: 20 }}
@@ -677,7 +676,7 @@ const LandingPage = () => {
                 onChange={(e) => setState(prev => ({ ...prev, email: e.target.value }))}
                 aria-label="Inserisci la tua email per iscriverti"
               />
-              
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -695,11 +694,11 @@ const LandingPage = () => {
                 )}
               </motion.button>
             </div>
-            
+
             {state.subscribeError && (
               <p className="text-error text-sm">{state.subscribeError}</p>
             )}
-            
+
             {state.subscribeSuccess && (
               <motion.p
                 className="text-success text-sm"
@@ -729,7 +728,7 @@ const LandingPage = () => {
 const SectionWrapper = ({ title, children, bgColor }) => (
   <section className={`py-16 bg-${bgColor}`}>
     <div className="container mx-auto px-4">
-      <motion.h2 
+      <motion.h2
         className="text-4xl font-bold text-center mb-12"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
