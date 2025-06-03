@@ -115,8 +115,8 @@ Questo capolavoro è stato sviluppato **interamente in autonomia** da me, **Jhon
 
 ---
 
-## 📸 Screenshot
-Landing page:
+## 📸 Screenshot (landing page)
+
 ![Landing page](./assets/image.png)
 
 ---
