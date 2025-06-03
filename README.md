@@ -30,6 +30,22 @@ Costruito con:
 - 🧾 **Database j.panora** – strutturato con più tabelle per utente ma un solo DB per domarli
 
 ---
+## 🗂️ Struttura del Progetto
+
+> Quando spacciare codice diventa un’arte organizzata.
+
+Il progetto **JustWeed** è diviso in due cuori pulsanti:
+
+- 🧠 **Backend** – Dove la logica prende forma (e il PHP si sente ancora amato).
+- 💅 **Frontend** – Dove l’utente si innamora (prima di cliccare "Aggiungi al carrello").
+
+Ecco una panoramica della struttura, perché anche i veri spacciatori digitali tengono in ordine il magazzino:
+
+
+
+📌 **Nota di colore**: Il progetto è volutamente modulare per rendere semplice la manutenzione, l'espansione e... il passaggio dell’esame.
+
+---
 
 ## 🧪 Funzionalità da vero boss della tech-foglia
 
