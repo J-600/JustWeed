@@ -107,7 +107,7 @@ Nessuna foglia è stata danneggiata nella realizzazione di questo sito (forse so
 
 ---
 
-## 💼 Un da Capolavoro
+## 💼 Un "Capolavoro"
 
 Questo capolavoro è stato sviluppato **interamente in autonomia** da me, **Jhon Panora**, come simbolo di dedizione, passione, e capacità di prendersi poco sul serio anche quando si parla di... business.
 
