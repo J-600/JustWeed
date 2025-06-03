@@ -26,7 +26,7 @@ app.use(cors({
 }));
 
 app.use(session({
-  secret: "2vf345y65b-b75h6n32-2vg4572ttt",
+  secret: "YOUR_SECRET_KEY",
   resave: true,
   saveUninitialized: true,
   cookie: {
