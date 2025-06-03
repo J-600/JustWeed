@@ -41,6 +41,7 @@ Il progetto **JustWeed** è diviso in due cuori pulsanti:
 
 Ecco una panoramica della struttura, perché anche i veri spacciatori digitali tengono in ordine il magazzino:
 
+```
 JUSTWEED
 ├── backend/
 │   ├── controllers/         # La mente: gestisce tutte le operazioni tra frontend e DB
@@ -82,6 +83,8 @@ JUSTWEED
             │   ├── trackpage/
             │   └── weeder/
             └── styles/      # Dove si veste tutto il sito (in verde ovviamente)
+```
+
 📌 **Nota di colore**: Il progetto è volutamente modulare per rendere semplice la manutenzione, l'espansione e... il passaggio dell’esame.
 
 ---
