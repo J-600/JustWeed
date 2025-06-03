@@ -57,7 +57,7 @@ Questo capolavoro è stato sviluppato **interamente in autonomia** da me, **Jhon
 
 ## 📸 Screenshot
 
-*(aggiungi qui eventuali immagini del sito se vuoi far vedere la bellezza grafica)*
+![Landing page](./assets/image.png)
 
 ---
 
