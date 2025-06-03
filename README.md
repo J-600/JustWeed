@@ -82,7 +82,7 @@ JUSTWEED
             │   ├── termini/
             │   ├── trackpage/
             │   └── weeder/
-            └── styles/      # Dove si veste tutto il sito (in verde ovviamente)
+            └── styles/      # Dove si veste tutto il sito (che in realtà non uso ma dettagli)
 ```
 
 📌 **Nota di colore**: Il progetto è volutamente modulare per rendere semplice la manutenzione, l'espansione e... il passaggio dell’esame.
