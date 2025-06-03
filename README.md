@@ -109,7 +109,7 @@ Nessuna foglia è stata danneggiata nella realizzazione di questo sito (forse so
 
 ## 💼 Un "Capolavoro"
 
-Questo capolavoro è stato sviluppato **interamente in autonomia** da me, **Jhon Panora**, come simbolo di dedizione, passione, e capacità di prendersi poco sul serio anche quando si parla di... business.
+Questo capolavoro è stato sviluppato **interamente in autonomia** da me, **Jhon Panora**, come simbolo di dedizione, passione, e capacità di prendersi poco sul serio anche quando si parla di... business. (poi usato come capolavoro di quinta)
 
 > _ci ho messo mesi per farlo_
 
