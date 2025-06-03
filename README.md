@@ -5,7 +5,7 @@
 
 ## 📚 Premessa Seria™️
 
-**JustWeed** è un progetto **100% goliardico**, realizzato **esclusivamente per il compito scolastico** di **Gestione Progetto d’Impresa (GPOI)** dell’**Istituto Pino Hensemberger**.  
+**JustWeed** è un progetto **100% goliardico**, realizzato **esclusivamente per il compito scolastico** di **Gestione Progetto e Organizzazione d’Impresa (GPOI)** dell’**Istituto Pino Hensemberger**.  
 Assegnato dalla prof.ssa **Santaniello**, il progetto prevedeva la simulazione dell’avvio di una start-up.  
 Io, **Jhon Panora**, ho deciso di creare un sito e-commerce per la vendita di... ehm... **stupefacenti legali** 🫠  
 Tutto a **scopo didattico** e con tanto amore per il codice.
