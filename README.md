@@ -14,7 +14,7 @@ Tutto a **scopo didattico** e con tanto amore per il codice.
 
 ## 🧠 Idea Geniale (o completamente fuori di testa?)
 
-JustWeed nasce dall’idea di unire il mondo dell’e-commerce moderno con un concept goliardico e assurdo: vendere **erbe legali** online come se fossimo lo **Zalando della canapa**.  
+JustWeed nasce dall’idea di unire il mondo dell’e-commerce moderno con un concept goliardico e assurdo: vendere **erbe legali** online come se fossimo il **JustEat della canapa**.  
 Un’esperienza immersiva nel business... ma fatta con **la leggerezza di una risata post-verifica**.
 
 ---
