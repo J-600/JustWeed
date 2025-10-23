@@ -5,7 +5,7 @@
 
 ## 📚 Premessa Seria™️
 
-**JustWeed** è un progetto **100% goliardico**, realizzato **esclusivamente per il compito scolastico** di **Gestione Progetto d’Impresa (GPO)** dell’**Istituto Pino Hensemberger**.  
+**JustWeed** è un progetto **100% goliardico**, realizzato **esclusivamente per il compito scolastico** di **Gestione Progetto e Organizzazione d’Impresa (GPOI)** dell’**Istituto Pino Hensemberger**.  
 Assegnato dalla prof.ssa **Santaniello**, il progetto prevedeva la simulazione dell’avvio di una start-up.  
 Io, **Jhon Panora**, ho deciso di creare un sito e-commerce per la vendita di... ehm... **stupefacenti legali** 🫠  
 Tutto a **scopo didattico** e con tanto amore per il codice.
@@ -30,6 +30,64 @@ Costruito con:
 - 🧾 **Database j.panora** – strutturato con più tabelle per utente ma un solo DB per domarli
 
 ---
+## 🗂️ Struttura del Progetto
+
+> Quando spacciare codice diventa un’arte organizzata.
+
+Il progetto **JustWeed** è diviso in due cuori pulsanti:
+
+- 🧠 **Backend** – Dove la logica prende forma (e il PHP si sente ancora amato).
+- 💅 **Frontend** – Dove l’utente si innamora (prima di cliccare "Aggiungi al carrello").
+
+Ecco una panoramica della struttura, perché anche i veri spacciatori digitali tengono in ordine il magazzino:
+
+```
+JUSTWEED
+├── backend/
+│   ├── controllers/         # La mente: gestisce tutte le operazioni tra frontend e DB
+│   ├── includes/            # Dove vivono i file di supporto (connessione DB, ecc.)
+│   ├── middleware/          # Filtri e controlli, tipo buttafuori dei dati
+│   └── routes/              # Le strade segrete del nostro impero legale
+└── frontend/
+    ├── public/              # Roba visibile a tutti (index.html, favicon, ecc.)
+    └── src/
+        └── components/
+            ├── loader/      # Effetti visivi durante il caricamento
+            ├── navbar/      # Navigazione tra le meraviglie
+            ├── pages/       # Le "stanze" del sito, organizzate per funzionalità
+            │   ├── aboutpage/
+            │   ├── account-info/
+            │   ├── blog/
+            │   ├── cart/
+            │   ├── certificazioni/
+            │   ├── checkoutpage/
+            │   ├── collaboratoriPage/
+            │   ├── confirm/
+            │   ├── contatti/
+            │   ├── cookie/
+            │   ├── footprint/
+            │   ├── forgotPassword/
+            │   ├── homeweeder/
+            │   ├── login/
+            │   ├── newpassword/
+            │   ├── notfount/     # (sì, è scritto così... errore 404 anche nel nome ❤️)
+            │   ├── partnership/
+            │   ├── pre-weeder/
+            │   ├── privacypolicy/
+            │   ├── products/
+            │   ├── purchase/
+            │   ├── signup/
+            │   ├── single-product/
+            │   ├── sostenibilità/
+            │   ├── termini/
+            │   ├── trackpage/
+            │   └── weeder/
+            └── styles/      # Dove si veste tutto il sito (che in realtà non uso ma dettagli)
+```
+
+📌 **Nota di colore**: Il progetto è volutamente modulare per rendere semplice la manutenzione, l'espansione e... il passaggio dell’esame.
+
+---
 
 ## 🧪 Funzionalità da vero boss della tech-foglia
 
@@ -49,15 +107,17 @@ Nessuna foglia è stata danneggiata nella realizzazione di questo sito (forse so
 
 ---
 
-## 💼 Un Progetto da Capolavoro
+## 💼 Un "Capolavoro"
 
-Questo capolavoro è stato sviluppato **interamente in autonomia** da me, **Jhon Panora**, come simbolo di dedizione, passione, e capacità di prendersi poco sul serio anche quando si parla di... business.
+Questo capolavoro è stato sviluppato **interamente in autonomia** da me, **Jhon Panora**, come simbolo di dedizione, passione, e capacità di prendersi poco sul serio anche quando si parla di... business. (poi usato come capolavoro di quinta)
+
+> _ci ho messo mesi per farlo_
 
 ---
 
-## 📸 Screenshot
+## 📸 Screenshot (landing page)
 
-*(aggiungi qui eventuali immagini del sito se vuoi far vedere la bellezza grafica)*
+![Landing page](./assets/image.png)
 
 ---
 
