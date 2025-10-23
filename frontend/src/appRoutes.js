@@ -31,7 +31,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
 
-const stripePromise = loadStripe("YOUR_SECRET_KEY");
+const stripePromise = loadStripe("pk_test_51Qqap7J0BPVuq51Y7Bp15pmKU75gD8W6jjBXlXZLWzSbRQjnUGOrDp0cbR6LVWmFDmYl88OiKuSYnbubSMbvmGBB00iqVsYVpf");
 function AppRoutes() {
   return (
     <Elements stripe={stripePromise}>

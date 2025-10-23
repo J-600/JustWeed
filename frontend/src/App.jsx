@@ -548,7 +548,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-base-300 text-base-content">
+    <div className="min-h-screen bg-base-300 text-base-content overflow-x-hidden">
       <motion.div
         className="fixed top-0 left-0 right-0 h-2 bg-primary/20 z-50 origin-left"
         style={{ scaleX }}
